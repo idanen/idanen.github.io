@@ -1,0 +1,57 @@
+<div class="container" ng-init="vm.init()">
+
+	<div ng-cloak>
+
+		<alert ng-repeat="msg in vm.serverMsg" type="{{ msg.type }}" close="vm.closeServerMsg($index)">{{ msg.txt }}</alert>
+		
+		<div class="row">
+
+			<button class="btn btn-default players-drawer-btn visible-xs" ng-class="{ 'players-drawer-open': vm.prefs.playersOpen }" ng-click="vm.openPlayersControl()"><span class="glyphicon glyphicon-arrow-right"></span></button>
+          
+			<div id="players-control" class="col-sm-4" ng-class="{'nav-visible': vm.prefs.playersOpen}">
+				<h3 class="hidden-xs"><i class="glyphicon glyphicon-user"></i> Players</h3>
+				<div class="row">
+					<div class="col-xs-8">
+						<div class="btn-group">
+							<button title="Close" class="btn btn-danger visible-xs" id="close-players-panel" ng-click="vm.closePlayersControl()"><i class="glyphicon glyphicon-remove"></i></button>
+							<button class="btn btn-success" ng-click="vm.openPlayerDetailsDialog()"><i class="glyphicon glyphicon-plus"></i> New Player</button>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<button class="btn btn-primary pull-right" ng-click="vm.refreshPlayersList()"><i class="glyphicon glyphicon-refresh"></i> <span class="hidden-xs">Refresh</span></button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<input class="form-control" ng-model="vm.playersFilter"/>
+						<table class="table table-striped table-condensed">
+							<tbody>
+								<tr ng-repeat="player in vm.players | filter:playersFilter | orderBy:'name'">
+									<td>
+										<button class="btn btn-sm btn-default" ng-click="vm.openPlayerDetailsDialog(player)" ng-disabled="player.isPlaying"><i class="glyphicon glyphicon-pencil"></i></button>
+									</td>
+									<td>
+										<a href="mailto:{{ player.email }}" title="{{ player.email }}" target="_blank">{{ player.name }}</a>
+										<br/>
+										<a href="tel:{{ player.phone }}">{{ player.phone }}</a>
+									</td>
+									<td>
+										<span class="label" ng-class="{'label-success': (player.balance > 0), 'label-danger': (player.balance < 0), 'label-default': (player.balance == 0)}">{{ player.balance }}</span>
+									</td>
+									<td>
+										<button class="btn btn-sm btn-default" ng-click="vm.addPlayerToGame(player)" ng-disabled="player.isPlaying" title="Join game"><i class="glyphicon glyphicon-chevron-right"></i>
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-8">
+				<on-going-game game="vm.game" save-success-callback="vm.gameSaved" save-fail-callback="vm.saveGameFailed"></on-going-game>
+			</div>
+		</div>
+		<hr />
+	</div>
+</div>

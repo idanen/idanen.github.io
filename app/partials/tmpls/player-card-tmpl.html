@@ -1,0 +1,39 @@
+<div class="player-card" ng-class="{'bg-success': (player.buyout - player.buyin > 0), 'bg-danger': (player.buyout - player.buyin < 0)}">
+	<button class="btn btn-xs btn-danger cancel-btn" title="Cancel" ng-disabled="!player.isPlaying" ng-click="gameCtrl.cancelAddPlayer($index)"><span class="glyphicon glyphicon-remove"></span></button>
+	<header class="well well-sm" title="{{player.name}}">
+		<strong ng-class="{'text-success': (player.buyout - player.buyin > 0), 'text-danger': (player.buyout - player.buyin < 0)}">
+			<span class="glyphicon glyphicon-user"></span>&nbsp;{{player.name}}
+		</strong>
+	</header>
+	<div class="player-card-content">
+		<div class="row">
+			<div class="col-xs-5">
+				<label>Buyin: </label>
+			</div>
+			<div class="col-xs-7">
+				<button class="btn btn-sm btn-default" ng-disabled="!player.isPlaying" title="How many buyins" data-placement="bottom" data-template="../../partials/popovers/buy-popover-tpl.html" data-auto-close="1" bs-popover>{{ player.buyin }} <span class="caret"></span></button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-5">
+				<label>Chips: </label>
+			</div>
+			<div class="col-xs-7">
+				<button class="btn btn-sm btn-default" title="Chip count" data-placement="bottom" data-template="../../partials/popovers/count-popover-tpl.html" data-auto-close="1" bs-popover>{{ player.currentChipCount }} <span class="caret"></span></button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-5">
+				<label>Buyout: </label>
+			</div>
+			<div class="col-xs-7">
+				<strong ng-class="{'text-success': (player.buyout - player.buyin > 0), 'text-danger': (player.buyout - player.buyin < 0)}">{{player.buyout}}</strong>
+			</div>
+		</div>
+	</div>
+	<footer>
+		<button ng-model="player.paidHosting" class="btn btn-sm btn-default" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+			<span class="glyphicon" ng-class="player.paidHosting && 'glyphicon-check' || 'glyphicon-warning-sign'"></span>&nbsp;<span>{{player.paidHosting && 'Paid' || 'Owes'}}</span>
+		</button>
+	</footer>
+</div>

@@ -1,0 +1,71 @@
+<div class="container" ng-init="init();">
+	<div ng-cloak>
+		<h5>
+			Games report ( Between {{displayGames.fromDate | date:'yyyy-MM-dd'}} and {{displayGames.toDate | date:'yyyy-MM-dd'}} )
+		</h5>
+		<div class="col-md-12">
+			<form action="" class="form-inline">
+				<div class="form-group">
+					<label for="fromDate">From</label>
+					<div class="input-group input-group-sm">
+						<input ng-change="loadGames()" class="form-control" id="fromDate" type="text" datepicker-popup="yyyy-MM-dd" ng-model="displayGames.fromDate" datepicker-options="dateOptions" show-weeks="false" is-open="displayGames.fromDateOpen" readonly="readonly" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" ng-click="toggleDateRange('from', $event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="toDate">To</label>
+					<div class="input-group input-group-sm">
+						<input ng-change="loadGames()" class="form-control" id="toDate" type="text" datepicker-popup="yyyy-MM-dd" ng-model="displayGames.toDate" datepicker-options="dateOptions" show-weeks="false" is-open="displayGames.toDateOpen" readonly="readonly" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" ng-click="toggleDateRange('to', $event)"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</div>
+				</div>
+				<button class="btn btn-info" ng-click="loadAllTimeGames()" analytics-on analytics-category="Actions">All Time</button>
+			</form>
+		</div>
+	</div>
+	<div class="row">
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<!-- <th>Games played</th> -->
+				<th class="hidden-sm hidden-xs">Buy in</th>
+				<th class="hidden-sm hidden-xs">Buy out</th>
+				<th>Total Win\Lose</th>
+				<th>Win\Lose per game</th>
+				<th>Avarage Buy in</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="player in displayGames.players" ng-class="{'success': (player.buyout - player.buyin > 0), 'danger': (player.buyout - player.buyin < 0)}">
+				<td>
+					<span>{{player.name}}</span> <span class="badge" title="Games played">{{player.gamesCount}}</span> <button class="btn btn-link" ng-click="openPlayerDetailsDialog(player)" analytics-on analytics-event="Player Details" analytics-category="Actions" analytics-label="{{ player.name }}"><span class="glyphicon glyphicon-share-alt"></span></button>
+				</td>
+				<!-- <td>{{player.gamesCount}}</td> -->
+				<td class="hidden-sm hidden-xs">{{player.buyin}}</td>
+				<td class="hidden-sm hidden-xs">{{player.buyout}}</td>
+				<td>
+					<span class="label" ng-class="{'label-success': (player.buyout - player.buyin > 0), 'label-danger': (player.buyout - player.buyin < 0), 'label-default': (player.buyout - player.buyin == 0)}" bs-popover data-content="{{'buyin: ' + player.buyin + ', buyout: ' + player.buyout}}" data-placement="bottom" data-trigger="hover touchup">{{(player.buyout - player.buyin)}}</span>
+				</td>
+				<td>{{(player.gamesCount != 0) && ((player.buyout - player.buyin) / player.gamesCount) | number:2}}</td>
+				<td>{{(player.gamesCount != 0) && (player.buyin / player.gamesCount) | number:2}}</td>
+			</tr>
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>{{displayGames.players.length}} Players <span class="badge" title="Average games count">{{statsAvgGameCount() | number:0}}</span></th>
+				<!-- <td>{{statsAvgGameCount() | number:0}}</td> -->
+				<td class="hidden-sm hidden-xs">{{statsAvgBuyin() | number:2}}</td>
+				<td class="hidden-sm hidden-xs">{{statsAvgBuyout() | number:2}}</td>
+				<td>{{statsAvgWinnings() | number:2}}</td>
+				<td>{{statsAvgWinningsPerGame() | number:2}}</td>
+				<td>-</td>
+			</tr>
+		</tfoot>
+	</table>
+	</div>
+</div>

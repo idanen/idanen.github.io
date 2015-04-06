@@ -1,0 +1,13 @@
+<div class="popover">
+	<div class="arrow"></div>
+	<h3 class="popover-title" ng-bind="title" ng-show="title"></h3>
+	<div class="popover-content">
+		<div class="btn-group btn-group-sm">
+			<button class="btn btn-warning" ng-click="gameCtrl.cancelBuyin(player, 1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">- 1</button>
+			<button class="btn btn-warning" ng-click="gameCtrl.cancelBuyin(player, 0.1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">- 0.1</button>
+			<button class="btn btn-default">{{player.buyin}}</button>
+			<button class="btn btn-success" ng-click="gameCtrl.buyin(player, 0.1)" ng-disabled="!player.isPlaying" title="Buy-in">+ 0.1</button>
+			<button class="btn btn-success" ng-click="gameCtrl.buyin(player, 1)" ng-disabled="!player.isPlaying" title="Buy-in">+ 1</button>
+		</div>
+	</div>
+</div>

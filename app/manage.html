@@ -7,6 +7,7 @@
 	<link href="css/bootstrap.min.css" rel="stylesheet"/>
 	<!-- <link href="css/bootstrap-theme.min.css" rel="stylesheet"/> -->
 	<link href="css/bootstrap-spacelab.min.css" rel="stylesheet"/>
+	<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
 	<link href="css/app.css" rel="stylesheet"/>
 	
 	<script>
@@ -38,7 +39,7 @@
 		<div class="row" ng-cloak>
 			<ul class="nav nav-tabs">
 				<li ng-repeat="tab in tabs" ng-class="{'active': isTabSelected( tab.href )}">
-					<a href="{{ tab.href }}" role="tab">{{ tab.title }}</a>
+					<a href="{{ tab.href }}" role="tab"><span class="fa {{tab.icon}}"></span> {{ tab.title }}</a>
 				</li>
 			</ul>
 				

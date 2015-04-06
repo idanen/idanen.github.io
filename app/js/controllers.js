@@ -26,12 +26,14 @@ angular.module('pokerManager.controllers', []).
 				$scope.tabs.push( {
 					title: "Current Game",
 					href: "#/view1/0",
+					icon: "fa-heart",
 					disabled: true
 				} );
 			}
 			$scope.tabs.push( {
 				title: "Stats",
-				href: "#/stats"
+				href: "#/stats",
+				icon: "fa-bar-chart"
 			} );
 		};
 	}] ).

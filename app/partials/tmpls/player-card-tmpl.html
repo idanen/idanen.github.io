@@ -30,10 +30,15 @@
 				<strong ng-class="{'text-success': (player.buyout - player.buyin > 0), 'text-danger': (player.buyout - player.buyin < 0)}">{{player.buyout}}</strong>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-xs-5">
+				<label>Hosting: </label>
+			</div>
+			<div class="col-xs-7">
+				<button ng-model="player.paidHosting" class="btn btn-sm btn-default" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+					<span class="glyphicon" ng-class="player.paidHosting && 'glyphicon-check' || 'glyphicon-warning-sign'"></span>&nbsp;<span>{{player.paidHosting && 'Paid' || 'Owes'}}</span>
+				</button>
+			</div>
+		</div>
 	</div>
-	<footer>
-		<button ng-model="player.paidHosting" class="btn btn-sm btn-default" btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
-			<span class="glyphicon" ng-class="player.paidHosting && 'glyphicon-check' || 'glyphicon-warning-sign'"></span>&nbsp;<span>{{player.paidHosting && 'Paid' || 'Owes'}}</span>
-		</button>
-	</footer>
 </div>

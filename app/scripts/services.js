@@ -1,5 +1,3 @@
-'use strict';
-
 /* Services */
 
 angular.module( 'pokerManager.services', [ 'ngResource' ] ).
@@ -9,12 +7,14 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 		"PROD": "http://awesome-sphere-397.appspot.com/services/"
 	} ).
 	factory( 'Players', [ '$resource', '$filter', 'BASE_URL', function ( $resource, $filter, BASE_URL ) {
-		var resource = $resource( BASE_URL.PROD + 'players/:playerId', {playerId: '@id'}, {
+		'use strict';
+
+		var Resource = $resource( BASE_URL.PROD + 'players/:playerId', {playerId: '@id'}, {
 			'update': {method: 'PUT'}
 		} );
 
-		resource.create = function () {
-			return angular.element.extend( new resource(), {
+		Resource.create = function () {
+			return angular.element.extend( new Resource(), {
 				name: '',
 				balance: 0,
 				isPlaying: false,
@@ -28,10 +28,12 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 			} );
 		};
 
-		return resource;
+		return Resource;
 	} ] ).
 	factory( 'Games', [ '$resource', 'BASE_URL', function ( $resource, BASE_URL ) {
-		var resource = $resource( BASE_URL.PROD + 'games/:gameId', {gameId: '@id'}, {
+		'use strict';
+
+		var Resource = $resource( BASE_URL.PROD + 'games/:gameId', {gameId: '@id'}, {
 			'update': {method: 'PUT'},
 			'getPlayers': {
 				method: 'GET',
@@ -47,8 +49,8 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 			}
 		} );
 
-		resource.create = function () {
-			return angular.element.extend( new resource(), {
+		Resource.create = function () {
+			return angular.element.extend( new Resource(), {
 				location: '',
 				date: new Date(),
 				numberOfHands: 0,
@@ -61,9 +63,11 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 			} );
 		};
 
-		return resource;
+		return Resource;
 	} ] ).
 	service('Model', ['$http', '$rootScope', '$filter', function($http, $rootScope, $filter) {
+		'use strict';
+
 		var service = {
 				url: 'http://awesome-sphere-397.appspot.com/services/',
 				// url: 'http://localhost:9880/services/',
@@ -74,7 +78,7 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 						url: service.url + 'players'
 					}).
 						success(function(data, status, headers, config) {
-							if (data && jQuery.trim(data) != '') {
+							if (data && jQuery.trim(data) !== '') {
 								service.players = data;
 							} else {
 								service.players = [];
@@ -153,6 +157,8 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 		return service;
 	}]).
 	service( 'Utils', [ function () {
+		'use strict';
+
 		var utils = {
 				totalsCalc: function ( anArray, fieldNameToSum ) {
 					var sum = 0;

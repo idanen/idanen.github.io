@@ -1,9 +1,9 @@
-'use strict';
-
 /* Controllers */
 
-angular.module('pokerManager.controllers', []).
-	controller( 'MainCtrl', ['$scope', '$location', 'Utils', function($scope, $location, utils) {
+angular.module( 'pokerManager.controllers', [] ).
+	controller( 'MainCtrl', [ '$scope', '$location', 'Utils', function ( $scope, $location, utils ) {
+		'use strict';
+
 		$scope.tabs = [];
 		
 		$scope.getLocation = function() {
@@ -36,8 +36,10 @@ angular.module('pokerManager.controllers', []).
 				icon: "fa-bar-chart"
 			} );
 		};
-	}] ).
-	controller( 'PokerStatsCtrl', ['$scope', '$modal', '$filter', 'Model', 'Utils', 'Games', 'Players', function( $scope, $modal, $filter, Model, utils, Games, Players ) {
+	} ] ).
+	controller( 'PokerStatsCtrl', [ '$scope', '$modal', '$filter', 'Model', 'Utils', 'Games', 'Players', function( $scope, $modal, $filter, Model, utils, Games, Players ) {
+		'use strict';
+
 		function playerSaved( savedPlayer ) {
 			// console.log('savedPlayer = ' + savedPlayer);
 			var isNew = true,
@@ -157,7 +159,7 @@ angular.module('pokerManager.controllers', []).
 					createDate: $filter( 'date' )( $scope.today, 'y-MM-dd' ),
 					isNew: true
 				};
-			};
+			}
 			var modalInstance = $modal.open( {
 				templateUrl: './partials/modals/addNewPlayer.html',
 				controller: 'ModalPlayerDetailsCtrl',
@@ -192,8 +194,10 @@ angular.module('pokerManager.controllers', []).
 		$scope.$on( 'player.saved', function ( event, data ) {
 			playerSaved( data );
 		} );
-	}] ).
+	} ] ).
 	controller( 'GameCtrl', [ '$scope', '$analytics', '$routeParams', 'Games', 'Utils', function ( $scope, $analytics, $routeParams, Game, utils ) {
+		'use strict';
+
 		var vm = this,
 			chipValue,
 			defaultBuyin;
@@ -218,7 +222,7 @@ angular.module('pokerManager.controllers', []).
 
 			// delete vm.game.id;
 
-		}
+		};
 
 		vm.clearGame = function () {
 			// Reset is-playing state
@@ -365,6 +369,8 @@ angular.module('pokerManager.controllers', []).
 	} ] ).
 	controller( 'PokerManagerCtrl', [ '$scope', '$modal', '$filter', '$analytics', 'Model', 'Utils', 'Players', 'Games',
 		function ( $scope, $modal, $filter, $analytics, Model, utils, Players, Games ) {
+			'use strict';
+
 			var vm = this;
 
 			function playerSaved( savedPlayer ) {
@@ -426,24 +432,32 @@ angular.module('pokerManager.controllers', []).
 			vm.loadLocalStorageGame = function() {
 				var oldChipValue = vm.game.settings.chipValue,
 					newChipValue;
+
+				function playerEntity( aPlayer ) {
+					var found;
+					found = vm.players.filter( function( player, i ) {
+						return ( player.name === aPlayer.name );
+					} );
+
+					return found && found[0];
+				}
+
 				vm.game = utils.loadLocal( 'game' );
 				newChipValue = parseInt( vm.game.settings.chipValue, 10 );
 				// Players in game should be with same reference as players returned by the server
 				for ( var i = 0; i < vm.game.players.length; ++i ) {
-					var foundPlayers = angular.element.grep( vm.players, function( player, j ) {
-						return ( player.name === vm.game.players[i].name );
-					} );
+					var foundPlayer = playerEntity( vm.game.players[ i ] );
 					
-					// Copy fields from saved game
-					var isPlaying = vm.game.players[ i ].isPlaying,
-						buyin = vm.game.players[ i ].buyin,
-						buyout = vm.game.players[ i ].buyout,
-						currentChipCount = vm.game.players[ i ].currentChipCount * ( ( oldChipValue != newChipValue ) ? oldChipValue / newChipValue : 1 ),
-						paidHosting = vm.game.players[ i ].paidHosting;
-					
-					if ( foundPlayers && foundPlayers.length > 0 ) {
+					if ( foundPlayer ) {
+						// Copy fields from saved game
+						var isPlaying = vm.game.players[ i ].isPlaying,
+							buyin = vm.game.players[ i ].buyin,
+							buyout = vm.game.players[ i ].buyout,
+							currentChipCount = vm.game.players[ i ].currentChipCount * ( ( oldChipValue != newChipValue ) ? oldChipValue / newChipValue : 1 ),
+							paidHosting = vm.game.players[ i ].paidHosting;
+
 						// Assign reference
-						vm.game.players[ i ] = foundPlayers[ 0 ];
+						vm.game.players[ i ] = foundPlayer;
 						// Assign values from copied fields
 						vm.game.players[ i ].isPlaying = true;
 						vm.game.players[ i ].buyin = buyin;
@@ -571,7 +585,9 @@ angular.module('pokerManager.controllers', []).
 				} );
 			};
 	} ] ).
-	controller('MyCtrl2', ['$scope', 'Players', 'Games', '$analytics', function( $scope, Players, Games, $analytics ) {
+	controller( 'MyCtrl2', [ '$scope', 'Players', 'Games', '$analytics', function ( $scope, Players, Games, $analytics ) {
+		'use strict';
+
 		var vm = this;
 
 		vm.players = Players.query();
@@ -671,8 +687,10 @@ angular.module('pokerManager.controllers', []).
 				type: 'error'
 			} );
 		};
-	}]).
-	controller('ModalPlayerDetailsCtrl', ['$scope', '$http', '$modalInstance', 'player', 'Model', function($scope, $http, $modalInstance, player, Model) {
+	} ] ).
+	controller( 'ModalPlayerDetailsCtrl', [ '$scope', '$http', '$modalInstance', 'player', 'Model', function ( $scope, $http, $modalInstance, player, Model ) {
+		'use strict';
+
 		$scope.player = player;
 		$scope.isAdmin = function() {
 			return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
@@ -713,4 +731,4 @@ angular.module('pokerManager.controllers', []).
 		$scope.cancel = function() {
 			$modalInstance.dismiss('cancel');
 		};
-	}]);
+	} ] );

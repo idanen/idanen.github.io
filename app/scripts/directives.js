@@ -1,10 +1,9 @@
-'use strict';
-
 /* Directives */
-
 
 angular.module( 'pokerManager.directives', [] ).
 	directive( 'onGoingGame', [ function () {
+		'use strict';
+
 		return {
 			restrict: 'EA',
 			scope: {
@@ -23,6 +22,8 @@ angular.module( 'pokerManager.directives', [] ).
 		};
 	} ] ).
 	directive( 'playerCard', [ function () {
+		'use strict';
+
 		return {
 			restrict: 'E',
 			scope: {
@@ -39,6 +40,8 @@ angular.module( 'pokerManager.directives', [] ).
 		};
 	} ] ).
 	directive( 'showData', [ '$filter', '$timeout', 'Players', 'Model', function( $filter, $timeout, Players, Model ) {
+		'use strict';
+
 		function createData( player ) {
 			var chartData = {
 					dates: [],
@@ -160,6 +163,8 @@ angular.module( 'pokerManager.directives', [] ).
 		};
 	} ] ).
   directive( 'appVersion', [ 'version', function( version ) {
+	'use strict';
+
     return function( scope, elm, attrs ) {
       elm.text( version );
     };

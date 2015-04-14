@@ -1,7 +1,7 @@
 /**
  * Players services
  */
-angular.module( 'pokerManager.services' ).
+angular.module( 'pokerManager' ).
 	factory( 'Players', [ '$resource', '$filter', 'BASE_URL', function ( $resource, $filter, BASE_URL ) {
 		'use strict';
 

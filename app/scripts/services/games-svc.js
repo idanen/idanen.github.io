@@ -1,7 +1,7 @@
 /**
  * Games services
  */
-angular.module( 'pokerManager.services' ).
+angular.module( 'pokerManager' ).
 	factory( 'Games', [ '$resource', 'BASE_URL', function ( $resource, BASE_URL ) {
 		'use strict';
 

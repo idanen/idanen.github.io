@@ -39,7 +39,14 @@
 			<table class="table table-striped table-hover">
 				<thead>
 					<tr>
-						<th>Name</th>
+						<th>
+							<span>
+								Name
+							</span>
+							<span class="form-inline">
+								<input class="form-control input-sm" ng-model="vm.playersFilter" placeholder="Player's name or other property"/>
+							</span>
+						</th>
 						<th class="hidden-sm hidden-xs">Buy in</th>
 						<th class="hidden-sm hidden-xs">Buy out</th>
 						<th>Total Profit</th>
@@ -48,7 +55,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="player in vm.displayGames.players" ng-class="{'success': (player.buyout - player.buyin > 0), 'danger': (player.buyout - player.buyin < 0)}">
+					<tr ng-repeat="player in vm.displayGames.players | filter:vm.playersFilter" ng-class="{'success': (player.buyout - player.buyin > 0), 'danger': (player.buyout - player.buyin < 0)}">
 						<td>
 							<span>{{ player.name }}</span> <span class="badge" title="Games played">{{ player.gamesCount }}</span> <button class="btn btn-link" ng-click="vm.openPlayerDetailsDialog(player)" analytics-on analytics-event="Player Details" analytics-category="Actions" analytics-label="{{ player.name }}"><span class="glyphicon glyphicon-share-alt"></span></button>
 						</td>

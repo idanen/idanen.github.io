@@ -1,7 +1,8 @@
-/* Directives */
-
-angular.module( 'pokerManager.directives', [] ).
-	directive( 'showData', [ '$filter', '$timeout', 'Players', 'Model', function( $filter, $timeout, Players, Model ) {
+/**
+ * The managed game's directive
+ */
+angular.module( 'pokerManager' ).
+	directive( 'playerDetails', [ '$filter', '$timeout', 'Players', 'Model', function( $filter, $timeout, Players, Model ) {
 		'use strict';
 
 		function createData( player ) {
@@ -86,10 +87,23 @@ angular.module( 'pokerManager.directives', [] ).
 			scope: {
 				player: '='
 			},
+			controller: [ '$scope', function ( $scope ) {
+				$scope.isAdmin = function() {
+					return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
+				};
+				
+				/*
+				$scope.isAdmin = function() {
+					return $scope.admin;
+				};
+				*/
+			} ],
+			templateUrl: 'partials/tmpls/player-details-tmpl.html',
 			link: function( scope, element, attrs ) {
 				var chartData = createData( scope.player ),
 					chartHolder = angular.element('<div/>'),
-					chartObj = createChartObject( scope.player.name, chartData );
+					chartObj = createChartObject( scope.player.name, chartData ),
+					refreshBtn = element.find( '.refresh-data-btn' );
 
 				function refreshData() {
 					chartData = createData( scope.player );
@@ -101,7 +115,7 @@ angular.module( 'pokerManager.directives', [] ).
 				}
 			
 				// Create a placeholder for the chart
-				element.after( chartHolder );
+				refreshBtn.after( chartHolder );
 				chartHolder.attr( 'id', 'player-chart' );
 
 				// Construct chart on next $digest loop so the chart container will fill width
@@ -113,21 +127,15 @@ angular.module( 'pokerManager.directives', [] ).
 					scope.player = Players.get( { playerId: scope.player.id }, refreshData );
 				}
 				
-				element.click( refreshData );
+				refreshBtn.on( 'click', refreshData );
 
 				scope.$on( '$destroy', function () {
 					if ( chartHolder ) {
 						chartHolder.highcharts().destroy();
 						chartHolder.remove();
 					}
+					refreshBtn.off();
 				} );
 			}
 		};
-	} ] ).
-  directive( 'appVersion', [ 'version', function( version ) {
-	'use strict';
-
-    return function( scope, elm, attrs ) {
-      elm.text( version );
-    };
-  } ] );
+	} ] );

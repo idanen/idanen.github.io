@@ -4,7 +4,7 @@ angular.module('pokerManager', ['ngRoute', 'ngAnimate', 'angulartics', 'angulart
 		'use strict';
 
 		$routeProvider.when('/view1/:gameId', {templateUrl: 'partials/partial1.html', controller: 'PokerManagerCtrl', controllerAs: 'vm'});
-		$routeProvider.when('/stats', {templateUrl: 'partials/poker-stats.html', controller: 'PokerStatsCtrl'});
+		$routeProvider.when('/stats', {templateUrl: 'partials/poker-stats.html', controller: 'PokerStatsCtrl', controllerAs: 'vm'});
 		$routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2', controllerAs: 'vm'});
 		$routeProvider.otherwise({redirectTo: '/stats'});
 	}]);

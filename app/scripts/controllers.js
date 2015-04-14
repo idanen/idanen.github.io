@@ -37,14 +37,31 @@ angular.module( 'pokerManager.controllers', [] ).
 			} );
 		};
 	} ] ).
-	controller( 'PokerStatsCtrl', [ '$scope', '$modal', '$filter', 'Model', 'Utils', 'Games', 'Players', function( $scope, $modal, $filter, Model, utils, Games, Players ) {
+	controller( 'PokerStatsCtrl', [ '$modal', '$filter', 'Model', 'Utils', 'Games', 'Players', function( $modal, $filter, Model, utils, Games, Players ) {
 		'use strict';
+
+		var vm = this;
+
+		vm.today = new Date();
+		vm.dateOptions = {
+				'year-format': "'yyyy'",
+				'month-format': "'MM'",
+				'day-format': "'dd'"
+			};
+		
+		vm.displayGames = {
+				fromDate: vm.today.setMonth( vm.today.getMonth() - 1 ),
+				fromDateOpen: false,
+				toDate: vm.today.setMonth( vm.today.getMonth() + 1 ),
+				toDateOpen: false,
+				players: []
+			};
 
 		function playerSaved( savedPlayer ) {
 			// console.log('savedPlayer = ' + savedPlayer);
 			var isNew = true,
 				playerIdx, len,
-				players = $scope.displayGames.players;
+				players = vm.displayGames.players;
 			
 			isNew = players.some( function ( player ) {
 				return player.id === savedPlayer.id;
@@ -64,86 +81,68 @@ angular.module( 'pokerManager.controllers', [] ).
 		}
 
 		function getPlayers() {
-			return Games.players( { fromDate: formatDate( $scope.displayGames.fromDate ), toDate: formatDate ( $scope.displayGames.toDate ) } );
+			return Games.players( { fromDate: formatDate( vm.displayGames.fromDate ), toDate: formatDate ( vm.displayGames.toDate ) } );
 		}
 
-		$scope.today = new Date();
-		$scope.dateOptions = {
-				'year-format': "'yyyy'",
-				'month-format': "'MM'",
-				'day-format': "'dd'"
-			};
-		
-		$scope.displayGames = {
-				fromDate: $scope.today.setMonth($scope.today.getMonth() - 1),
-				fromDateOpen: false,
-				toDate: $scope.today.setMonth($scope.today.getMonth() + 1),
-				toDateOpen: false,
-				players: []
-			};
-
-		$scope.init = function() {
-			//Refresh view
-			// Model.loadGames( $scope.displayGames.fromDate, $scope.displayGames.toDate );
-			$scope.displayGames.players = getPlayers();
+		vm.init = function () {
+			// Refresh view
+			vm.displayGames.players = getPlayers();
 		};
 	
-		$scope.toggleDateRange = function(which, $event) {
+		vm.toggleDateRange = function ( which, $event ) {
 			$event.preventDefault();
 			$event.stopPropagation();
 			
-			if ($scope.displayGames[which + 'DateOpen']) {
-				$scope.displayGames[which + 'DateOpen'] = false;
+			if (vm.displayGames[which + 'DateOpen']) {
+				vm.displayGames[which + 'DateOpen'] = false;
 			} else {
-				$scope.displayGames[which + 'DateOpen'] = true;
+				vm.displayGames[which + 'DateOpen'] = true;
 			}
 		};
 		
-		$scope.$on( 'games.stats.loaded', function( event, data ) {
-			$scope.displayGames.players = data;
-		} );
-		
-		$scope.loadGames = function() {
-			// Model.loadGames( $scope.displayGames.fromDate, $scope.displayGames.toDate );
-			$scope.displayGames.players = getPlayers();
+		vm.loadGames = function () {
+			vm.displayGames.players = getPlayers();
 		};
 	
-		$scope.loadAllTimeGames = function() {
-			$scope.displayGames.fromDate = new Date(2013, 9, 1);
-			$scope.displayGames.toDate = new Date();
-			// Model.loadGames( $scope.displayGames.fromDate, $scope.displayGames.toDate );
-			$scope.displayGames.players = getPlayers();
+		vm.loadAllTimeGames = function () {
+			vm.displayGames.fromDate = new Date( 2000, 9, 1 );
+			vm.displayGames.toDate = new Date();
+			vm.displayGames.players = getPlayers();
 		};
 		
-		$scope.statsAvgBuyin = function() {
-			return utils.avgsCalc($scope.displayGames.players, 'buyin');
+		vm.statsAvgBuyin = function () {
+			return utils.avgsCalc( vm.displayGames.players, 'buyin' );
 		};
 
-		$scope.statsAvgBuyout = function() {
-			return utils.avgsCalc($scope.displayGames.players, 'buyout');
+		vm.statsAvgBuyout = function () {
+			return utils.avgsCalc( vm.displayGames.players, 'buyout' );
 		};
 
-		$scope.statsAvgGameCount = function() {
-			return utils.avgsCalc($scope.displayGames.players, 'gamesCount');
+		vm.statsAvgGameCount = function () {
+			return utils.avgsCalc( vm.displayGames.players, 'gamesCount' );
 		};
 		
-		$scope.statsAvgWinnings = function() {
+		vm.statsAvgWinnings = function () {
 			var sum = 0;
-			for( var i = 0; i < $scope.displayGames.players.length; ++i ) {
-				sum += ( $scope.displayGames.players[ i ].buyout - $scope.displayGames.players[ i ].buyin );
+			for( var i = 0; i < vm.displayGames.players.length; ++i ) {
+				sum += ( vm.displayGames.players[ i ].buyout - vm.displayGames.players[ i ].buyin );
 			}
 			return sum;
 		};
 	
-		$scope.statsAvgWinningsPerGame = function() {
+		vm.statsAvgWinningsPerGame = function () {
 			var sum = 0;
-			for( var i = 0; i < $scope.displayGames.players.length; ++i ) {
-				sum += ( $scope.displayGames.players[ i ].buyout - $scope.displayGames.players[ i ].buyin ) / $scope.displayGames.players[ i ].gamesCount;
+			for( var i = 0; i < vm.displayGames.players.length; ++i ) {
+				sum += ( vm.displayGames.players[ i ].buyout - vm.displayGames.players[ i ].buyin ) / vm.displayGames.players[ i ].gamesCount;
 			}
-			return sum / $scope.displayGames.players.length;
+			return sum / vm.displayGames.players.length;
 		};
 
-		$scope.openPlayerDetailsDialog = function( player ) {
+		vm.gamesCount = function () {
+			return utils.maxCalc( vm.displayGames.players, 'gamesCount' );
+		};
+
+		vm.openPlayerDetailsDialog = function ( player ) {
 			var isNew = ( player === null );
 
 			if ( isNew ) {
@@ -156,7 +155,7 @@ angular.module( 'pokerManager.controllers', [] ).
 					email: '',
 					phone:'',
 					id: 0,
-					createDate: $filter( 'date' )( $scope.today, 'y-MM-dd' ),
+					createDate: $filter( 'date' )( vm.today, 'y-MM-dd' ),
 					isNew: true
 				};
 			}
@@ -170,30 +169,18 @@ angular.module( 'pokerManager.controllers', [] ).
 				}
 			} );
 
-			modalInstance.result.then( function( savedPlayer ) {
+			modalInstance.result.then( function ( savedPlayer ) {
 				// If new -> update default values
 				if ( isNew ) {
 					savedPlayer.buyin = 0;
 					savedPlayer.isPlaying = false;
-				// Update changed fields
 				}
 				
 				player = savedPlayer;
 				
-				// Model.savePlayer( player );
 				Players.update( player ).$promise.then( playerSaved );
 			} );
 		};
-	
-		/*
-		$scope.$on( 'player.fetched', function( event, data ) {
-			$scope.openPlayerDetailsDialog(data);
-		} );
-		*/
-	
-		$scope.$on( 'player.saved', function ( event, data ) {
-			playerSaved( data );
-		} );
 	} ] ).
 	controller( 'GameCtrl', [ '$scope', '$analytics', '$routeParams', 'Games', 'Utils', function ( $scope, $analytics, $routeParams, Game, utils ) {
 		'use strict';

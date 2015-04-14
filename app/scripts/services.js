@@ -65,97 +65,97 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 
 		return Resource;
 	} ] ).
-	service('Model', ['$http', '$rootScope', '$filter', function($http, $rootScope, $filter) {
+	service( 'Model', [ '$http', '$rootScope', '$filter', function ( $http, $rootScope, $filter ) {
 		'use strict';
 
 		var service = {
 				url: 'http://awesome-sphere-397.appspot.com/services/',
 				// url: 'http://localhost:9880/services/',
 				players: [],
-				fetch: function() {
-					$http({
+				fetch: function () {
+					$http( {
 						method: 'GET',
 						url: service.url + 'players'
-					}).
-						success(function(data, status, headers, config) {
+					} ).
+						success( function ( data, status, headers, config ) {
 							if (data && jQuery.trim(data) !== '') {
 								service.players = data;
 							} else {
 								service.players = [];
 							}
 							$rootScope.$broadcast( 'players.update', data );
-						}).
-						error(function(data, status, headers, config) {
-						});
+						} ).
+						error( function ( data, status, headers, config ) {
+						} );
 				},
 				fetchPlayer: function ( playerId ) {
-					$http({
+					$http( {
 						method: 'GET',
 						url: service.url + 'players/' + playerId
-					}).
-						success(function(data, status, headers, config) {
+					} ).
+						success( function ( data, status, headers, config ) {
 							$rootScope.$broadcast( 'player.fetched', data );
 						}).
-						error(function(data, status, headers, config) {
-						});
+						error( function ( data, status, headers, config ) {
+						} );
 				},
-				savePlayer: function( playerToSave ) {
-					$http({
+				savePlayer: function ( playerToSave ) {
+					$http( {
 						method: 'POST',
 						url: service.url + 'players/add',
 						data: playerToSave
-					}).
-						success(function(data, status, headers, config) {
+					} ).
+						success( function ( data, status, headers, config ) {
 							$rootScope.$broadcast( 'player.saved', data );
-						}).
-						error(function(data, status, headers, config) {
-						});
+						} ).
+						error( function ( data, status, headers, config ) {
+						} );
 				},
-				saveGame: function( gameToSave ) {
-					$http({
+				saveGame: function ( gameToSave ) {
+					$http( {
 						method: 'PUT',
 						url: service.url + 'players/game/add',
 						data: gameToSave
-					}).
-						success(function(data, status, headers, config) {
+					} ).
+						success( function ( data, status, headers, config ) {
 							$rootScope.$broadcast( 'game.saved', data );
-						}).
-						error(function(data, status, headers, config) {
+						} ).
+						error( function ( data, status, headers, config ) {
 							$rootScope.$broadcast( 'game.save.error' );
-						});
+						} );
 				},
-				loadGames: function(fromDate, toDate) {
-					var dateFormat = $filter('date');
-					$http({
+				loadGames: function ( fromDate, toDate ) {
+					var dateFormat = $filter( 'date' );
+					$http( {
 						method: 'GET',
-						url: service.url + 'players/game/get?fromDate=' + encodeURI(dateFormat(fromDate, 'y-MM-dd')) + '&toDate=' + encodeURI(dateFormat(toDate, 'y-MM-dd'))
-					}).
-						success(function(data, status, headers, config) {
+						url: service.url + 'players/game/get?fromDate=' + encodeURI( dateFormat( fromDate, 'y-MM-dd' ) ) + '&toDate=' + encodeURI( dateFormat( toDate, 'y-MM-dd' ) )
+					} ).
+						success( function ( data, status, headers, config ) {
 							//console.log('returned from server', data);
 							$rootScope.$broadcast( 'games.stats.loaded', data );
-						}).
-						error(function(data, status, headers, config) {
-						});
+						} ).
+						error( function ( data, status, headers, config ) {
+						} );
 				},
-				heartbeat: function() {
-					$http({
+				heartbeat: function () {
+					$http( {
 						method: 'OPTIONS',
 						url: service.url + 'players'
-					}).
-						success(function(data, status, headers, config) {
+					} ).
+						success( function ( data, status, headers, config ) {
 							$rootScope.$broadcast( 'heartbeat.success', {
 									"content": data,
 									"status": status
 								} );
-						}).
-						error(function(data, status, headers, config) {
+						} ).
+						error( function ( data, status, headers, config ) {
 							$rootScope.$broadcast( 'heartbeat.error', data );
-						});
+						} );
 				}
 			};
 		
 		return service;
-	}]).
+	} ] ).
 	service( 'Utils', [ function () {
 		'use strict';
 
@@ -173,6 +173,13 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 						sum += parseInt( anArray[ i ][ fieldNameToSum ] );
 					}
 					return ( sum / anArray.length );
+				},
+				maxCalc: function ( anArray, fieldNameToSum ) {
+					var max = 0;
+					for( var i = 0; i < anArray.length; ++i ) {
+						max = Math.max( anArray[ i ][ fieldNameToSum ], max );
+					}
+					return max;
 				},
 				saveLocal: function ( key, content ) {
 					if ( angular.isObject( content ) ) {

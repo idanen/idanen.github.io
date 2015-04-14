@@ -6,65 +6,6 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 		"DEV": "http://localhost:9880/services/",
 		"PROD": "http://awesome-sphere-397.appspot.com/services/"
 	} ).
-	factory( 'Players', [ '$resource', '$filter', 'BASE_URL', function ( $resource, $filter, BASE_URL ) {
-		'use strict';
-
-		var Resource = $resource( BASE_URL.PROD + 'players/:playerId', {playerId: '@id'}, {
-			'update': {method: 'PUT'}
-		} );
-
-		Resource.create = function () {
-			return angular.element.extend( new Resource(), {
-				name: '',
-				balance: 0,
-				isPlaying: false,
-				buyin: 0,
-				currentChipCount: 0,
-				email: '',
-				phone:'',
-				id: 0,
-				createDate: $filter( 'date' )( new Date(), 'y-MM-dd' ),
-				isNew: true
-			} );
-		};
-
-		return Resource;
-	} ] ).
-	factory( 'Games', [ '$resource', 'BASE_URL', function ( $resource, BASE_URL ) {
-		'use strict';
-
-		var Resource = $resource( BASE_URL.PROD + 'games/:gameId', {gameId: '@id'}, {
-			'update': {method: 'PUT'},
-			'getPlayers': {
-				method: 'GET',
-				url: BASE_URL.PROD + 'games/:gameId/players',
-				params: {gameId: '@id'},
-				isArray: true
-			},
-			'players': {
-				method: 'GET',
-				url: BASE_URL.PROD + 'players/games',
-				params: {fromDate: '2000-01-01', toDate: '2200-12-31'},
-				isArray: true
-			}
-		} );
-
-		Resource.create = function () {
-			return angular.element.extend( new Resource(), {
-				location: '',
-				date: new Date(),
-				numberOfHands: 0,
-				players: [],
-				settings: {
-					chipValue: 4,
-					maxBuyin: 250,
-					defaultBuyin: 50
-				}
-			} );
-		};
-
-		return Resource;
-	} ] ).
 	service( 'Model', [ '$http', '$rootScope', '$filter', function ( $http, $rootScope, $filter ) {
 		'use strict';
 

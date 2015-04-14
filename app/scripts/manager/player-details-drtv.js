@@ -2,7 +2,7 @@
  * The managed game's directive
  */
 angular.module( 'pokerManager' ).
-	directive( 'playerDetails', [ '$filter', '$timeout', 'Players', 'Model', function( $filter, $timeout, Players, Model ) {
+	directive( 'playerDetails', [ '$filter', '$timeout', 'Players', 'Stats', function( $filter, $timeout, Players, stats ) {
 		'use strict';
 
 		function createData( player ) {
@@ -31,6 +31,30 @@ angular.module( 'pokerManager' ).
 			}
 
 			return chartData;
+		}
+
+		function winningSessions( player ) {
+			var count = 0;
+			if ( player.games && player.games.length ) {
+				player.games.forEach( function ( game ) {
+					if ( game && game.players && game.players.length && ( game.players[ 0 ].buyout - game.players[ 0 ].buyin ) >= 0 ) {
+						count++;
+					}
+				} );
+			}
+			return count;
+		}
+
+		function avgWinning( player, bb ) {
+			var sum = 0;
+			if ( player.games && player.games.length ) {
+				player.games.forEach( function ( game ) {
+					if ( game && game.players && game.players.length ) {
+						sum += ( ( game.players[ 0 ].buyout - game.players[ 0 ].buyin ) / ( bb ? 50 : 1 ) );
+					}
+				} );
+			}
+			return sum / ( player.games ? player.games.length || 1 : 1 );
 		}
 
 		function createChartObject( playerName, chartData ) {
@@ -87,7 +111,7 @@ angular.module( 'pokerManager' ).
 			scope: {
 				player: '='
 			},
-			controller: [ '$scope', function ( $scope ) {
+			controller: [ '$scope', 'Utils', function ( $scope, utils ) {
 				$scope.loading = true;
 
 				$scope.isAdmin = function() {
@@ -108,14 +132,22 @@ angular.module( 'pokerManager' ).
 					refreshBtn = element.find( '.refresh-data-btn' );
 
 				function refreshData() {
+					scope.loading = false;
+
+					// Calculate extra data
+					scope.player.winningSessions = winningSessions( scope.player );
+					scope.player.avgWinning = avgWinning( scope.player, true );
+
 					chartData = createData( scope.player );
 
 					chartHolder.highcharts().destroy();
 
 					updateChartData( chartObj, chartData );
-					chartHolder.highcharts( chartObj );
 
-					scope.loading = false;
+					// Defer the chart build so that it could take the parent's width (the parent is hidden until $digest will be done to update the ng-show)
+					$timeout( function () {
+						chartHolder.highcharts( chartObj );
+					}, 0, false);
 				}
 			
 				// Create a placeholder for the chart

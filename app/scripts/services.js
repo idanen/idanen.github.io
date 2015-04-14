@@ -133,4 +133,32 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 			};
 		
 		return utils;
+	} ] ).
+	service( 'Stats', [ function () {
+		'use strict';
+
+		var stats = {
+				average: function ( anArray, fieldNameToSum ) {
+					var sum = anArray.reduce( function ( sum, current ) {
+						return sum + current[ fieldNameToSum ];
+					}, 0 );
+
+					return sum / anArray.length;
+				},
+				standardDeviation: function ( anArray, fieldNameToSum ) {
+					var avg = this.average( anArray, fieldNameToSum );
+					var squareDiffs = anArray.map( function ( item ) {
+						var diff = item[ fieldNameToSum ] - avg;
+						var sqrDiff = diff * diff;
+						return sqrDiff;
+					} );
+
+					var avgSquareDiff = average( squareDiffs );
+
+					var stdDev = Math.sqrt( avgSquareDiff );
+					return stdDev;
+				}
+			};
+		
+		return stats;
 	} ] );

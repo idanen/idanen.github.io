@@ -66,6 +66,7 @@ gulp.task('styles', function () {
   return gulp.src([
     'app/styles/*.scss',
     'app/styles/**/*.css',
+    'app/styles/components/_components/_loader.scss',
     'app/styles/components/components.scss'
   ])
     .pipe($.sourcemaps.init())

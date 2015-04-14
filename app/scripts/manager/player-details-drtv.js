@@ -88,6 +88,8 @@ angular.module( 'pokerManager' ).
 				player: '='
 			},
 			controller: [ '$scope', function ( $scope ) {
+				$scope.loading = true;
+
 				$scope.isAdmin = function() {
 					return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
 				};
@@ -112,6 +114,8 @@ angular.module( 'pokerManager' ).
 
 					updateChartData( chartObj, chartData );
 					chartHolder.highcharts( chartObj );
+
+					scope.loading = false;
 				}
 			
 				// Create a placeholder for the chart

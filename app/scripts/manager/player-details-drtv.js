@@ -111,21 +111,9 @@ angular.module( 'pokerManager' ).
 			scope: {
 				player: '='
 			},
-			controller: [ '$scope', 'Utils', function ( $scope, utils ) {
-				$scope.loading = true;
-
-				$scope.isAdmin = function() {
-					return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
-				};
-				
-				/*
-				$scope.isAdmin = function() {
-					return $scope.admin;
-				};
-				*/
-			} ],
+			controller: 'PlayerDetailsCtrl',
 			templateUrl: 'partials/tmpls/player-details-tmpl.html',
-			link: function( scope, element, attrs ) {
+			link: function( scope, element, attrs, ctrl ) {
 				var chartData = createData( scope.player ),
 					chartHolder = angular.element('<div/>'),
 					chartObj = createChartObject( scope.player.name, chartData ),

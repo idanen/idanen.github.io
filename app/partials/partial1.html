@@ -13,12 +13,12 @@
 				<div class="row">
 					<div class="col-xs-8">
 						<div class="btn-group">
-							<button title="Close" class="btn btn-danger visible-xs" id="close-players-panel" ng-click="vm.closePlayersControl()"><i class="glyphicon glyphicon-remove"></i></button>
-							<button class="btn btn-success" ng-click="vm.openPlayerDetailsDialog()"><i class="glyphicon glyphicon-plus"></i> New Player</button>
+							<button title="Close" class="btn btn-danger visible-xs" id="close-players-panel" ng-click="vm.closePlayersControl()"><i class="fa fa-remove"></i></button>
+							<button class="btn btn-success" ng-click="vm.openPlayerDetailsDialog()"><i class="fa fa-plus"></i> New Player</button>
 						</div>
 					</div>
 					<div class="col-xs-4">
-						<button class="btn btn-primary pull-right" ng-click="vm.refreshPlayersList()"><i class="glyphicon glyphicon-refresh"></i> <span class="hidden-xs">Refresh</span></button>
+						<button class="btn btn-primary pull-right" ng-click="vm.refreshPlayersList()"><i class="fa fa-refresh"></i> <span class="hidden-xs">Refresh</span></button>
 					</div>
 				</div>
 				<div class="row">
@@ -28,7 +28,7 @@
 							<tbody>
 								<tr ng-repeat="player in vm.players | filter:playersFilter | orderBy:'name'">
 									<td>
-										<button class="btn btn-sm btn-default" ng-click="vm.openPlayerDetailsDialog(player)" ng-disabled="player.isPlaying"><i class="glyphicon glyphicon-pencil"></i></button>
+										<button class="btn btn-sm btn-default" ng-click="vm.openPlayerDetailsDialog(player)" ng-disabled="player.isPlaying"><i class="fa fa-pencil"></i></button>
 									</td>
 									<td>
 										<a href="mailto:{{ player.email }}" title="{{ player.email }}" target="_blank">{{ player.name }}</a>

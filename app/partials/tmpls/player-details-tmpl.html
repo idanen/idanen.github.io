@@ -33,7 +33,7 @@
 
 <div class="loader" ng-show="loading">Loading...</div>
 <div ng-hide="loading">
-	<button class="btn btn-info refresh-data-btn" analytics-on analytics-event="Player Performance" analytics-category="Actions" analytics-label="{{ player.name }}">Refresh</button>
+	<button class="btn btn-info refresh-data-btn" analytics-on analytics-event="Player Performance" analytics-category="Actions" analytics-label="{{ player.name }}">Refresh <span class="fa fa-refresh"></span></button>
 	<table class="table table-striped table-hover" ng-hide="player.balance == 0">
 		<thead>
 			<tr>

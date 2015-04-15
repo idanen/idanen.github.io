@@ -26,7 +26,7 @@ angular.module( 'pokerManager.controllers', [] ).
 				$scope.tabs.push( {
 					title: "Current Game",
 					href: "#/view1/0",
-					icon: "fa-heart",
+					icon: "icon-spades",
 					disabled: true
 				} );
 			}

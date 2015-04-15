@@ -11,7 +11,6 @@ angular.module( 'pokerManager' ).
 				player: '='
 			},
 			templateUrl: 'partials/tmpls/player-card-tmpl.html',
-			replace: 'true',
 			require: '^onGoingGame',
 			link: {
 				pre: function ( scope, element, attrs, gameCtrl ) {

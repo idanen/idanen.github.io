@@ -3,7 +3,7 @@
 angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 	value( 'version', '0.1' ).
 	constant( 'BASE_URL', {
-		"DEV": "http://localhost:9880/services/",
+		// "PROD": "http://localhost:9880/services/"
 		"PROD": "http://awesome-sphere-397.appspot.com/services/"
 	} ).
 	service( 'Model', [ '$http', '$rootScope', '$filter', function ( $http, $rootScope, $filter ) {
@@ -97,7 +97,7 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 		
 		return service;
 	} ] ).
-	service( 'Utils', [ function () {
+	factory( 'Utils', [ function () {
 		'use strict';
 
 		var utils = {
@@ -134,7 +134,7 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 		
 		return utils;
 	} ] ).
-	service( 'Stats', [ function () {
+	factory( 'Stats', [ function () {
 		'use strict';
 
 		var stats = {

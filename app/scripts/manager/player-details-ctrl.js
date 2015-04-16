@@ -3,8 +3,8 @@
  */
 angular.module( 'pokerManager' ).
 	controller( 'ModalPlayerDetailsCtrl',
-		[ '$scope', '$http', '$modalInstance', 'player', 'Model',
-		function ( $scope, $http, $modalInstance, player, Model ) {
+		[ '$scope', '$http', '$modalInstance', 'player',
+		function ( $scope, $http, $modalInstance, player ) {
 			'use strict';
 
 			$scope.player = player;

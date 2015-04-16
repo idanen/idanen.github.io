@@ -2,8 +2,8 @@
  * Game Manager controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'PokerManagerCtrl', [ '$scope', '$modal', '$filter', '$analytics', 'Model', 'Utils', 'Players', 'Games',
-		function ( $scope, $modal, $filter, $analytics, Model, utils, Players, Games ) {
+	controller( 'PokerManagerCtrl', [ '$scope', '$modal', '$filter', '$analytics', 'Utils', 'Players', 'Games',
+		function ( $scope, $modal, $filter, $analytics, utils, Players, Games ) {
 			'use strict';
 
 			var vm = this;
@@ -180,10 +180,6 @@ angular.module( 'pokerManager' ).
 					txt: 'Error saving Game',
 					type: 'error'
 				});
-			};
-			
-			vm.getPlayerDetailsAndOpenDialog = function( playerId ) {
-				Model.fetchPlayer(playerId);
 			};
 
 			vm.openPlayerDetailsDialog = function( player ) {

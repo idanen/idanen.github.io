@@ -1,7 +1,14 @@
 // Declare app level module which depends on filters, and services
 angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'ng-token-auth', 'angulartics', 'angulartics.google.analytics', 'ui.bootstrap', 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.popover', 'pokerManager.filters', 'pokerManager.services', 'pokerManager.directives', 'pokerManager.controllers' ] ).
-	config( [ '$routeProvider', '$httpProvider', '$authProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, $authProvider, BASE_URL ) {
+	constant( 'BASE_URL', {
+		"DEV": "http://localhost:9880/services/",
+		"PROD": "http://awesome-sphere-397.appspot.com/services/"
+	} ).
+	config( [ '$routeProvider', '$httpProvider', '$authProvider', 'PlayersProvider', 'GamesProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, $authProvider, PlayersProvider, GamesProvider, BASE_URL ) {
 		'use strict';
+
+		PlayersProvider.setBaseUrl( BASE_URL.PROD );
+		GamesProvider.setBaseUrl( BASE_URL.PROD );
 
 		$authProvider.configure({
             apiUrl: BASE_URL.PROD + '/auth'

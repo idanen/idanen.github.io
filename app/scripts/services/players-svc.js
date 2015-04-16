@@ -1,28 +1,36 @@
 /**
  * Players services
  */
-angular.module( 'pokerManager' ).
-	factory( 'Players', [ '$resource', '$filter', 'BASE_URL', function ( $resource, $filter, BASE_URL ) {
+angular.module( 'pokerManager.services' ).
+	provider( 'Players', function playersProvider() {
 		'use strict';
 
-		var Resource = $resource( BASE_URL.PROD + 'players/:playerId', {playerId: '@id'}, {
-			'update': {method: 'PUT'}
-		} );
+		var baseUrl = '';
 
-		Resource.create = function () {
-			return angular.element.extend( new Resource(), {
-				name: '',
-				balance: 0,
-				isPlaying: false,
-				buyin: 0,
-				currentChipCount: 0,
-				email: '',
-				phone:'',
-				id: 0,
-				createDate: $filter( 'date' )( new Date(), 'y-MM-dd' ),
-				isNew: true
-			} );
+		this.setBaseUrl = function ( aBaseUrl ) {
+			baseUrl = aBaseUrl;
 		};
 
-		return Resource;
-	} ] );
+		this.$get = [ '$resource', '$filter', 'BASE_URL', function ( $resource, $filter, BASE_URL ) {
+			var Resource = $resource( baseUrl + 'players/:playerId', {playerId: '@id'}, {
+				'update': {method: 'PUT'}
+			} );
+
+			Resource.create = function () {
+				return angular.element.extend( new Resource(), {
+					name: '',
+					balance: 0,
+					isPlaying: false,
+					buyin: 0,
+					currentChipCount: 0,
+					email: '',
+					phone:'',
+					id: 0,
+					createDate: $filter( 'date' )( new Date(), 'y-MM-dd' ),
+					isNew: true
+				} );
+			};
+
+			return Resource;
+		} ];
+	} );

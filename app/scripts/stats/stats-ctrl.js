@@ -2,7 +2,7 @@
  * Stats controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'PokerStatsCtrl', [ '$modal', '$filter', 'Model', 'Utils', 'Games', 'Players', function( $modal, $filter, Model, utils, Games, Players ) {
+	controller( 'PokerStatsCtrl', [ '$modal', '$filter', 'Utils', 'Games', 'Players', function( $modal, $filter, utils, Games, Players ) {
 		'use strict';
 
 		var vm = this;

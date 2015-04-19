@@ -4,15 +4,20 @@ angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'ng-token-auth', 'angu
 		"DEV": "http://localhost:9880/services/",
 		"PROD": "http://awesome-sphere-397.appspot.com/services/"
 	} ).
-	config( [ '$routeProvider', '$httpProvider', '$authProvider', 'PlayersProvider', 'GamesProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, $authProvider, PlayersProvider, GamesProvider, BASE_URL ) {
+	config( [ '$routeProvider', '$httpProvider', '$authProvider', 'PlayersProvider', 'GamesProvider', 'UtilsProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, $authProvider, PlayersProvider, GamesProvider, utilsProvider, BASE_URL ) {
 		'use strict';
 
 		PlayersProvider.setBaseUrl( BASE_URL.PROD );
 		GamesProvider.setBaseUrl( BASE_URL.PROD );
 
 		$authProvider.configure({
-            apiUrl: BASE_URL.PROD + '/auth'
+            apiUrl: BASE_URL.PROD + 'auth'
         });
+
+		// Register interceptor
+		$httpProvider.interceptors.push( 'authInterceptor' );
+
+		$httpProvider.defaults.headers.post.Authorization = $httpProvider.defaults.headers.put.Authorization = utilsProvider.getToken();
 
 		$routeProvider.when( '/view1/:gameId', { templateUrl: 'partials/partial1.html', controller: 'PokerManagerCtrl', controllerAs: 'vm' } );
 		$routeProvider.when( '/login', { templateUrl: 'partials/login.html', controller: 'LoginCtrl', controllerAs: 'authCtrl' } );

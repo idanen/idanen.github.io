@@ -12,6 +12,12 @@ angular.module( 'pokerManager' ).
 			vm.user = {};
 
 			function signIn() {
-				$auth.authenticate( vm.user );
+				$auth.authenticate( vm.user)
+					.then( function authSuccess( data ) {
+						console.log( 'Successful login: ', data );
+					} )
+					.catch( function authFailed( error ) {
+						console.error( 'Authentication failure', error );
+					} );
 			}
 	} ] );

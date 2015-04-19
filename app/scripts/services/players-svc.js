@@ -11,7 +11,7 @@ angular.module( 'pokerManager.services' ).
 			baseUrl = aBaseUrl;
 		};
 
-		this.$get = [ '$resource', '$filter', 'BASE_URL', function ( $resource, $filter, BASE_URL ) {
+		this.$get = [ '$resource', '$filter', function ( $resource, $filter ) {
 			var Resource = $resource( baseUrl + 'players/:playerId', {playerId: '@id'}, {
 				'update': {method: 'PUT'}
 			} );

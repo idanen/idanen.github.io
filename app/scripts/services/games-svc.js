@@ -11,18 +11,18 @@ angular.module( 'pokerManager.services' ).
 			baseUrl = aBaseUrl;
 		};
 
-		this.$get = [ '$resource', 'BASE_URL', function ( $resource, BASE_URL ) {
-			var Resource = $resource( BASE_URL.PROD + 'games/:gameId', {gameId: '@id'}, {
+		this.$get = [ '$resource', function ( $resource ) {
+			var Resource = $resource( baseUrl + 'games/:gameId', {gameId: '@id'}, {
 				'update': {method: 'PUT'},
 				'getPlayers': {
 					method: 'GET',
-					url: BASE_URL.PROD + 'games/:gameId/players',
+					url: baseUrl + 'games/:gameId/players',
 					params: {gameId: '@id'},
 					isArray: true
 				},
 				'players': {
 					method: 'GET',
-					url: BASE_URL.PROD + 'players/games',
+					url: baseUrl + 'players/games',
 					params: {fromDate: '2000-01-01', toDate: '2200-12-31'},
 					isArray: true
 				}

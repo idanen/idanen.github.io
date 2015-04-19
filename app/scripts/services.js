@@ -2,43 +2,53 @@
 
 angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 	value( 'version', '0.1' ).
-	factory( 'Utils', [ function () {
+	provider( 'Utils', function utilsProvider() {
 		'use strict';
 
 		var utils = {
-				totalsCalc: function ( anArray, fieldNameToSum ) {
-					var sum = 0;
-					for( var i = 0; i < anArray.length; ++i ) {
-						sum += parseInt( anArray[ i ][ fieldNameToSum ] );
-					}
-					return sum;
-				},
-				avgsCalc: function ( anArray, fieldNameToSum ) {
-					var sum = 0;
-					for( var i = 0; i < anArray.length; ++i ) {
-						sum += parseInt( anArray[ i ][ fieldNameToSum ] );
-					}
-					return ( sum / anArray.length );
-				},
-				maxCalc: function ( anArray, fieldNameToSum ) {
-					var max = 0;
-					for( var i = 0; i < anArray.length; ++i ) {
-						max = Math.max( anArray[ i ][ fieldNameToSum ], max );
-					}
-					return max;
-				},
-				saveLocal: function ( key, content ) {
-					if ( angular.isObject( content ) ) {
-						localStorage.setItem( key, JSON.stringify( content ) );
-					}
-				},
-				loadLocal: function ( key ) {
-					return JSON.parse( localStorage.getItem( key ) );
+			totalsCalc: function ( anArray, fieldNameToSum ) {
+				var sum = 0;
+				for( var i = 0; i < anArray.length; ++i ) {
+					sum += parseInt( anArray[ i ][ fieldNameToSum ] );
 				}
-			};
-		
-		return utils;
-	} ] ).
+				return sum;
+			},
+			avgsCalc: function ( anArray, fieldNameToSum ) {
+				var sum = 0;
+				for( var i = 0; i < anArray.length; ++i ) {
+					sum += parseInt( anArray[ i ][ fieldNameToSum ] );
+				}
+				return ( sum / anArray.length );
+			},
+			maxCalc: function ( anArray, fieldNameToSum ) {
+				var max = 0;
+				for( var i = 0; i < anArray.length; ++i ) {
+					max = Math.max( anArray[ i ][ fieldNameToSum ], max );
+				}
+				return max;
+			},
+			saveLocal: function ( key, content ) {
+				if ( angular.isObject( content ) ) {
+					localStorage.setItem( key, JSON.stringify( content ) );
+				}
+			},
+			loadLocal: function ( key ) {
+				return JSON.parse( localStorage.getItem( key ) );
+			},
+			saveToken: function ( toSave ) {
+				localStorage.setItem( 'token', toSave );
+			},
+			getToken: function () {
+				localStorage.getItem( 'token' );
+			}
+		};
+
+		this.getToken = utils.getToken;
+
+		this.$get = [ function () {
+			return utils;
+		} ];
+	} ).
 	factory( 'Stats', [ function () {
 		'use strict';
 

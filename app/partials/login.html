@@ -1,17 +1,20 @@
 <link href="styles/signin.css" rel="stylesheet">
 
 <div class="container">
-	<form class="form-signin" role="form" name="loginForm" ng-submit="authCtrl.signIn(authCtrl.user)">
+	<form class="form-signin" role="form" name="loginForm" ng-submit="authCtrl.getUserInfo()">
 		<h2 class="form-signin-heading">Please sign in</h2>
+		<!--
 		<label for="inputEmail" class="sr-only">Email address</label>
 		<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus ng-model="authCtrl.user.email">
 		<label for="inputPassword" class="sr-only">Password</label>
 		<input type="password" id="inputPassword" class="form-control" placeholder="Password" required ng-model="authCtrl.user.password">
+		-->
 		<div class="checkbox">
 			<label>
 				<input type="checkbox" ng-model="authCtrl.sessionOnly"> Remember me
 			</label>
 		</div>
 		<input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign in">
+		<google-plus-signin clientid="1053634869128-rj5rm5ilcdna5rhcp2n6ank7tj1j4rdq" language="en"></google-plus-signin>
 	</form>
 </div>

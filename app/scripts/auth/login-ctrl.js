@@ -2,8 +2,8 @@
  * Login controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'LoginCtrl', [ '$analytics', '$auth', '$scope', 'jrgGoogleAuth',
-		function ( $analytics, $auth, $scope, jrgGoogleAuth ) {
+	controller( 'LoginCtrl', [ '$analytics', 'Auth', '$scope', 'jrgGoogleAuth', 'Utils',
+		function ( $analytics, Auth, $scope, jrgGoogleAuth, utils ) {
 			'use strict';
 
 			var vm = this;
@@ -33,6 +33,18 @@ angular.module( 'pokerManager' ).
 				console.log( 'Successful login: ', data );
 				jrgGoogleAuth.loggedIn( data ).then( function ( userInfo ) {
 					console.log( 'Successfully fetched user data: ', userInfo );
+					var tokenToSave = {
+						authToken: data.access_token,
+						tokenSourceId: 1,
+						player: {
+							name: userInfo.displayName,
+							email: userInfo.emails[0].value,
+							id: 0
+						}
+					};
+					Auth.save(tokenToSave, function ( savedToken ) {
+						utils.saveToken( savedToken.authToken );
+					} );
 				} );
 			} );
 

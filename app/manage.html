@@ -19,6 +19,8 @@
 	<link href="styles/bootstrap-spacelab.min.css" rel="stylesheet"/>
 	<link href="styles/font-awesome.min.css" rel="stylesheet"/>
 	<link href="styles/app.css" rel="stylesheet"/>
+
+	<script src="https://apis.google.com/js/client:platform.js" async defer></script>
 </head>
 <body>
 	<div class="container" ng-controller="MainCtrl" ng-init="init();">
@@ -53,7 +55,6 @@
 	<script src="lib/angular/angular-resource.min.js"></script>
 	<script src="lib/angular/angular-animate.min.js"></script>
     <script src="lib/angular/angular-cookie.min.js"></script>
-    <script src="lib/angular/ng-token-auth.min.js"></script>
 	<script src="lib/angular/angulartics.min.js"></script>
 	<script src="lib/angular/angulartics-ga.min.js"></script>
 	<script src="lib/angular/ui-bootstrap-tpls-0.12.0.min.js"></script>
@@ -70,6 +71,7 @@
 	<script src="scripts/services.js"></script>
 	<script src="scripts/auth/auth-interceptor.js"></script>
 	<script src="scripts/auth/login-ctrl.js"></script>
+	<script src="scripts/services/auth-svc.js"></script>
 	<script src="scripts/services/players-svc.js"></script>
 	<script src="scripts/services/games-svc.js"></script>
 	<script src="scripts/controllers.js"></script>

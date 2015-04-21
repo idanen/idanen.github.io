@@ -4,8 +4,16 @@
 angular.module( 'pokerManager.services' )
     .factory( 'authInterceptor', [ '$q', '$location', 'Utils', function authInterceptorFactory( $q, $location, utils ) {
         return {
+            request: function ( config ) {
+                if (utils.getToken()) {
+                    config.headers.Authorization = utils.getToken();
+                }
+                return config;
+            },
             response: function ( response ) {
-                utils.saveToken( response.key );
+                if ( response.data && response.data.authToken ) {
+                    utils.saveToken( response.data.authToken );
+                }
                 return response;
             },
             responseError: function ( response ) {

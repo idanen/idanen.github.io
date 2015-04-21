@@ -1,14 +1,15 @@
 // Declare app level module which depends on filters, and services
-angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'ng-token-auth', 'angulartics', 'angulartics.google.analytics', 'ui.bootstrap', 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.popover', 'jackrabbitsgroup.angular-google-auth', 'directive.g+signin', 'pokerManager.filters', 'pokerManager.services', 'pokerManager.directives', 'pokerManager.controllers' ] ).
+angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'angulartics', 'angulartics.google.analytics', 'ui.bootstrap', 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.popover', 'jackrabbitsgroup.angular-google-auth', 'directive.g+signin', 'pokerManager.filters', 'pokerManager.services', 'pokerManager.directives', 'pokerManager.controllers' ] ).
 	constant( 'BASE_URL', {
 		"DEV": "http://localhost:9880/services/",
 		"PROD": "http://awesome-sphere-397.appspot.com/services/"
 	} ).
-	config( [ '$routeProvider', '$httpProvider', '$authProvider', 'jrgGoogleAuthProvider', 'PlayersProvider', 'GamesProvider', 'UtilsProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, $authProvider, jrgGoogleAuthProvider, PlayersProvider, GamesProvider, utilsProvider, BASE_URL ) {
+	config( [ '$routeProvider', '$httpProvider', 'jrgGoogleAuthProvider', 'AuthProvider', 'PlayersProvider', 'GamesProvider', 'UtilsProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, jrgGoogleAuthProvider, AuthProvider, PlayersProvider, GamesProvider, utilsProvider, BASE_URL ) {
 		'use strict';
 
-		PlayersProvider.setBaseUrl( BASE_URL.PROD );
-		GamesProvider.setBaseUrl( BASE_URL.PROD );
+		PlayersProvider.setBaseUrl( BASE_URL.DEV );
+		GamesProvider.setBaseUrl( BASE_URL.DEV );
+		AuthProvider.setBaseUrl( BASE_URL.DEV.replace(/services/i, 'auth') );
 
 		jrgGoogleAuthProvider.configure({
 			client_id: '1053634869128-rj5rm5ilcdna5rhcp2n6ank7tj1j4rdq.apps.googleusercontent.com',

@@ -47,19 +47,6 @@
 
  */
 
-/**
- * Load google API a-synchronously (code from google)
- * This is a dependency for working with google APIs
- */
-(function () {
-    var po = document.createElement('script');
-    po.type = 'text/javascript';
-    po.async = true;
-    po.src = 'https://apis.google.com/js/client:platform.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(po, s);
-})();
-
 angular.module('jackrabbitsgroup.angular-google-auth', [])
     .provider('jrgGoogleAuth', function jrgGoogleAuthProvider() {
         'use strict';

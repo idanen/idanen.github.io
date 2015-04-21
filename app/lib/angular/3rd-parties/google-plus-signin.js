@@ -45,23 +45,13 @@ angular.module('directive.g+signin', []).
           };
         });
 
-        linker(function(el, tScope) {
-          var scriptElement = document.getElementsByTagName('script')[0],
-              scriptsParent = scriptElement.parentNode,
-              observer = new MutationObserver(function () {
-                observer.disconnect();
-                document.querySelector( 'script[src="https://apis.google.com/js/client:platform.js"]' ).onload = function() {
-                  if (el.length) {
-                    element.append(el);
-                  }
-                  gapi.signin.render(element[0], defaults);
-                };
-              });
-
-          observer.observe(scriptsParent, {
-            childList: true
-          });
-        });
+        if ('gapi' in window) {
+          gapi.signin.render(element[0], defaults);
+        } else {
+          document.querySelector( 'script[src="https://apis.google.com/js/client:platform.js"]' ).onload = function() {
+            gapi.signin.render(element[0], defaults);
+          };
+        }
       }
     }
 }]).

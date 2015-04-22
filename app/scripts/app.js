@@ -7,9 +7,11 @@ angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'angulartics', 'angula
 	config( [ '$routeProvider', '$httpProvider', 'jrgGoogleAuthProvider', 'AuthProvider', 'PlayersProvider', 'GamesProvider', 'UtilsProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, jrgGoogleAuthProvider, AuthProvider, PlayersProvider, GamesProvider, utilsProvider, BASE_URL ) {
 		'use strict';
 
-		PlayersProvider.setBaseUrl( BASE_URL.PROD );
-		GamesProvider.setBaseUrl( BASE_URL.PROD );
-		AuthProvider.setBaseUrl( BASE_URL.PROD.replace(/services/i, 'auth') );
+		var env = "DEV";
+
+		PlayersProvider.setBaseUrl( BASE_URL[env] );
+		GamesProvider.setBaseUrl( BASE_URL[env] );
+		AuthProvider.setBaseUrl( BASE_URL[env].replace(/services/i, 'auth') );
 
 		jrgGoogleAuthProvider.configure({
 			client_id: '1053634869128-rj5rm5ilcdna5rhcp2n6ank7tj1j4rdq.apps.googleusercontent.com',

@@ -169,7 +169,11 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
                 getContacts: getContacts,
                 getProfile: getProfile,
                 destroy: destroy,
-                loggedIn: loggedIn
+                loggedIn: loggedIn,
+                logout: logout,
+                status: function () {
+                    return initialized;
+                }
             };
 
             return service;
@@ -181,7 +185,7 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
             function loggedIn( authResult ) {
                 var deferred = $q.defer();
 
-                loadGoogleApiClient( authResult )
+                loadGoogleApiClient()
                     .then( function () {
                         console.log('google API loaded', authResult);
                         angular.element.extend( googleInfo, authResult );
@@ -197,7 +201,11 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
                 return deferred.promise;
             }
 
-            function loadGoogleApiClient( authResult ) {
+            function logout() {
+                gapi.auth.signOut();
+            }
+
+            function loadGoogleApiClient() {
                 return gapi.client.load('plus','v1');
             }
 
@@ -395,8 +403,14 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
                 gapi.client.plus.people.get( {
                     'userId': 'me'
                 } ).then( function ( res ) {
-                    var profile = res.result;
-                    deferred.resolve( profile );
+                    var profile = res.result,
+                        player = {
+                            name: profile.displayName,
+                            email: profile.emails[0].value,
+                            imgUrl: profile.image.url,
+                            id: 0
+                        };
+                    deferred.resolve( player );
                 }, function ( err ) {
                     console.log( 'Error retrieving user\'s profile', err );
                     deferred.reject( err );

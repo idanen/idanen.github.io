@@ -9,6 +9,7 @@ angular.module( 'pokerManager' ).
 			var vm = this;
 
 			vm.signIn = signIn;
+			vm.signOut = signOut;
 			vm.getUserInfo = getUserInfo;
 			vm.authReponse = {};
 			vm.user = {};
@@ -21,6 +22,10 @@ angular.module( 'pokerManager' ).
 				//	.catch( function authFailed( error ) {
 				//		console.error( 'Authentication failure', error );
 				//	} );
+			}
+
+			function signOut() {
+				jrgGoogleAuth.logout();
 			}
 
 			function getUserInfo() {
@@ -36,14 +41,11 @@ angular.module( 'pokerManager' ).
 					var tokenToSave = {
 						authToken: data.access_token,
 						tokenSourceId: 1,
-						player: {
-							name: userInfo.displayName,
-							email: userInfo.emails[0].value,
-							id: 0
-						}
+						player: userInfo
 					};
 					Auth.save(tokenToSave, function ( savedToken ) {
 						utils.saveToken( savedToken.authToken );
+						vm.user = savedToken.player;
 					} );
 				} );
 			} );

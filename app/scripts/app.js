@@ -7,7 +7,7 @@ angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'angulartics', 'angula
 	config( [ '$routeProvider', '$httpProvider', 'jrgGoogleAuthProvider', 'AuthProvider', 'PlayersProvider', 'GamesProvider', 'UtilsProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, jrgGoogleAuthProvider, AuthProvider, PlayersProvider, GamesProvider, utilsProvider, BASE_URL ) {
 		'use strict';
 
-		var env = "DEV";
+		var env = "PROD";
 
 		PlayersProvider.setBaseUrl( BASE_URL[env] );
 		GamesProvider.setBaseUrl( BASE_URL[env] );

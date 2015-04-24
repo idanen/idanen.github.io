@@ -13,8 +13,8 @@ angular.module( 'pokerManager.services' ).
 			baseUrl = aBaseUrl;
 		};
 
-		self.$get = [ '$resource', 'Utils', function ( $resource, utils ) {
-			var service = $resource( baseUrl + 'api', {}, {
+		self.$get = [ '$resource', '$q', 'Utils', function ( $resource, $q, utils ) {
+			var service = $resource( baseUrl + 'api/:tokenId', {tokenId: '@id'}, {
 					'update': {method: 'PUT'}
 				}),
 				_save = service.save;
@@ -31,8 +31,20 @@ angular.module( 'pokerManager.services' ).
 				}, failureCallback );
 			};
 
+			service.revokeToken = function () {
+				var deferred = $q.defer();
+
+				utils.clearToken();
+				service.update( self.token, function () {
+					self.token = null;
+					deferred.resolve();
+				} );
+
+				return deferred.promise;
+			};
+
 			service.getUser = function () {
-				return self.token.player;
+				return self.token && self.token.player;
 			};
 
 			service.getToken = function () {

@@ -28,6 +28,7 @@ angular.module( 'pokerManager.services' ).
 					}
 				}, errorCallback );
 			};
+			self.players = Resource.query();
 
 			Resource.create = function () {
 				return angular.element.extend( new Resource(), {

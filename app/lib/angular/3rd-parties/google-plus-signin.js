@@ -5,23 +5,22 @@
  */
 
 angular.module('directive.g+signin', []).
-  directive('googlePlusSignin', ['$window', function ($window) {
+  directive('googlePlusSignin', ['$q', '$window', 'jrgGoogleAuth', function ($q, $window, jrgGoogleAuth) {
     'use strict';
     var ending = /\.apps\.googleusercontent\.com$/;
 
     return {
       restrict: 'E',
-      transclude: true,
       template: '<span></span>',
       replace: true,
-      link: function (scope, element, attrs, ctrl, linker) {
+      link: function ( scope, element, attrs ) {
         attrs.clientid += (ending.test(attrs.clientid) ? '' : '.apps.googleusercontent.com');
 
         attrs.$set('data-clientid', attrs.clientid);
 
         // Some default values, based on prior versions of this directive
         var defaults = {
-          callback: 'signinCallback',
+          callback: jrgGoogleAuth.signInCallback,
           cookiepolicy: 'single_host_origin',
           requestvisibleactions: 'http://schemas.google.com/AddActivity',
           scope: 'profile email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read',
@@ -54,13 +53,4 @@ angular.module('directive.g+signin', []).
         }
       }
     }
-}]).
-  run(['$window', '$rootScope', function( $window, $rootScope ) {
-    $window.signinCallback = function (authResult) {
-      if (authResult && authResult.access_token){
-        $rootScope.$broadcast('event:google-plus-signin-success', authResult);
-      } else {
-        $rootScope.$broadcast('event:google-plus-signin-failure', authResult);
-      }
-    }; 
 }]);

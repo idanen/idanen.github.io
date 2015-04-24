@@ -2,8 +2,8 @@
  * Login controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'LoginCtrl', [ '$analytics', '$scope', 'Auth', 'Players', 'jrgGoogleAuth',
-		function ( $analytics, $scope, Auth, Players, jrgGoogleAuth ) {
+	controller( 'LoginCtrl', [ '$analytics', '$scope', '$location', 'Auth', 'Players', 'jrgGoogleAuth',
+		function ( $analytics, $scope, $location, Auth, Players, jrgGoogleAuth ) {
 			'use strict';
 
 			var vm = this;
@@ -13,6 +13,7 @@ angular.module( 'pokerManager' ).
 			vm.user = {};
 
 			function signIn() {
+				jrgGoogleAuth.login().then( successfulLogin );
 				//$auth.authenticate( 'google' )
 				//	.then( function authSuccess( data ) {
 				//		console.log( 'Successful login: ', data );
@@ -24,10 +25,9 @@ angular.module( 'pokerManager' ).
 
 			function signOut() {
 				jrgGoogleAuth.logout().then( function () {
-					// Sending token to server to inform it is no longer in use
-					Auth.update( Auth.getToken() );
-					// And delete it from local storage
-					utils.cleanToken();
+					Auth.revokeToken().then( function () {
+						vm.user = {};
+					} );
 				} );
 			}
 
@@ -44,7 +44,7 @@ angular.module( 'pokerManager' ).
 				console.log( 'Successfully fetched user data: ', userInfo );
 				var players = Players.fetchedPlayers(),
 					tokenToSave = {
-						authToken: data.access_token,
+						authToken: userInfo.authToken,
 						tokenSourceId: 1
 					},
 					playerId = 0;
@@ -66,6 +66,7 @@ angular.module( 'pokerManager' ).
 
 				Auth.save( tokenToSave, function ( theUser ) {
 					vm.user = theUser;
+					$location.path( 'view1/0' );
 				} );
 			}
 	} ] );

@@ -171,12 +171,21 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
                 destroy: destroy,
                 loggedIn: loggedIn,
                 logout: logout,
+                signInCallback: signInCallback,
                 status: function () {
                     return initialized;
                 }
             };
 
             return service;
+
+            function signInCallback( authResult ) {
+                if (authResult && authResult.access_token){
+                    $rootScope.$broadcast('event:google-plus-signin-success', authResult);
+                } else {
+                    $rootScope.$broadcast('event:google-plus-signin-failure', authResult);
+                }
+            }
 
             /**
              * Call this method when user logged in from a different service/directive to share the authentication response
@@ -206,7 +215,7 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
 
                 ( function signOutFromGoogle() {
                     gapi.auth.signOut();
-                    $q.resolve();
+                    deferred.resolve();
                 } )();
 
                 return deferred.promise;
@@ -414,7 +423,8 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
                         player = {
                             name: profile.displayName,
                             email: profile.emails[0].value,
-                            imgUrl: profile.image.url,
+                            imgUrl: profile.image.url.replace( /\?sz=[\d]+/, '' ),
+                            authToken: token.access_token,
                             id: 0
                         };
                     deferred.resolve( player );

@@ -15,7 +15,7 @@ angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'angulartics', 'angula
 
 		jrgGoogleAuthProvider.configure({
 			client_id: '1053634869128-rj5rm5ilcdna5rhcp2n6ank7tj1j4rdq.apps.googleusercontent.com',
-			scope: 'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email'
+			scope: 'profile email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
         });
 
 		// Register interceptor

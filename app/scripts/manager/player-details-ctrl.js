@@ -26,7 +26,8 @@ angular.module( 'pokerManager' ).
 			$scope.loading = true;
 
 			$scope.isAdmin = function() {
-				return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
+				//return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
+				return true;
 			};
 			
 			/*

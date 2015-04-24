@@ -40,6 +40,9 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 			},
 			getToken: function () {
 				return localStorage.getItem( 'token' );
+			},
+			cleanToken: function () {
+				localStorage.removeItem( 'token' );
 			}
 		};
 

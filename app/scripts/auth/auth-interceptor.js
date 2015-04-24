@@ -5,7 +5,7 @@ angular.module( 'pokerManager.services' )
     .factory( 'authInterceptor', [ '$q', '$location', 'Utils', function authInterceptorFactory( $q, $location, utils ) {
         return {
             request: function ( config ) {
-                if (utils.getToken()) {
+                if ( utils.getToken() ) {
                     config.headers.Authorization = utils.getToken();
                 }
                 return config;

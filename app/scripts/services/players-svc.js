@@ -5,16 +5,29 @@ angular.module( 'pokerManager.services' ).
 	provider( 'Players', function playersProvider() {
 		'use strict';
 
-		var baseUrl = '';
+		var baseUrl = '',
+			self = this;
 
-		this.setBaseUrl = function ( aBaseUrl ) {
+		self.setBaseUrl = function ( aBaseUrl ) {
 			baseUrl = aBaseUrl;
 		};
 
-		this.$get = [ '$resource', '$filter', function ( $resource, $filter ) {
+		self.players = [];
+
+		self.$get = [ '$resource', '$filter', function ( $resource, $filter ) {
 			var Resource = $resource( baseUrl + 'players/:playerId', {playerId: '@id'}, {
-				'update': {method: 'PUT'}
-			} );
+					'update': {method: 'PUT'}
+				}),
+				_query = Resource.query;
+
+			Resource.query = function ( successCallback, errorCallback ) {
+				return _query( function ( players ) {
+					self.players = players;
+					if ( successCallback ) {
+						successCallback( players );
+					}
+				}, errorCallback );
+			};
 
 			Resource.create = function () {
 				return angular.element.extend( new Resource(), {
@@ -29,6 +42,10 @@ angular.module( 'pokerManager.services' ).
 					createDate: $filter( 'date' )( new Date(), 'y-MM-dd' ),
 					isNew: true
 				} );
+			};
+
+			Resource.fetchedPlayers = function () {
+				return self.players;
 			};
 
 			return Resource;

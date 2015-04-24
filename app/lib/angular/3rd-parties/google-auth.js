@@ -202,7 +202,14 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
             }
 
             function logout() {
-                gapi.auth.signOut();
+                var deferred = $q.defer();
+
+                ( function signOutFromGoogle() {
+                    gapi.auth.signOut();
+                    $q.resolve();
+                } )();
+
+                return deferred.promise;
             }
 
             function loadGoogleApiClient() {

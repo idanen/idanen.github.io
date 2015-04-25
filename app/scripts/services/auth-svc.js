@@ -35,10 +35,14 @@ angular.module( 'pokerManager.services' ).
 				var deferred = $q.defer();
 
 				utils.clearToken();
-				service.update( self.token, function () {
-					self.token = null;
+				if ( self.token ) {
+					service.update( self.token, function () {
+						self.token = null;
+						deferred.resolve();
+					} );
+				} else {
 					deferred.resolve();
-				} );
+				}
 
 				return deferred.promise;
 			};

@@ -202,9 +202,13 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
                         initialized = true;
                     } )
                     .then( function () {
-                        getProfile().then( function ( userInfo ) {
-                            deferred.resolve( userInfo );
-                        } );
+                        getProfile()
+                            .then( function ( userInfo ) {
+                                deferred.resolve( userInfo );
+                            } )
+                            .catch( function ( result ) {
+                                deferred.reject( result );
+                            } );
                     } );
 
                 return deferred.promise;
@@ -429,7 +433,6 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
                         };
                     deferred.resolve( player );
                 }, function ( err ) {
-                    console.log( 'Error retrieving user\'s profile', err );
                     deferred.reject( err );
                 } );
 

@@ -33,11 +33,14 @@ angular.module( 'pokerManager' ).
 
 			$scope.$on( 'event:google-plus-signin-success', function googleLoginSuccess( event, data ) {
 				console.log( 'Successful login: ', data );
-				jrgGoogleAuth.loggedIn( data ).then( successfulLogin );
+				jrgGoogleAuth.loggedIn( data ).then( successfulLogin).catch( failedLogin );
 			} );
 
 			$scope.$on( 'event:google-plus-signin-failure', function googleLoginFailure( event, data ) {
 				console.error( 'Authentication failure', data );
+				Auth.revokeToken().then( function () {
+					vm.user = {};
+				} );
 			} );
 
 			function successfulLogin( userInfo ) {
@@ -67,6 +70,13 @@ angular.module( 'pokerManager' ).
 				Auth.save( tokenToSave, function ( theUser ) {
 					vm.user = theUser;
 					$location.path( 'view1/0' );
+				} );
+			}
+
+			function failedLogin( authError ) {
+				console.log( authError );
+				Auth.revokeToken().then( function () {
+					vm.user = {};
 				} );
 			}
 	} ] );

@@ -4,6 +4,12 @@ angular.module( 'pokerManager.controllers', [] ).
 	controller( 'MainCtrl', [ '$scope', '$location', 'Auth', 'jrgGoogleAuth', function ( $scope, $location, Auth, jrgGoogleAuth ) {
 		'use strict';
 
+		var adminTab = {
+			title: "Current Game",
+			href: "#/view1/0",
+			icon: "icon-spades"
+		};
+
 		$scope.tabs = [];
 		
 		$scope.getLocation = function() {
@@ -18,18 +24,27 @@ angular.module( 'pokerManager.controllers', [] ).
 		};
 		
 		$scope.isAdmin = function() {
-			return ( location.pathname.indexOf( 'manage.html' ) > -1 );
+			return ( !!Auth.getUser() );
 		};
 
 		$scope.signOut = signOut;
+
+		$scope.$watch( function () {
+			return $scope.isAdmin();
+		}, function ( newVal ) {
+			if ( newVal && $scope.tabs.length < 2 ) {
+				$scope.tabs.splice( 0, 0, adminTab );
+			} else {
+				var adminTabIdx = $scope.tabs.indexOf( adminTab );
+				if ( adminTabIdx > -1 ) {
+					$scope.tabs.splice( adminTabIdx, 1 );
+				}
+			}
+		} );
 		
 		$scope.init = function() {
 			if ( $scope.isAdmin() ) {
-				$scope.tabs.push( {
-					title: "Current Game",
-					href: "#/view1/0",
-					icon: "icon-spades"
-				} );
+				$scope.tabs.push( adminTab );
 			}
 			$scope.tabs.push( {
 				title: "Stats",

@@ -10,7 +10,7 @@ angular.module( 'pokerManager' ).
 
 			vm.signIn = signIn;
 			vm.signOut = signOut;
-			vm.user = {};
+			vm.user = null;
 
 			function signIn() {
 				jrgGoogleAuth.login().then( successfulLogin );
@@ -26,7 +26,7 @@ angular.module( 'pokerManager' ).
 			function signOut() {
 				jrgGoogleAuth.logout().then( function () {
 					Auth.revokeToken().then( function () {
-						vm.user = {};
+						delete vm.user;
 					} );
 				} );
 			}
@@ -39,7 +39,7 @@ angular.module( 'pokerManager' ).
 			$scope.$on( 'event:google-plus-signin-failure', function googleLoginFailure( event, data ) {
 				console.error( 'Authentication failure', data );
 				Auth.revokeToken().then( function () {
-					vm.user = {};
+					delete vm.user;
 				} );
 			} );
 
@@ -76,7 +76,7 @@ angular.module( 'pokerManager' ).
 			function failedLogin( authError ) {
 				console.log( authError );
 				Auth.revokeToken().then( function () {
-					vm.user = {};
+					delete vm.user;
 				} );
 			}
 	} ] );

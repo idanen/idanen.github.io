@@ -2,8 +2,8 @@
  * Login controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'LoginCtrl', [ '$analytics', '$scope', '$location', 'Auth', 'Players', 'jrgGoogleAuth',
-		function ( $analytics, $scope, $location, Auth, Players, jrgGoogleAuth ) {
+	controller( 'LoginCtrl', [ '$analytics', '$scope', 'Auth', 'Players', 'jrgGoogleAuth',
+		function ( $analytics, $scope, Auth, Players, jrgGoogleAuth ) {
 			'use strict';
 
 			var vm = this;
@@ -24,6 +24,7 @@ angular.module( 'pokerManager' ).
 			}
 
 			function signOut() {
+				// TODO(idan): Add analytics event
 				jrgGoogleAuth.logout().then( function () {
 					Auth.revokeToken().then( function () {
 						delete vm.user;
@@ -33,10 +34,11 @@ angular.module( 'pokerManager' ).
 
 			$scope.$on( 'event:google-plus-signin-success', function googleLoginSuccess( event, data ) {
 				console.log( 'Successful login: ', data );
-				jrgGoogleAuth.loggedIn( data ).then( successfulLogin).catch( failedLogin );
+				jrgGoogleAuth.loggedIn( data ).then( successfulLogin ).catch( failedLogin );
 			} );
 
 			$scope.$on( 'event:google-plus-signin-failure', function googleLoginFailure( event, data ) {
+				// TODO(idan): Add analytics event
 				console.error( 'Authentication failure', data );
 				Auth.revokeToken().then( function () {
 					delete vm.user;
@@ -69,7 +71,6 @@ angular.module( 'pokerManager' ).
 
 				Auth.save( tokenToSave, function ( theUser ) {
 					vm.user = theUser;
-					$location.path( 'view1/0' );
 				} );
 			}
 

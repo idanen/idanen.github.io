@@ -3,3 +3,4 @@ node_modules
 dist
 .tmp
 *.sublime*
+app/google-login-sample.html

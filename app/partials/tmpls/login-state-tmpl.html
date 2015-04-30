@@ -1,0 +1,5 @@
+<google-plus-signin clientid="1053634869128-rj5rm5ilcdna5rhcp2n6ank7tj1j4rdq" language="en" ng-hide="authCtrl.user"></google-plus-signin>
+<span ng-show="authCtrl.user">
+    Logged in as <img class="img-circle" src="{{ authCtrl.user.imgUrl }}?sz=25" alt=""/> {{ authCtrl.user.name }}
+    <button class="btn btn-sm btn-link navbar-link" ng-click="authCtrl.signOut()"><span class="fa fa-google-plus"></span> logout</button>
+</span>

@@ -1,18 +1,27 @@
 // Declare app level module which depends on filters, and services
-angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'ng-token-auth', 'angulartics', 'angulartics.google.analytics', 'ui.bootstrap', 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.popover', 'pokerManager.filters', 'pokerManager.services', 'pokerManager.directives', 'pokerManager.controllers' ] ).
+angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'angulartics', 'angulartics.google.analytics', 'ui.bootstrap', 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.popover', 'jackrabbitsgroup.angular-google-auth', 'directive.g+signin', 'pokerManager.filters', 'pokerManager.services', 'pokerManager.directives', 'pokerManager.controllers' ] ).
 	constant( 'BASE_URL', {
 		"DEV": "http://localhost:9880/services/",
 		"PROD": "http://awesome-sphere-397.appspot.com/services/"
 	} ).
-	config( [ '$routeProvider', '$httpProvider', '$authProvider', 'PlayersProvider', 'GamesProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, $authProvider, PlayersProvider, GamesProvider, BASE_URL ) {
+	config( [ '$routeProvider', '$httpProvider', 'jrgGoogleAuthProvider', 'AuthProvider', 'PlayersProvider', 'GamesProvider', 'UtilsProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, jrgGoogleAuthProvider, AuthProvider, PlayersProvider, GamesProvider, utilsProvider, BASE_URL ) {
 		'use strict';
 
-		PlayersProvider.setBaseUrl( BASE_URL.PROD );
-		GamesProvider.setBaseUrl( BASE_URL.PROD );
+		var env = "PROD";
 
-		$authProvider.configure({
-            apiUrl: BASE_URL.PROD + '/auth'
+		PlayersProvider.setBaseUrl( BASE_URL[env] );
+		GamesProvider.setBaseUrl( BASE_URL[env] );
+		AuthProvider.setBaseUrl( BASE_URL[env].replace(/services/i, 'auth') );
+
+		jrgGoogleAuthProvider.configure({
+			client_id: '1053634869128-rj5rm5ilcdna5rhcp2n6ank7tj1j4rdq.apps.googleusercontent.com',
+			scope: 'profile email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
         });
+
+		// Register interceptor
+		$httpProvider.interceptors.push( 'authInterceptor' );
+
+		$httpProvider.defaults.headers.post.Authorization = $httpProvider.defaults.headers.put.Authorization = utilsProvider.getToken();
 
 		$routeProvider.when( '/view1/:gameId', { templateUrl: 'partials/partial1.html', controller: 'PokerManagerCtrl', controllerAs: 'vm' } );
 		$routeProvider.when( '/login', { templateUrl: 'partials/login.html', controller: 'LoginCtrl', controllerAs: 'authCtrl' } );

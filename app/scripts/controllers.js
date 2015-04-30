@@ -1,8 +1,14 @@
 /* Controllers */
 
 angular.module( 'pokerManager.controllers', [] ).
-	controller( 'MainCtrl', [ '$scope', '$location', 'Utils', function ( $scope, $location, utils ) {
+	controller( 'MainCtrl', [ '$scope', '$location', 'Auth', 'jrgGoogleAuth', function ( $scope, $location, Auth, jrgGoogleAuth ) {
 		'use strict';
+
+		var adminTab = {
+			title: "Current Game",
+			href: "#/view1/0",
+			icon: "icon-spades"
+		};
 
 		$scope.tabs = [];
 		
@@ -18,17 +24,27 @@ angular.module( 'pokerManager.controllers', [] ).
 		};
 		
 		$scope.isAdmin = function() {
-			return ( location.pathname.indexOf( 'manage.html' ) > -1 );
+			return ( !!Auth.getUser() );
 		};
+
+		$scope.signOut = signOut;
+
+		$scope.$watch( function () {
+			return $scope.isAdmin();
+		}, function ( newVal ) {
+			if ( newVal && $scope.tabs.length < 2 ) {
+				$scope.tabs.splice( 0, 0, adminTab );
+			} else {
+				var adminTabIdx = $scope.tabs.indexOf( adminTab );
+				if ( adminTabIdx > -1 ) {
+					$scope.tabs.splice( adminTabIdx, 1 );
+				}
+			}
+		} );
 		
 		$scope.init = function() {
 			if ( $scope.isAdmin() ) {
-				$scope.tabs.push( {
-					title: "Current Game",
-					href: "#/view1/0",
-					icon: "icon-spades",
-					disabled: true
-				} );
+				$scope.tabs.push( adminTab );
 			}
 			$scope.tabs.push( {
 				title: "Stats",
@@ -36,6 +52,20 @@ angular.module( 'pokerManager.controllers', [] ).
 				icon: "fa-bar-chart"
 			} );
 		};
+
+		$scope.$on( '$locationChangeStart', function ( ev, from, to ) {
+			if ( /login$/i.test( to ) ) {
+				$scope.currentUser = Auth.getUser();
+			}
+		} );
+
+		function signOut() {
+			jrgGoogleAuth.logout().then( function () {
+				Auth.revokeToken().then( function () {
+					delete $scope.currentUser;
+				} );
+			} );
+		}
 	} ] ).
 	controller( 'MyCtrl2', [ '$scope', 'Players', 'Games', '$analytics', function ( $scope, Players, Games, $analytics ) {
 		'use strict';

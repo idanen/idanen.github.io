@@ -1,17 +1,12 @@
 <link href="styles/signin.css" rel="stylesheet">
 
 <div class="container">
-	<form class="form-signin" role="form" name="loginForm" ng-submit="authCtrl.auth">
+	<form class="form-signin" role="form" name="loginForm">
 		<h2 class="form-signin-heading">Please sign in</h2>
-		<label for="inputEmail" class="sr-only">Email address</label>
-		<input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus ng-model="authCtrl.user.email">
-		<label for="inputPassword" class="sr-only">Password</label>
-		<input type="password" id="inputPassword" class="form-control" placeholder="Password" required ng-model="authCtrl.user.password">
-		<div class="checkbox">
-			<label>
-				<input type="checkbox" ng-model="authCtrl.sessionOnly"> Remember me
-			</label>
+		<google-plus-signin clientid="1053634869128-rj5rm5ilcdna5rhcp2n6ank7tj1j4rdq" language="en" ng-hide="authCtrl.user.authToken"></google-plus-signin>
+		<div>
+			Hi {{ authCtrl.user.name }}, <img class="img-circle" ng-src="{{ authCtrl.user.imgUrl }}" alt=""/>
+			<button class="btn btn-danger" ng-click="authCtrl.signOut()"><span class="fa fa-google-plus"></span> logout</button>
 		</div>
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 	</form>
 </div>

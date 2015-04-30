@@ -2,7 +2,7 @@
  * Interceptor to send users to login when not authenticated
  */
 angular.module( 'pokerManager.services' )
-    .factory( 'authInterceptor', [ '$q', '$location', 'Utils', function authInterceptorFactory( $q, $location, utils ) {
+    .factory( 'authInterceptor', [ '$q', 'toaster', 'Utils', function authInterceptorFactory( $q, toaster, utils ) {
         return {
             request: function ( config ) {
                 if ( utils.getToken() ) {
@@ -18,7 +18,8 @@ angular.module( 'pokerManager.services' )
             },
             responseError: function ( response ) {
                 if ( response.status === 401 ) {
-                    $location.path( '/login' );
+                    // TODO(idan): configure location, animation
+                    toaster.error( 'Login required', 'This action requires login' );
                 }
                 return $q.reject( response );
             }

@@ -2,7 +2,7 @@
 angular.module( 'pokerManager', [ 'ngRoute', 'ngAnimate', 'angulartics', 'angulartics.google.analytics', 'ui.bootstrap', 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.popover', 'toaster', 'jackrabbitsgroup.angular-google-auth', 'directive.g+signin', 'pokerManager.filters', 'pokerManager.services', 'pokerManager.directives', 'pokerManager.controllers' ] ).
 	constant( 'BASE_URL', {
 		"DEV": "http://localhost:9880/services/",
-		"PROD": "http://awesome-sphere-397.appspot.com/services/"
+		"PROD": "https://awesome-sphere-397.appspot.com/services/"
 	} ).
 	config( [ '$routeProvider', '$httpProvider', 'jrgGoogleAuthProvider', 'AuthProvider', 'PlayersProvider', 'GamesProvider', 'UtilsProvider', 'BASE_URL', function ( $routeProvider, $httpProvider, jrgGoogleAuthProvider, AuthProvider, PlayersProvider, GamesProvider, utilsProvider, BASE_URL ) {
 		'use strict';

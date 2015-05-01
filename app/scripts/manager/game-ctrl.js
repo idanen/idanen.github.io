@@ -2,7 +2,7 @@
  * Game controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'GameCtrl', [ '$scope', '$analytics', '$routeParams', 'Games', 'Utils', function ( $scope, $analytics, $routeParams, Game, utils ) {
+	controller( 'GameCtrl', [ '$scope', '$analytics', '$routeParams', 'toaster', 'Games', 'Utils', function ( $scope, $analytics, $routeParams, toaster, Game, utils ) {
 		'use strict';
 
 		var vm = this,

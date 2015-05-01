@@ -169,10 +169,11 @@ angular.module( 'pokerManager' ).
 				vm.init();
 				vm.clearCurrentGame();
 
-				vm.addServerMsg({
-					txt: 'Game saved successfully',
-					type: 'success'
-				});
+				// vm.addServerMsg({
+				// 	txt: 'Game saved successfully',
+				// 	type: 'success'
+				// });
+				toaster.success( 'Game save successfully', '' );
 			};
 
 			vm.saveGameFailed = function ( err ) {

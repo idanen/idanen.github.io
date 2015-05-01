@@ -71,6 +71,12 @@ angular.module( 'pokerManager' ).
 			} catch ( err ) {}
 		};
 
+		vm.startGame = function () {
+			$scope.game.players.forEach( function ( player ) {
+				vm.buyin( player, 1 );
+			} );
+		};
+
 		vm.cancelBuyin = function( player, rationalBuyin ) {
 			var buyin = rationalBuyin * defaultBuyin;
 			player.buyin -= buyin;

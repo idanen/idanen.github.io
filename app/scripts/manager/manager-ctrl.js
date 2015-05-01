@@ -2,8 +2,8 @@
  * Game Manager controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'PokerManagerCtrl', [ '$scope', '$modal', '$filter', '$analytics', 'Utils', 'Players', 'Games',
-		function ( $scope, $modal, $filter, $analytics, utils, Players, Games ) {
+	controller( 'PokerManagerCtrl', [ '$scope', '$modal', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games',
+		function ( $scope, $modal, $filter, $analytics, toaster, utils, Players, Games ) {
 			'use strict';
 
 			var vm = this;
@@ -122,8 +122,11 @@ angular.module( 'pokerManager' ).
 					if ( localStorage.getItem( 'game' ) !== null ) {
 						vm.loadLocalStorageGame();
 					}
+				}, function ( err ) {
+					console.log( err );
 				} );
 			};
+			vm.init();
 
 			vm.refreshPlayersList = function () {
 				vm.init();
@@ -173,7 +176,7 @@ angular.module( 'pokerManager' ).
 				// 	txt: 'Game saved successfully',
 				// 	type: 'success'
 				// });
-				toaster.success( 'Game save successfully', '' );
+				toaster.success( 'Game save successfully', 'Woo-Hoo!' );
 			};
 
 			vm.saveGameFailed = function ( err ) {

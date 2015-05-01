@@ -12,7 +12,7 @@
 				<button ng-click="gameCtrl.comeBack(player)" class="btn btn-primary" ng-show="!player.isPlaying" title="Come Back">Come Back</button>
 			</div>
 		</div>
-		<div class="btn-group btn-group-sm visible-xs" style="margin: 7px 0;">
+		<div class="btn-group btn-group-sm" style="margin: 7px 0;">
 			<button class="btn btn-danger" ng-click="gameCtrl.addOrSubtractChips(player, 1)" ng-disabled="!player.isPlaying"><i class="glyphicon glyphicon-minus"></i> 1</button>
 			<button class="btn btn-danger" ng-click="gameCtrl.addOrSubtractChips(player, 0.10)" ng-disabled="!player.isPlaying"><i class="glyphicon glyphicon-minus"></i> 0.1</button>
 			<button class="btn btn-success" ng-click="gameCtrl.addOrSubtractChips(player, 0.10, true)" ng-disabled="!player.isPlaying"><i class="glyphicon glyphicon-plus"></i> 0.1</button>

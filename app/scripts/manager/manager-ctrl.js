@@ -159,7 +159,7 @@ angular.module( 'pokerManager' ).
 			}
 			
 			try {
-				$analytics.eventTrack('Buyin', { category: 'Actions', label: player.name });
+				$analytics.eventTrack( 'Join Game', { category: 'Actions', label: player.name } );
 			} catch (err) {}
 		}
 

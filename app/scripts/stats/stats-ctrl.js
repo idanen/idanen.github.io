@@ -1,8 +1,13 @@
+(function () {
 /**
  * Stats controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'PokerStatsCtrl', [ '$modal', '$filter', 'Utils', 'Games', 'Players', function( $modal, $filter, utils, Games, Players ) {
+	controller( 'PokerStatsCtrl', pokerStatsController );
+
+	pokerStatsController.$inject = [ '$modal', '$filter', 'Utils', 'Games', 'Players' ];
+
+	function pokerStatsController( $modal, $filter, utils, Games, Players ) {
 		'use strict';
 
 		var vm = this;
@@ -21,6 +26,18 @@ angular.module( 'pokerManager' ).
 				toDateOpen: false,
 				players: []
 			};
+
+		vm.init = init;
+		vm.toggleDateRange = toggleDateRange;
+		vm.loadGames = loadGames;
+		vm.loadAllTimeGames = loadAllTimeGames;
+		vm.statsAvgBuyin = statsAvgBuyin;
+		vm.statsAvgBuyout = statsAvgBuyout;
+		vm.statsAvgGameCount = statsAvgGameCount;
+		vm.statsAvgWinnings = statsAvgWinnings;
+		vm.statsAvgWinningsPerGame = statsAvgWinningsPerGame;
+		vm.gamesCount = gamesCount;
+		vm.openPlayerDetailsDialog = openPlayerDetailsDialog;
 
 		function playerSaved( savedPlayer ) {
 			// console.log('savedPlayer = ' + savedPlayer);
@@ -49,12 +66,12 @@ angular.module( 'pokerManager' ).
 			return Games.players( { fromDate: formatDate( vm.displayGames.fromDate ), toDate: formatDate ( vm.displayGames.toDate ) } );
 		}
 
-		vm.init = function () {
+		function init() {
 			// Refresh view
 			vm.displayGames.players = getPlayers();
-		};
+		}
 	
-		vm.toggleDateRange = function ( which, $event ) {
+		function toggleDateRange( which, $event ) {
 			$event.preventDefault();
 			$event.stopPropagation();
 			
@@ -63,51 +80,51 @@ angular.module( 'pokerManager' ).
 			} else {
 				vm.displayGames[which + 'DateOpen'] = true;
 			}
-		};
+		}
 		
-		vm.loadGames = function () {
+		function loadGames() {
 			vm.displayGames.players = getPlayers();
-		};
+		}
 	
-		vm.loadAllTimeGames = function () {
+		function loadAllTimeGames() {
 			vm.displayGames.fromDate = new Date( 2000, 9, 1 );
 			vm.displayGames.toDate = new Date();
 			vm.displayGames.players = getPlayers();
-		};
+		}
 		
-		vm.statsAvgBuyin = function () {
+		function statsAvgBuyin() {
 			return utils.avgsCalc( vm.displayGames.players, 'buyin' );
-		};
+		}
 
-		vm.statsAvgBuyout = function () {
+		function statsAvgBuyout() {
 			return utils.avgsCalc( vm.displayGames.players, 'buyout' );
-		};
+		}
 
-		vm.statsAvgGameCount = function () {
+		function statsAvgGameCount() {
 			return utils.avgsCalc( vm.displayGames.players, 'gamesCount' );
-		};
+		}
 		
-		vm.statsAvgWinnings = function () {
+		function statsAvgWinnings() {
 			var sum = 0;
 			for( var i = 0; i < vm.displayGames.players.length; ++i ) {
 				sum += ( vm.displayGames.players[ i ].buyout - vm.displayGames.players[ i ].buyin );
 			}
 			return sum;
-		};
+		}
 	
-		vm.statsAvgWinningsPerGame = function () {
+		function statsAvgWinningsPerGame() {
 			var sum = 0;
 			for( var i = 0; i < vm.displayGames.players.length; ++i ) {
 				sum += ( vm.displayGames.players[ i ].buyout - vm.displayGames.players[ i ].buyin ) / vm.displayGames.players[ i ].gamesCount;
 			}
 			return sum / vm.displayGames.players.length;
-		};
+		}
 
-		vm.gamesCount = function () {
+		function gamesCount() {
 			return utils.maxCalc( vm.displayGames.players, 'gamesCount' );
-		};
+		}
 
-		vm.openPlayerDetailsDialog = function ( player ) {
+		function openPlayerDetailsDialog( player ) {
 			var isNew = ( player === null );
 
 			if ( isNew ) {
@@ -145,5 +162,6 @@ angular.module( 'pokerManager' ).
 				
 				Players.update( player ).$promise.then( playerSaved );
 			} );
-		};
-	} ] );
+		}
+	}
+})();

@@ -1,8 +1,11 @@
+(function () {
 /**
  * The managed game's directive
  */
 angular.module( 'pokerManager' ).
-	directive( 'onGoingGame', [ function () {
+	directive( 'onGoingGame', gameDirective );
+
+	function gameDirective() {
 		'use strict';
 
 		return {
@@ -21,4 +24,5 @@ angular.module( 'pokerManager' ).
 				}
 			}
 		};
-	} ] );
+	}
+})();

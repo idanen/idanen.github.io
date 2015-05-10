@@ -1,3 +1,4 @@
+(function () {
 /**
  * Players services
  */
@@ -13,7 +14,11 @@ angular.module( 'pokerManager.services' ).
 			baseUrl = aBaseUrl;
 		};
 
-		self.$get = [ '$resource', '$q', 'Utils', function ( $resource, $q, utils ) {
+		self.$get = authService;
+
+		authService.$inject = [ '$resource', '$q', 'Utils' ];
+
+		function authService( $resource, $q, utils ) {
 			var service = $resource( baseUrl + 'api/:tokenId', {tokenId: '@id'}, {
 					'update': {method: 'PUT'}
 				}),
@@ -56,5 +61,6 @@ angular.module( 'pokerManager.services' ).
 			};
 
 			return service;
-		} ];
+		}
 	} );
+})();

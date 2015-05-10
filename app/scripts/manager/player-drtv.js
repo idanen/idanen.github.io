@@ -1,8 +1,12 @@
+(function () {
 /**
  * A playing player's directive
  */
 angular.module( 'pokerManager' ).
-	directive( 'playerCard', [ function () {
+	directive( 'playerCard', playerCardDirective );
+	
+
+	function playerCardDirective() {
 		'use strict';
 
 		return {
@@ -18,4 +22,5 @@ angular.module( 'pokerManager' ).
 				}
 			}
 		};
-	} ] );
+	}
+})();

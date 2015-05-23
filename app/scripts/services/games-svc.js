@@ -1,9 +1,12 @@
+(function () {
+	'use strict';
 /**
  * Games services
  */
 angular.module( 'pokerManager.services' ).
-	provider( 'Games', function gamesProvider() {
-		'use strict';
+	provider( 'Games', GamesProvider );
+
+	function GamesProvider() {
 
 		var baseUrl = '';
 
@@ -11,7 +14,11 @@ angular.module( 'pokerManager.services' ).
 			baseUrl = aBaseUrl;
 		};
 
-		this.$get = [ '$resource', function ( $resource ) {
+		this.$get = GamesService;
+
+		GamesService.$inject = [ '$resource' ];
+
+		function GamesService( $resource ) {
 			var Resource = $resource( baseUrl + 'games/:gameId', {gameId: '@id'}, {
 				'update': {method: 'PUT'},
 				'getPlayers': {
@@ -43,5 +50,6 @@ angular.module( 'pokerManager.services' ).
 			};
 
 			return Resource;
-		} ];
-	} );
+		}
+	}
+})();

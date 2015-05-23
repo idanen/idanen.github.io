@@ -3,11 +3,11 @@
  * Game Manager controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'PokerManagerCtrl', pokerManagerController );
+	controller( 'PokerManagerCtrl', PokerManagerController );
 
-	pokerManagerController.$inject = [ '$scope', '$modal', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games' ];
+	PokerManagerController.$inject = [ '$scope', '$modal', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games' ];
 
-	function pokerManagerController( $scope, $modal, $filter, $analytics, toaster, utils, Players, Games ) {
+	function PokerManagerController( $scope, $modal, $filter, $analytics, toaster, utils, Players, Games ) {
 		'use strict';
 
 		var vm = this;

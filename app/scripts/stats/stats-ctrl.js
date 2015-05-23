@@ -3,11 +3,11 @@
  * Stats controller
  */
 angular.module( 'pokerManager' ).
-	controller( 'PokerStatsCtrl', pokerStatsController );
+	controller( 'PokerStatsCtrl', PokerStatsController );
 
-	pokerStatsController.$inject = [ '$modal', '$filter', 'Utils', 'Games', 'Players' ];
+	PokerStatsController.$inject = [ '$modal', '$filter', 'Utils', 'Games', 'Players' ];
 
-	function pokerStatsController( $modal, $filter, utils, Games, Players ) {
+	function PokerStatsController( $modal, $filter, utils, Games, Players ) {
 		'use strict';
 
 		var vm = this;

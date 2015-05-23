@@ -69,7 +69,7 @@ angular.module( 'pokerManager' ).
 		}
 
 		function buyin( player, rationalBuyin ) {
-			var buyin = rationalBuyin * defaultBuyin;
+			var calculatedBuyin = rationalBuyin * defaultBuyin;
 			if ( !player.isPlaying ) {
 				player.isPlaying = true;
 				player.buyin = 0;
@@ -77,9 +77,9 @@ angular.module( 'pokerManager' ).
 				player.paidHosting = false;
 				$scope.game.players.push( player );
 			}
-			player.buyin += buyin;
+			player.buyin += calculatedBuyin;
 			player.balance -= player.buyin;
-			player.currentChipCount = parseInt( player.currentChipCount, 10 ) + ( buyin * chipValue );
+			player.currentChipCount = parseInt( player.currentChipCount, 10 ) + ( calculatedBuyin * chipValue );
 			player.buyout = player.currentChipCount / chipValue;
 			
 			try {

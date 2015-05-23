@@ -1,9 +1,12 @@
+(function () {
+	'use strict';
 /**
  * Players services
  */
 angular.module( 'pokerManager.services' ).
-	provider( 'Players', function playersProvider() {
-		'use strict';
+	provider( 'Players',  PlayersProvider);
+
+	function PlayersProvider() {
 
 		var baseUrl = '',
 			self = this;
@@ -14,7 +17,11 @@ angular.module( 'pokerManager.services' ).
 
 		self.players = [];
 
-		self.$get = [ '$resource', '$filter', function ( $resource, $filter ) {
+		self.$get = PlayersService;
+
+		PlayersService.$inject = [ '$resource', '$filter' ];
+
+		function PlayersService( $resource, $filter ) {
 			var Resource = $resource( baseUrl + 'players/:playerId', {playerId: '@id'}, {
 					'update': {method: 'PUT'}
 				}),
@@ -50,5 +57,6 @@ angular.module( 'pokerManager.services' ).
 			};
 
 			return Resource;
-		} ];
-	} );
+		}
+	}
+})();

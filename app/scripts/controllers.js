@@ -33,7 +33,7 @@ angular.module( 'pokerManager.controllers', [] ).
 			return $scope.isAdmin();
 		}, function ( newVal ) {
 			if ( newVal && $scope.tabs.length < 2 ) {
-				$scope.tabs.splice( 0, 0, adminTab );
+				$scope.tabs.push( adminTab );
 			} else {
 				var adminTabIdx = $scope.tabs.indexOf( adminTab );
 				if ( adminTabIdx > -1 ) {
@@ -43,14 +43,14 @@ angular.module( 'pokerManager.controllers', [] ).
 		} );
 		
 		$scope.init = function() {
-			if ( $scope.isAdmin() ) {
-				$scope.tabs.push( adminTab );
-			}
 			$scope.tabs.push( {
 				title: "Stats",
 				href: "#/stats",
 				icon: "fa-bar-chart"
 			} );
+			if ( $scope.isAdmin() ) {
+				$scope.tabs.push( adminTab );
+			}
 		};
 
 		$scope.$on( '$locationChangeStart', function ( ev, from, to ) {

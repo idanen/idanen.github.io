@@ -194,21 +194,22 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
             function loggedIn( authResult ) {
                 var deferred = $q.defer();
 
-                loadGoogleApiClient()
+                $q.when(loadGoogleApiClient())
                     .then( function () {
                         console.log('google API loaded', authResult);
                         angular.element.extend( googleInfo, authResult );
                         token = gapi.auth.getToken();
                         initialized = true;
+
+                        return token;
                     } )
-                    .then( function () {
-                        getProfile()
-                            .then( function ( userInfo ) {
-                                deferred.resolve( userInfo );
-                            } )
-                            .catch( function ( result ) {
-                                deferred.reject( result );
-                            } );
+                    .then( getProfile )
+                    .then( extractPlayerDetails )
+                    .then( function ( player ) {
+                        deferred.resolve( player );
+                    } )
+                    .catch( function ( err ) {
+                        deferred.reject( err );
                     } );
 
                 return deferred.promise;
@@ -418,25 +419,27 @@ angular.module('jackrabbitsgroup.angular-google-auth', [])
              * @returns {*} A promise that resolves with user's profile info
              */
             function getProfile() {
-                var deferred = $q.defer();
-
-                gapi.client.plus.people.get( {
+                return gapi.client.plus.people.get( {
                     'userId': 'me'
-                } ).then( function ( res ) {
-                    var profile = res.result,
-                        player = {
-                            name: profile.displayName,
-                            email: profile.emails[0].value,
-                            imgUrl: profile.image.url.replace( /\?sz=[\d]+/, '' ),
-                            authToken: token.access_token,
-                            id: 0
-                        };
-                    deferred.resolve( player );
-                }, function ( err ) {
-                    deferred.reject( err );
                 } );
+            }
 
-                return deferred.promise;
+            /**
+             * Extract the intresting profile info into a player object
+             * @param profileResponse The profile response from the API
+             * @returns {{name: string, email: (*|null|parsedContents|string), imgUrl: *, authToken: *, id: number}}
+             */
+            function extractPlayerDetails( profileResponse ) {
+                var profile = profileResponse.result,
+                    player = {
+                        name: profile.displayName,
+                        email: profile.emails[0].value,
+                        imgUrl: profile.image.url.replace( /\?sz=[\d]+/, '' ),
+                        authToken: token.access_token,
+                        id: 0
+                    };
+
+                return player;
             }
 
             /**

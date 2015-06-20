@@ -225,17 +225,19 @@ angular.module( 'pokerManager' ).
 
 		$scope.$watch( function () {
 			return vm.game.settings.chipValue;
-		}, function ( newVal, oldValue ) {
-			if ( !newVal ) {
-				newVal = vm.game.settings.chipValue = 1;
+		}, chipsValueChanged );
+
+		function chipsValueChanged( current, previous ) {
+			if ( !current ) {
+				current = vm.game.settings.chipValue = 1;
 			}
 			vm.game.players.forEach( function updateChipsAndValue( player, idx ) {
 				if ( player.currentChipCount ) {
-					player.currentChipCount = player.currentChipCount * newVal / ( oldValue || 1 );
+					player.currentChipCount = player.currentChipCount * current / ( previous || 1 );
 				} else {
-					player.currentChipCount = ( player.buyin * newVal ) * newVal / ( oldValue || 1 );
+					player.currentChipCount = ( player.buyin * current ) * current / ( previous || 1 );
 				}
 			} );
-		} );
+		}
 	}
 })();

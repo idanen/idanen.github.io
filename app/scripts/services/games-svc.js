@@ -16,9 +16,9 @@ angular.module( 'pokerManager.services' ).
 
 		this.$get = GamesService;
 
-		GamesService.$inject = [ '$resource' ];
+		GamesService.$inject = [ '$resource', '$filter' ];
 
-		function GamesService( $resource ) {
+		function GamesService( $resource, $filter ) {
 			var Resource = $resource( baseUrl + 'games/:gameId', {gameId: '@id'}, {
 				'update': {method: 'PUT'},
 				'getPlayers': {
@@ -38,7 +38,7 @@ angular.module( 'pokerManager.services' ).
 			Resource.create = function () {
 				return angular.element.extend( new Resource(), {
 					location: '',
-					date: new Date(),
+					date: $filter( 'date' )( new Date(), 'y-MM-dd' ),
 					numberOfHands: 0,
 					players: [],
 					settings: {

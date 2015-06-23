@@ -4,3 +4,4 @@ dist
 .tmp
 *.sublime*
 app/google-login-sample.html
+npm-debug.log

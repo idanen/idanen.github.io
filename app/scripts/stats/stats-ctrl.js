@@ -13,16 +13,18 @@ angular.module( 'pokerManager' ).
 		var vm = this;
 
 		vm.today = new Date();
+		vm.totalGames = 0;
 		vm.dateOptions = {
 				'year-format': "'yyyy'",
 				'month-format': "'MM'",
 				'day-format': "'dd'"
 			};
 		vm.filterOptions = {
-			gamesCount: [ .1, .25, .5, .75 ]
+			gamesCount: [ 0, .1, .25, .5, .75 ]
 		};
 		vm.filter = {
-			gamesCount: vm.filterOptions[ 3 ]
+			name: '',
+			gamesCount: vm.filterOptions.gamesCount[ 0 ]
 		};
 		
 		vm.displayGames = {
@@ -46,6 +48,7 @@ angular.module( 'pokerManager' ).
 		vm.gamesCount = gamesCount;
 		vm.openPlayerDetailsDialog = openPlayerDetailsDialog;
 		vm.filterPlayers = filterPlayers;
+		vm.playerPredicate = playerPredicate;
 
 		function playerSaved( savedPlayer ) {
 			// console.log('savedPlayer = ' + savedPlayer);
@@ -129,14 +132,18 @@ angular.module( 'pokerManager' ).
 		}
 
 		function gamesCount() {
-			return utils.maxCalc( vm.displayGames.players, 'gamesCount' );
+			vm.totalGames = utils.maxCalc( vm.displayGames.players, 'gamesCount' );
+			return vm.totalGames;
 		}
 
 		function filterPlayers() {
-			var totalGames = gamesCount();
 			vm.displayGames.filtered = vm.displayGames.players.filter( function ( player ) {
-				return player.gamesCount > Math.floor( vm.filter.gamesCount * totalGames );
+				return player.gamesCount > Math.floor( vm.filter.gamesCount * vm.totalGames );
 			} );
+		}
+
+		function playerPredicate( player ) {
+			return ( new RegExp( vm.filter.name, 'gi' ).test( player.name ) && ( player.gamesCount > Math.floor( vm.filter.gamesCount * vm.totalGames ) ) );
 		}
 
 		function openPlayerDetailsDialog( player ) {

@@ -29,8 +29,15 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-3">
 				<strong>Total games: </strong><span class="badge">{{ vm.gamesCount() }}</span>
+			</div>
+			<div class="col-md-9">
+				<em>Showing players who played over </em>
+				<div class="btn-group btn-group-sm">
+					<label class="btn btn-default" ng-repeat="option in vm.filterOptions.gamesCount" ng-model="vm.filter.gamesCount" btn-radio="option"><span class="badge">{{ option | percentage }}</span> <em>({{ option * vm.totalGames | number:0 }})</em></label>
+				</div>
+				<em> of games</em>
 			</div>
 		</div>
 	</div>
@@ -44,7 +51,7 @@
 								Name
 							</span>
 							<span class="form-inline">
-								<input class="form-control input-sm" ng-model="vm.playersFilter.name" placeholder="Player's name or other property"/>
+								<input class="form-control input-sm" ng-model="vm.filter.name" placeholder="Player's name or other property"/>
 							</span>
 						</th>
 						<th class="hidden-sm hidden-xs">Buy in</th>
@@ -55,7 +62,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="player in vm.displayGames.players | filter:vm.playersFilter.name" ng-class="{'success': (player.buyout - player.buyin > 0), 'danger': (player.buyout - player.buyin < 0)}">
+					<tr ng-repeat="player in vm.displayGames.players | filter:vm.playerPredicate" ng-class="{'success': (player.buyout - player.buyin > 0), 'danger': (player.buyout - player.buyin < 0)}">
 						<td>
 							<span>{{ player.name }}</span> <span class="badge" title="Games played">{{ player.gamesCount }}</span> <button class="btn btn-link" ng-click="vm.openPlayerDetailsDialog(player)" analytics-on analytics-event="Player Details" analytics-category="Actions" analytics-label="{{ player.name }}"><span class="fa fa-external-link"></span></button>
 						</td>

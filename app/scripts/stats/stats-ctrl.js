@@ -18,13 +18,20 @@ angular.module( 'pokerManager' ).
 				'month-format': "'MM'",
 				'day-format': "'dd'"
 			};
+		vm.filterOptions = {
+			gamesCount: [ .1, .25, .5, .75 ]
+		};
+		vm.filter = {
+			gamesCount: vm.filterOptions[ 3 ]
+		};
 		
 		vm.displayGames = {
 				fromDate: vm.today.setMonth( vm.today.getMonth() - 1 ),
 				fromDateOpen: false,
 				toDate: vm.today.setMonth( vm.today.getMonth() + 1 ),
 				toDateOpen: false,
-				players: []
+				players: [],
+				filtered: []
 			};
 
 		vm.init = init;
@@ -38,6 +45,7 @@ angular.module( 'pokerManager' ).
 		vm.statsAvgWinningsPerGame = statsAvgWinningsPerGame;
 		vm.gamesCount = gamesCount;
 		vm.openPlayerDetailsDialog = openPlayerDetailsDialog;
+		vm.filterPlayers = filterPlayers;
 
 		function playerSaved( savedPlayer ) {
 			// console.log('savedPlayer = ' + savedPlayer);
@@ -122,6 +130,13 @@ angular.module( 'pokerManager' ).
 
 		function gamesCount() {
 			return utils.maxCalc( vm.displayGames.players, 'gamesCount' );
+		}
+
+		function filterPlayers() {
+			var totalGames = gamesCount();
+			vm.displayGames.filtered = vm.displayGames.players.filter( function ( player ) {
+				return player.gamesCount > Math.floor( vm.filter.gamesCount * totalGames );
+			} );
 		}
 
 		function openPlayerDetailsDialog( player ) {

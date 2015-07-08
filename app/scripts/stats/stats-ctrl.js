@@ -20,7 +20,7 @@ angular.module( 'pokerManager' ).
 				'day-format': "'dd'"
 			};
 		vm.filterOptions = {
-			gamesCount: [ 0, .1, .25, .5, .75 ]
+			gamesCount: [ 0, 0.1, 0.25, 0.5, 0.75 ]
 		};
 		vm.filter = {
 			name: '',

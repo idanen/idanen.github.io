@@ -26,7 +26,7 @@ angular.module( 'pokerManager' ).
 			name: '',
 			gamesCount: vm.filterOptions.gamesCount[ 0 ]
 		};
-		
+
 		vm.displayGames = {
 				fromDate: vm.today.setMonth( vm.today.getMonth() - 1 ),
 				fromDateOpen: false,
@@ -39,6 +39,10 @@ angular.module( 'pokerManager' ).
 		vm.init = init;
 		vm.toggleDateRange = toggleDateRange;
 		vm.loadGames = loadGames;
+		vm.loadLastGame = loadLastGame;
+		vm.loadLastMonthGames = loadLastMonthGames;
+		vm.loadLastQuarterGames = loadLastQuarterGames;
+		vm.loadLastYearGames = loadLastYearGames;
 		vm.loadAllTimeGames = loadAllTimeGames;
 		vm.statsAvgBuyin = statsAvgBuyin;
 		vm.statsAvgBuyout = statsAvgBuyout;
@@ -96,10 +100,40 @@ angular.module( 'pokerManager' ).
 		function loadGames() {
 			vm.displayGames.players = getPlayers();
 		}
+
+		function loadGamesBetweenDates(from, to, gamesCountOptionIdx) {
+			vm.displayGames.fromDate = formatDate(from);
+			vm.displayGames.toDate = formatDate(to);
+			if (!isNaN(gamesCountOptionIdx)) {
+				vm.filter.gamesCount = vm.filterOptions.gamesCount[gamesCountOptionIdx || 0];
+			}
+			vm.displayGames.players = getPlayers();
+		}
+
+		function loadLastGame() {
+			var today = new Date();
+			loadGamesBetweenDates(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3), today);
+		}
+
+		function loadLastMonthGames() {
+			var today = new Date();
+			loadGamesBetweenDates(new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()), today);
+		}
+
+		function loadLastQuarterGames() {
+			var today = new Date();
+			loadGamesBetweenDates(new Date(today.getFullYear(), today.getMonth() - 3, today.getDate()), today);
+		}
+
+		function loadLastYearGames() {
+			var today = new Date();
+			loadGamesBetweenDates(new Date(today.getFullYear() - 1, today.getMonth(), today.getDate()), today);
+		}
 	
 		function loadAllTimeGames() {
-			vm.displayGames.fromDate = new Date( 2000, 9, 1 );
-			vm.displayGames.toDate = new Date();
+			vm.displayGames.fromDate = formatDate(new Date( 2000, 9, 1 ));
+			vm.displayGames.toDate = formatDate(new Date());
+			vm.filter.gamesCount = vm.filterOptions.gamesCount[ 1 ];
 			vm.displayGames.players = getPlayers();
 		}
 		

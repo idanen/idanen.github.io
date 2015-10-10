@@ -24,7 +24,13 @@
 							</span>
 						</div>
 					</div>
-					<button class="btn btn-info" ng-click="vm.loadAllTimeGames()" analytics-on analytics-category="Actions">All Time</button>
+					<div class="btn-group">
+						<button class="btn btn-info" ng-click="vm.loadLastGame()" analytics-on analytics-category="Actions">Last Game</button>
+						<button class="btn btn-info" ng-click="vm.loadLastMonthGames()" analytics-on analytics-category="Actions">Last Month</button>
+						<button class="btn btn-info" ng-click="vm.loadLastQuarterGames()" analytics-on analytics-category="Actions">Last Quarter</button>
+						<button class="btn btn-info" ng-click="vm.loadLastYearGames()" analytics-on analytics-category="Actions">Last Year</button>
+						<button class="btn btn-info" ng-click="vm.loadAllTimeGames()" analytics-on analytics-category="Actions">All Time</button>
+					</div>
 				</form>
 			</div>
 		</div>

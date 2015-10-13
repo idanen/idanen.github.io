@@ -5,31 +5,57 @@
 
     CommunitiesController.$inject = [ 'communitiesSvc', 'userService', 'Ref' ];
     function CommunitiesController( communitiesSvc, userService, Ref ) {
-        var vm = this;
+        var vm = this,
+            collapseState = {};
 
         vm.newCommunity = '';
         vm.inputDisabled = false;
         vm.communities = communitiesSvc.communities;
         vm.add = add;
+        vm.isCollapsed = isCollapsed;
+        vm.toggleCollapsed = toggleCollapsed;
+
+        vm.communities.$loaded().then( function () {
+            vm.communities.forEach( function ( community ) {
+                collapseState[ community.$id ] = true;
+            } );
+        } );
 
         function add() {
             var community = {},
-                userUid = userService.getUser().uid;
+                user = userService.getUser();
             if ( vm.newCommunity ) {
                 community.name = vm.newCommunity;
                 community.admins = {};
-                community.admins[userUid] = true;
+                community.members = {};
+                community.admins[user.uid] = {
+                    name: user[user.provider].displayName
+                };
+                community.members[user.uid] = {
+                    name: user[user.provider].displayName
+                };
                 vm.communities.$add( community )
                     .then( function ( ref ) {
                         var membership = {};
+                        membership[ref.key()] = {
+                            name: vm.newCommunity
+                        };
                         vm.newCommunity = '';
-                        membership[ref.key()] = true;
-                        Ref.child('player/' + userUid).child('memberIn').set( membership );
+                        collapseState[ref.key()] = false;
+                        Ref.child('player/' + user.uid).child('memberIn').set( membership );
                     } )
                     .finally( function () {
                         vm.inputDisabled = false;
                     } );
             }
+        }
+
+        function isCollapsed( communityId ) {
+            return collapseState[communityId];
+        }
+
+        function toggleCollapsed( communityId ) {
+            collapseState[communityId] = !collapseState[communityId];
         }
     }
 }());

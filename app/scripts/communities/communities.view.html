@@ -1,25 +1,25 @@
 <div class="container">
     <div class="row">
-        <div class="col-xs-10">
-            <input class="form-control" type="text" ng-model="vm.newCommunity">
+        <div class="col-xs-8">
+            <input class="form-control" type="text" ng-model="vm.newCommunity" placeholder="Community name">
         </div>
-        <div class="col-xs-2">
-            <button class="btn btn-default" ng-click="vm.add()"><span class="fa fa-plus"></span> Add</button>
+        <div class="col-xs-4">
+            <button class="btn btn-default btn-block" ng-click="vm.add()"><span class="fa fa-plus"></span> Create a new Pokermunity</button>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="panel-group" role="tablist" ng-repeat="community in vm.communities" aria-multiselectable="true">
                 <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingOne">
+                    <div class="panel-heading" role="tab" ng-click="vm.toggleCollapsed( community.$id )">
                         <h4 class="panel-title">
-                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <a role="button" aria-expanded="true" aria-controls="collapseOne">
                                 {{ community.name }}
                             </a>
                         </h4>
                     </div>
-                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                        <button class="btn btn-link" ng-repeat="player in community.players">{{ player.name }}</button>
+                    <div class="panel-collapse collapse" ng-class="{'in': vm.isCollapsed( community.$id )}" role="tabpanel" aria-labelledby="headingOne">
+                        <button class="btn btn-link" ng-repeat="player in community.members">{{ player }}</button>
                     </div>
                 </div>
             </div>

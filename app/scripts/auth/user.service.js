@@ -14,7 +14,7 @@
 
         function login( provider ) {
             return Auth.$authWithOAuthPopup(provider || 'google', {
-                    rememberMe: 'default',
+                    remember: 'default',
                     scope: GOOGLE_AUTH_SCOPES
                 })
                 .then(save);

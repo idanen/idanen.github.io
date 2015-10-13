@@ -43,6 +43,11 @@
             controller: 'PokerStatsCtrl',
             controllerAs: 'vm'
         });
+        $routeProvider.when('/communities', {
+            templateUrl: 'scripts/communities/communities.view.html',
+            controller: 'CommunitiesCtrl',
+            controllerAs: 'vm'
+        });
         $routeProvider.when('/view2', {
             templateUrl: 'partials/partial2.html',
             controller: 'MyCtrl2',

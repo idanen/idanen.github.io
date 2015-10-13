@@ -52,6 +52,11 @@
 				href: "#/stats",
 				icon: "fa-bar-chart"
 			} );
+            $scope.tabs.push( {
+                title: 'communities',
+                href: '#/communities',
+                icon: 'fa-users'
+            } );
 			if ( $scope.isAdmin() ) {
 				$scope.tabs.push( adminTab );
 			}

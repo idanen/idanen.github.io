@@ -16,9 +16,10 @@ angular.module( 'pokerManager.services' ).
 
 		this.$get = GamesService;
 
-		GamesService.$inject = [ '$resource', '$filter' ];
+		GamesService.$inject = [ '$resource', '$filter', 'Ref', '$firebaseObject' ];
 
-		function GamesService( $resource, $filter ) {
+		function GamesService( $resource, $filter, Ref, $firebaseObject ) {
+			var gamesRef = Ref.child('communities').child('games');
 			var Resource = $resource( baseUrl + 'games/:gameId', {gameId: '@id'}, {
 				'update': {method: 'PUT'},
 				'getPlayers': {

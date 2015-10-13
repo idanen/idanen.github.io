@@ -5,6 +5,7 @@
 
   AuthFactory.$inject = ['$firebaseAuth', 'Ref'];
   function AuthFactory($firebaseAuth, Ref) {
+
     return $firebaseAuth(Ref);
   }
 })();

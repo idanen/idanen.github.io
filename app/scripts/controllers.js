@@ -1,30 +1,34 @@
 /* Controllers */
+(function () {
+	'use strict';
+	angular.module( 'pokerManager.controllers', [ 'pokerManager.services' ] )
+		.controller( 'MainCtrl', MainController );
 
-angular.module( 'pokerManager.controllers', [] ).
-	controller( 'MainCtrl', [ '$scope', '$location', 'Auth', 'jrgGoogleAuth', function ( $scope, $location, Auth, jrgGoogleAuth ) {
-		'use strict';
-
+	MainController.$inject = [ '$scope', '$location', 'userService' ];
+	function MainController( $scope, $location, userService ) {
 		var adminTab = {
 			title: "Current Game",
-			href: "#/view1/0",
+			href: "#/game/0",
 			icon: "icon-spades"
 		};
 
 		$scope.tabs = [];
-		
+
 		$scope.getLocation = function() {
 			return $location.path();
 		};
 		$scope.setLocation = function( location ) {
 			$location.path( location );
 		};
-		
+
 		$scope.isTabSelected = function( tabHref ) {
-			return ( tabHref.substring( 1 ) === $location.path() );
+            var pathRoot = $location.path().split('/')[1],
+                tabHrefRoot = tabHref.split('/')[1];
+			return ( pathRoot === tabHrefRoot );
 		};
-		
+
 		$scope.isAdmin = function() {
-			return ( !!Auth.getUser() );
+			return ( !!userService.getUser() );
 		};
 
 		$scope.signOut = signOut;
@@ -41,7 +45,7 @@ angular.module( 'pokerManager.controllers', [] ).
 				}
 			}
 		} );
-		
+
 		$scope.init = function() {
 			$scope.tabs.push( {
 				title: "Stats",
@@ -55,118 +59,13 @@ angular.module( 'pokerManager.controllers', [] ).
 
 		$scope.$on( '$locationChangeStart', function ( ev, from, to ) {
 			if ( /login$/i.test( to ) ) {
-				$scope.currentUser = Auth.getUser();
+				$scope.currentUser = userService.getUser();
 			}
 		} );
 
 		function signOut() {
-			jrgGoogleAuth.logout().then( function () {
-				Auth.revokeToken().then( function () {
-					delete $scope.currentUser;
-				} );
-			} );
+            userService.logout();
+            delete $scope.currentUser;
 		}
-	} ] ).
-	controller( 'MyCtrl2', [ '$scope', 'Players', 'Games', '$analytics', function ( $scope, Players, Games, $analytics ) {
-		'use strict';
-
-		var vm = this;
-
-		vm.players = Players.query();
-		vm.games = Games.query();
-
-		vm.dateOptions = {
-				'year-format': "'yyyy'",
-				'month-format': "'MM'",
-				'day-format': "'dd'"
-			};
-		vm.prefs = {
-				playersOpen: false
-			};
-		vm.today = new Date();
-		vm.serverMsg = [];
-
-		vm.game = Games.create();
-
-		vm.refresh = function () {
-			vm.players = Players.query();
-			vm.games = Games.query();
-		};
-
-		vm.newPlayer = function () {
-			var player = new Players();
-			player.name = 'Johnny';
-			player.$save();
-		};
-
-		vm.newGame = function () {
-			var game = Games.create();
-			Games.save( game );
-		};
-
-		vm.save = function ( index ) {
-			vm.players[ index ].$update( function ( saved ) {
-				console.log(saved);
-			}, function ( err ) {
-				console.log( 'error: ', err );
-			} );
-		};
-
-		vm.addPlayerToGame = function ( player ) {
-			if ( !player.isPlaying ) {
-				player.isPlaying = true;
-				player.buyin = 0;
-				player.buyout = 0;
-				player.currentChipCount = 0;
-				player.paidHosting = false;
-				vm.game.players.push( player );
-			}
-			
-			try {
-				$analytics.eventTrack('Buyin', { category: 'Actions', label: player.name });
-			} catch (err) {}
-		};
-	
-		vm.toggleGameDate = function( $event, index ) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			
-			vm.games[ index ].dateOpen = !vm.games[ index ].dateOpen;
-		};
-
-		vm.getPlayersOfGame = function ( game ) {
-			game.players = Games.getPlayers( { gameId: game.id }, function ( data ) {
-				// console.log( 'got players: ', data );
-			} );
-		};
-
-		vm.saveGame = function ( index ) {
-			vm.games[ index ].$update();
-		};
-
-		vm.addServerMsg = function( msg ) {
-			vm.serverMsg.push( msg );
-		};
-
-		vm.closeServerMsg = function( index ) {
-			vm.serverMsg.splice( index, 1 );
-		};
-
-		vm.gameSaved = function ( savedGame ) {
-			vm.game = Games.create();
-			vm.games = Games.query();
-
-			vm.addServerMsg( {
-				txt: 'Game saved successfully',
-				type: 'success'
-			} );
-		};
-
-		vm.saveGameFailed = function ( err ) {
-			console.log( err );
-			vm.addServerMsg( {
-				txt: 'Error saving Game',
-				type: 'error'
-			} );
-		};
-	} ] );
+	}
+}());

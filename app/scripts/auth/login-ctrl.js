@@ -1,30 +1,26 @@
 (function () {
+	'use strict';
+
 /**
  * Login controller
  */
 angular.module( 'pokerManager' ).
 	controller( 'LoginCtrl', LoginController );
 
-LoginController.$inject = [ '$analytics', '$scope', 'Auth', 'Players', 'jrgGoogleAuth' ];
+LoginController.$inject = [ '$scope', 'userService', 'Players', 'Ref', '$firebaseObject', 'jrgGoogleAuth' ];
 
-function LoginController( $analytics, $scope, Auth, Players, jrgGoogleAuth ) {
-	'use strict';
-
-	var vm = this;
+function LoginController( $scope, userService, Players, Ref, jrgGoogleAuth ) {
+	var vm = this,
+        userPlayer;
 
 	vm.signIn = signIn;
 	vm.signOut = signOut;
 	vm.user = null;
 
-	function signIn() {
-		jrgGoogleAuth.login().then( successfulLogin );
-		//$auth.authenticate( 'google' )
-		//	.then( function authSuccess( data ) {
-		//		console.log( 'Successful login: ', data );
-		//	} )
-		//	.catch( function authFailed( error ) {
-		//		console.error( 'Authentication failure', error );
-		//	} );
+	function signIn(provider) {
+        userService.login(provider)
+            .then(obtainedUserInfo)
+            .catch(failedToLogin);
 	}
 
 	function signOut() {
@@ -48,6 +44,31 @@ function LoginController( $analytics, $scope, Auth, Players, jrgGoogleAuth ) {
 			delete vm.user;
 		} );
 	} );
+
+	function loggedIn( userInfo ) {
+        console.log(userInfo);
+		Auth.save().then(obtainedUserInfo);
+	}
+
+	function failedToLogin( authError ) {
+        console.log(authError);
+	}
+
+	function obtainedUserInfo( user ) {
+		var player = {
+                name: user[user.provider].displayName,
+                email: user[user.provider].email,
+                imageUrl: user[user.provider].profileImageURL
+            },
+            extendedUser = angular.extend({}, user, player);
+		console.log(user);
+		// Save user as a player
+		Ref.child('player').child(user.uid).set(player, function () {
+            $scope.$apply(function () {
+                vm.user = extendedUser;
+            });
+		});
+	}
 
 	function successfulLogin( userInfo ) {
 		console.log( 'Successfully fetched user data: ', userInfo );

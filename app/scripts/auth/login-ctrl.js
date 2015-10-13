@@ -7,11 +7,10 @@
 angular.module( 'pokerManager' ).
 	controller( 'LoginCtrl', LoginController );
 
-LoginController.$inject = [ '$scope', 'userService', 'Players', 'Ref', '$firebaseObject', 'jrgGoogleAuth' ];
+LoginController.$inject = [ '$scope', '$q', 'userService', 'Players', 'Ref', 'jrgGoogleAuth' ];
 
-function LoginController( $scope, userService, Players, Ref, jrgGoogleAuth ) {
-	var vm = this,
-        userPlayer;
+function LoginController( $scope, $q, userService, Players, Ref, jrgGoogleAuth ) {
+	var vm = this;
 
 	vm.signIn = signIn;
 	vm.signOut = signOut;
@@ -63,11 +62,11 @@ function LoginController( $scope, userService, Players, Ref, jrgGoogleAuth ) {
             extendedUser = angular.extend({}, user, player);
 		console.log(user);
 		// Save user as a player
-		Ref.child('player').child(user.uid).set(player, function () {
-            $scope.$apply(function () {
-                vm.user = extendedUser;
-            });
-		});
+        $q(function (resolve) {
+            Ref.child('player').child(user.uid).set(player, resolve);
+        }).then(function () {
+            vm.user = extendedUser;
+        });
 	}
 
 	function successfulLogin( userInfo ) {

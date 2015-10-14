@@ -11,23 +11,8 @@
         })
         .config(config);
 
-    config.$inject = ['$routeProvider', '$httpProvider', 'BASE_URL', 'PlayersProvider', 'GamesProvider', 'jrgGoogleAuthProvider', 'UtilsProvider'];
-    function config($routeProvider, $httpProvider, BASE_URL, PlayersProvider, GamesProvider, jrgGoogleAuthProvider, utilsProvider) {
-        var env = "DEV";
-
-        PlayersProvider.setBaseUrl( BASE_URL[env] );
-        GamesProvider.setBaseUrl( BASE_URL[env] );
-
-        jrgGoogleAuthProvider.configure({
-            client_id: '1053634869128-rj5rm5ilcdna5rhcp2n6ank7tj1j4rdq.apps.googleusercontent.com',
-            scope: 'profile email https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.profile.emails.read'
-        });
-
-        // Register interceptor
-        $httpProvider.interceptors.push( 'authInterceptor' );
-
-        $httpProvider.defaults.headers.post.Authorization = $httpProvider.defaults.headers.put.Authorization = utilsProvider.getToken();
-
+    config.$inject = ['$routeProvider'];
+    function config($routeProvider) {
         $routeProvider.when('/game/:gameId', {
             templateUrl: 'partials/partial1.html',
             controller: 'PokerManagerCtrl',

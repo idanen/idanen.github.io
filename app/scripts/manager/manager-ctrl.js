@@ -94,7 +94,7 @@ angular.module( 'pokerManager' ).
 				
 				if ( foundPlayer ) {
 					// Copy fields from saved game
-					var isPlaying = vm.game.players[ i ].isPlaying,
+					var //isPlaying = vm.game.players[ i ].isPlaying,
 						buyin = vm.game.players[ i ].buyin,
 						buyout = vm.game.players[ i ].buyout,
 						currentChipCount = vm.game.players[ i ].currentChipCount * ( ( oldChipValue != newChipValue ) ? oldChipValue / newChipValue : 1 ),
@@ -114,13 +114,7 @@ angular.module( 'pokerManager' ).
 
 		function init() {
 			//Refresh view
-			vm.players = Players.query( function () {
-				if ( localStorage.getItem( 'game' ) !== null ) {
-					vm.loadLocalStorageGame();
-				}
-			}, function ( err ) {
-				console.log( err );
-			} );
+			vm.players = Players.players;
 		}
 
 		function refreshPlayersList() {

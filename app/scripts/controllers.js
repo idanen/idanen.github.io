@@ -36,7 +36,7 @@
 		$scope.$watch( function () {
 			return $scope.isAdmin();
 		}, function ( newVal ) {
-			if ( newVal && $scope.tabs.length < 2 ) {
+			if ( newVal && $scope.tabs.indexOf(adminTab) === -1 ) {
 				$scope.tabs.push( adminTab );
 			} else {
 				var adminTabIdx = $scope.tabs.indexOf( adminTab );

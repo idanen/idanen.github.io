@@ -3,9 +3,10 @@
         .module( 'pokerManager.services' )
         .service( 'userService', UserService );
 
-    UserService.$inject = [ '$q', 'Auth', 'GOOGLE_AUTH_SCOPES' ];
-    function UserService( $q, Auth, GOOGLE_AUTH_SCOPES ) {
-        var service = this;
+    UserService.$inject = [ '$q', 'Auth', 'Ref', '$firebaseObject', 'GOOGLE_AUTH_SCOPES' ];
+    function UserService( $q, Auth, Ref, $firebaseObject, GOOGLE_AUTH_SCOPES ) {
+        var service = this,
+            users = $firebaseObject( Ref.child( 'users' ) );
 
         service.login = login;
         service.logout = logout;
@@ -26,9 +27,10 @@
         }
 
         function save() {
-            return $q.when( Auth.$requireAuth() )
+            return $q.when( Auth.$waitForAuth() )
                 .then(function ( user ) {
                     service.user = user;
+                    users[user.uid] = user;
                     return service.user;
                 });
         }

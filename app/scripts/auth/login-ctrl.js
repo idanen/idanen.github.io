@@ -7,9 +7,9 @@
 angular.module( 'pokerManager' ).
 	controller( 'LoginCtrl', LoginController );
 
-LoginController.$inject = [ '$scope', '$q', 'userService', 'Players', 'Ref', 'jrgGoogleAuth' ];
+LoginController.$inject = [ 'userService', 'Players' ];
 
-function LoginController( $scope, $q, userService, Players, Ref, jrgGoogleAuth ) {
+function LoginController( userService, Players ) {
 	var vm = this;
 
 	vm.signIn = signIn;
@@ -19,38 +19,15 @@ function LoginController( $scope, $q, userService, Players, Ref, jrgGoogleAuth )
 	function signIn(provider) {
         userService.login(provider)
             .then(obtainedUserInfo)
-            .catch(failedToLogin);
+            .catch( function ( error ) {
+                console.log( error );
+            } );
 	}
 
 	function signOut() {
 		// TODO(idan): Add analytics event
-		jrgGoogleAuth.logout().then( function () {
-			Auth.revokeToken().then( function () {
-				delete vm.user;
-			} );
-		} );
-	}
-
-	$scope.$on( 'event:google-plus-signin-success', function googleLoginSuccess( event, data ) {
-		console.log( 'Successful login: ', data );
-		jrgGoogleAuth.loggedIn( data ).then( successfulLogin ).catch( failedLogin );
-	} );
-
-	$scope.$on( 'event:google-plus-signin-failure', function googleLoginFailure( event, data ) {
-		// TODO(idan): Add analytics event
-		console.error( 'Authentication failure', data );
-		Auth.revokeToken().then( function () {
-			delete vm.user;
-		} );
-	} );
-
-	function loggedIn( userInfo ) {
-        console.log(userInfo);
-		Auth.save().then(obtainedUserInfo);
-	}
-
-	function failedToLogin( authError ) {
-        console.log(authError);
+		userService.logout();
+        delete vm.user;
 	}
 
 	function obtainedUserInfo( user ) {
@@ -58,51 +35,12 @@ function LoginController( $scope, $q, userService, Players, Ref, jrgGoogleAuth )
                 name: user[user.provider].displayName,
                 email: user[user.provider].email,
                 imageUrl: user[user.provider].profileImageURL
-            },
-            extendedUser = angular.extend({}, user, player);
-		console.log(user);
+            };
+
+        vm.user = angular.extend({}, user, player);
+		console.log(vm.user);
 		// Save user as a player
-        $q(function (resolve) {
-            Ref.child('player').child(user.uid).set(player, resolve);
-        }).then(function () {
-            vm.user = extendedUser;
-        });
-	}
-
-	function successfulLogin( userInfo ) {
-		console.log( 'Successfully fetched user data: ', userInfo );
-		var players = Players.fetchedPlayers(),
-			tokenToSave = {
-				authToken: userInfo.authToken,
-				tokenSourceId: 1
-			},
-			playerId = 0;
-
-		// Find player's id
-		if ( players ) {
-			players.some( function ( player ) {
-				if ( player.email === userInfo.email ) {
-					playerId = player.id;
-					return true;
-				}
-				return false;
-			} );
-		}
-
-		userInfo.id = playerId;
-		tokenToSave.playerId = playerId;
-		tokenToSave.player = userInfo;
-
-		Auth.save( tokenToSave, function ( theUser ) {
-			vm.user = theUser;
-		} );
-	}
-
-	function failedLogin( authError ) {
-		console.log( authError );
-		Auth.revokeToken().then( function () {
-			delete vm.user;
-		} );
+        Players.matchUserToPlayer( vm.user );
 	}
 }
 })();

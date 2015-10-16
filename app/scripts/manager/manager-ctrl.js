@@ -5,9 +5,9 @@
 angular.module( 'pokerManager' ).
 	controller( 'PokerManagerCtrl', PokerManagerController );
 
-	PokerManagerController.$inject = [ '$scope', '$modal', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games' ];
+	PokerManagerController.$inject = [ '$scope', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games', 'playerModal' ];
 
-	function PokerManagerController( $scope, $modal, $filter, $analytics, toaster, utils, Players, Games ) {
+	function PokerManagerController( $scope, $filter, $analytics, toaster, utils, Players, Games, playerModal ) {
 		'use strict';
 
 		var vm = this;
@@ -176,36 +176,23 @@ angular.module( 'pokerManager' ).
 		}
 
 		function openPlayerDetailsDialog( player ) {
-			var isNew = ( typeof( player ) === 'undefined' || player === null );
-
 			vm.closePlayersControl();
-
-			if (isNew) {
-				player = Players.create();
-			}
-			var modalInstance = $modal.open( {
-				templateUrl: './partials/modals/addNewPlayer.html',
-				controller: 'ModalPlayerDetailsCtrl',
-				resolve: {
-					player: function() {
-						return player;
+			
+			playerModal.open( player )
+				.then( function ( savedPlayer ) {
+					// If new -> update default values
+					if ( savedPlayer.isNew ) {
+						savedPlayer.buyin = 0;
+						savedPlayer.isPlaying = false;
+					// Update changed fields
 					}
-				}
-			} );
-
-			modalInstance.result.then( function( savedPlayer ) {
-				// If new -> update default values
-				if ( isNew ) {
-					savedPlayer.buyin = 0;
-					savedPlayer.isPlaying = false;
-				// Update changed fields
-				}
-				
-				player = savedPlayer;
-				
-				// Model.savePlayer( player );
-				Players.update( player ).$promise.then( playerSaved );
-			} );
+					
+					player = savedPlayer;
+					
+					// Model.savePlayer( player );
+					return Players.update( player ).$promise;
+				} )
+				.then( playerSaved );
 		}
 
 		$scope.$watch( function () {

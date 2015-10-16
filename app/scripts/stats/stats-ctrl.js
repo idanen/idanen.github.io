@@ -5,9 +5,9 @@
 angular.module( 'pokerManager' ).
 	controller( 'PokerStatsCtrl', PokerStatsController );
 
-	PokerStatsController.$inject = [ '$modal', '$filter', 'Utils', 'Games', 'Players' ];
+	PokerStatsController.$inject = [ '$filter', 'Utils', 'Games', 'Players', 'playerModal' ];
 
-	function PokerStatsController( $modal, $filter, utils, Games, Players ) {
+	function PokerStatsController( $filter, utils, Games, Players, playerModal ) {
 		'use strict';
 
 		var vm = this;
@@ -57,7 +57,7 @@ angular.module( 'pokerManager' ).
 		function playerSaved( savedPlayer ) {
 			// console.log('savedPlayer = ' + savedPlayer);
 			var isNew = true,
-				playerIdx, len,
+				playerIdx,
 				players = vm.displayGames.players;
 			
 			isNew = players.some( function ( player ) {
@@ -181,43 +181,19 @@ angular.module( 'pokerManager' ).
 		}
 
 		function openPlayerDetailsDialog( player ) {
-			var isNew = ( player === null );
-
-			if ( isNew ) {
-				player = {
-					name: '',
-					balance: 0,
-					isPlaying: false,
-					buyin: 0,
-					currentChipCount: 0,
-					email: '',
-					phone:'',
-					id: 0,
-					createDate: $filter( 'date' )( vm.today, 'y-MM-dd' ),
-					isNew: true
-				};
-			}
-			var modalInstance = $modal.open( {
-				templateUrl: './partials/modals/addNewPlayer.html',
-				controller: 'ModalPlayerDetailsCtrl',
-				resolve: {
-					player: function() {
-						return player;
+			playerModal.open( player )
+				.then( function ( savedPlayer ) {
+					// If new -> update default values
+					if ( isNew ) {
+						savedPlayer.buyin = 0;
+						savedPlayer.isPlaying = false;
 					}
-				}
-			} );
-
-			modalInstance.result.then( function ( savedPlayer ) {
-				// If new -> update default values
-				if ( isNew ) {
-					savedPlayer.buyin = 0;
-					savedPlayer.isPlaying = false;
-				}
-				
-				player = savedPlayer;
-				
-				Players.update( player ).$promise.then( playerSaved );
-			} );
+					
+					player = savedPlayer;
+					
+					return Players.update( player ).$promise;
+				} )
+				.then( playerSaved );;
 		}
 	}
 })();

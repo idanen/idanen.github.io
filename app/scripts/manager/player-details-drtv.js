@@ -16,24 +16,26 @@ angular.module( 'pokerManager' ).
 				player: '='
 			},
 			controller: 'PlayerDetailsCtrl',
+			controllerAs: 'pCtrl',
+			bindToController: true,
 			templateUrl: 'partials/tmpls/player-details-tmpl.html',
 			link: postLinkFn
 		};
 
 		function postLinkFn( scope, element, attrs, ctrl ) {
-			var chartData = createData( scope.player ),
+			var chartData = createData( ctrl.player ),
 				chartHolder = angular.element('<div/>'),
-				chartObj = createChartObject( scope.player.name, chartData ),
+				chartObj = createChartObject( ctrl.player.name, chartData ),
 				refreshBtn = element.find( '.refresh-data-btn' );
 
 			function refreshData() {
-				scope.loading = false;
+				ctrl.loading = false;
 
 				// Calculate extra data
-				scope.player.winningSessions = winningSessions( scope.player );
-				scope.player.avgWinning = avgWinning( scope.player, true );
+				ctrl.player.winningSessions = winningSessions( ctrl.player );
+				ctrl.player.avgWinning = avgWinning( ctrl.player, true );
 
-				chartData = createData( scope.player );
+				chartData = createData( ctrl.player );
 
 				chartHolder.highcharts().destroy();
 
@@ -54,8 +56,10 @@ angular.module( 'pokerManager' ).
 				chartHolder.highcharts( chartObj );
 			}, 0, false);
 
-			if ( !scope.player.isNew ) {
-				scope.player = Players.get( { playerId: scope.player.id }, refreshData );
+			if ( !ctrl.player.isNew ) {
+				ctrl.player = Players.get( { playerId: ctrl.player.id }, refreshData );
+			} else {
+				ctrl.loading = false;
 			}
 			
 			refreshBtn.on( 'click', refreshData );

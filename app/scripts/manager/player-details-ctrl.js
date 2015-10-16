@@ -1,35 +1,36 @@
 (function () {
+	'use strict';
 /**
  * Player Modal's controller
  */
-angular.module( 'pokerManager' ).
-	controller( 'ModalPlayerDetailsCtrl', modalPlayerDetailsController ).
-	controller( 'PlayerDetailsCtrl', playerDetailsController );
+angular.module( 'pokerManager' )
+	.controller( 'ModalPlayerDetailsCtrl', ModalPlayerDetailsController )
+	.controller( 'PlayerDetailsCtrl', PlayerDetailsController );
 
-	modalPlayerDetailsController.$inject = [ '$scope', '$http', '$modalInstance', 'player' ];
+	ModalPlayerDetailsController.$inject = [ '$scope', '$http', '$modalInstance', 'player' ];
 
-	function modalPlayerDetailsController( $scope, $http, $modalInstance, player ) {
-		'use strict';
-
-		$scope.player = player;
-
-		$scope.ok = function() {
-			$modalInstance.close($scope.player);
-		};
-
-		$scope.cancel = function() {
+	function ModalPlayerDetailsController( $scope, $http, $modalInstance, player ) {
+		var vm = this;
+		
+		vm.player = player;
+		vm.ok = okFn;
+		vm.cancel = cancelFn;
+		
+		function okFn() {
+			$modalInstance.close(vm.player);
+		}
+		
+		function cancelFn() {
 			$modalInstance.dismiss('cancel');
-		};
+		}
 	}
 
-	playerDetailsController.$inject = [ '$scope', 'Utils' ];
+	PlayerDetailsController.$inject = [ 'Utils' ];
 
-	function playerDetailsController( $scope, utils ) {
-		'use strict';
+	function PlayerDetailsController( utils ) {
+		this.loading = true;
 
-		$scope.loading = true;
-
-		$scope.isAdmin = function() {
+		this.isAdmin = function() {
 			//return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
 			return true;
 		};

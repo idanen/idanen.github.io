@@ -41,26 +41,6 @@ angular.module( 'pokerManager' ).
 
 		vm.init();
 
-		function playerSaved( savedPlayer ) {
-			// console.log('savedPlayer = ' + savedPlayer);
-			var isNew = true,
-				playerIdx, len,
-				players = vm.players;
-			
-			for ( playerIdx = 0, len = players.length; playerIdx < len; ++playerIdx ) {
-				if ( players[ playerIdx ].id === savedPlayer.id) {
-					isNew = false;
-					break;
-				}
-			}
-			
-			if ( isNew ) {
-				players.push( savedPlayer );
-			} else {
-				players[ playerIdx ] = savedPlayer;
-			}
-		}
-
 		function openPlayersControl() {
 			vm.prefs.playersOpen = !vm.prefs.playersOpen;
 		}
@@ -184,15 +164,13 @@ angular.module( 'pokerManager' ).
 					if ( savedPlayer.isNew ) {
 						savedPlayer.buyin = 0;
 						savedPlayer.isPlaying = false;
-					// Update changed fields
+						vm.players.push( savedPlayer );
 					}
 					
 					player = savedPlayer;
-					
-					// Model.savePlayer( player );
+
 					return Players.update( player ).$promise;
-				} )
-				.then( playerSaved );
+				} );
 		}
 
 		$scope.$watch( function () {

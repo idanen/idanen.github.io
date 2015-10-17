@@ -54,25 +54,6 @@ angular.module( 'pokerManager' ).
 		vm.filterPlayers = filterPlayers;
 		vm.playerPredicate = playerPredicate;
 
-		function playerSaved( savedPlayer ) {
-			// console.log('savedPlayer = ' + savedPlayer);
-			var isNew = true,
-				playerIdx,
-				players = vm.displayGames.players;
-			
-			isNew = players.some( function ( player ) {
-				return player.id === savedPlayer.id;
-			} );
-			
-			if ( isNew ) {
-				players.push( savedPlayer );
-			} else {
-				savedPlayer.buyin = players[ playerIdx ].buyin;
-				savedPlayer.buyout = players[ playerIdx ].buyout;
-				players[ playerIdx ] = savedPlayer;
-			}
-		}
-
 		function formatDate( aDate ) {
 			return $filter( 'date' )( aDate, 'y-MM-dd' );
 		}
@@ -183,17 +164,15 @@ angular.module( 'pokerManager' ).
 		function openPlayerDetailsDialog( player ) {
 			playerModal.open( player )
 				.then( function ( savedPlayer ) {
-					// If new -> update default values
-					if ( isNew ) {
-						savedPlayer.buyin = 0;
-						savedPlayer.isPlaying = false;
-					}
-					
-					player = savedPlayer;
-					
-					return Players.update( player ).$promise;
-				} )
-				.then( playerSaved );;
+					/*
+					 * Update the local instance if the player with the changeable fields from the modal
+					 */
+					player.name = savedPlayer.name;
+					player.phone = savedPlayer.phone;
+					player.email = savedPlayer.email;
+
+					return Players.update( savedPlayer ).$promise;
+				} );
 		}
 	}
 })();

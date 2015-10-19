@@ -40,7 +40,7 @@ function LoginController( userService, Players ) {
         vm.user = angular.extend({}, user, player);
 		console.log(vm.user);
 		// Save user as a player
-        Players.matchUserToPlayer( vm.user );
+        return Players.matchUserToPlayer( vm.user );
 	}
 }
 })();

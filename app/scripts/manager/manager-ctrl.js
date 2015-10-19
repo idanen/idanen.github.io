@@ -5,9 +5,9 @@
 angular.module( 'pokerManager' ).
 	controller( 'PokerManagerCtrl', PokerManagerController );
 
-	PokerManagerController.$inject = [ '$scope', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games', 'playerModal' ];
+	PokerManagerController.$inject = [ '$scope', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games', 'playerModal', 'communitiesSvc' ];
 
-	function PokerManagerController( $scope, $filter, $analytics, toaster, utils, Players, Games, playerModal ) {
+	function PokerManagerController( $scope, $filter, $analytics, toaster, utils, Players, Games, playerModal, communitiesSvc ) {
 		'use strict';
 
 		var vm = this;
@@ -94,7 +94,9 @@ angular.module( 'pokerManager' ).
 
 		function init() {
 			//Refresh view
-			vm.players = Players.players;
+			Players.playersOfCommunity( communitiesSvc.getSelectedCommunity() ).then( function ( players ) {
+				vm.players = players;
+			} );
 		}
 
 		function refreshPlayersList() {

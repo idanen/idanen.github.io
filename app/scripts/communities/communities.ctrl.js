@@ -3,17 +3,21 @@
         .module( 'pokerManager' )
         .controller( 'CommunitiesCtrl', CommunitiesController );
 
-    CommunitiesController.$inject = [ 'communitiesSvc', 'userService', 'Ref' ];
-    function CommunitiesController( communitiesSvc, userService, Ref ) {
+    CommunitiesController.$inject = [ 'communitiesSvc', 'userService', 'Players', 'playerModal', 'Ref' ];
+    function CommunitiesController( communitiesSvc, userService, Players, playerModal, Ref ) {
         var vm = this,
             collapseState = {};
 
         vm.newCommunity = '';
         vm.inputDisabled = false;
+        vm.communityDropdownOpen = false;
         vm.communities = communitiesSvc.communities;
         vm.add = add;
         vm.isCollapsed = isCollapsed;
         vm.toggleCollapsed = toggleCollapsed;
+        vm.communitiesDropdownToggle = communitiesDropdownToggle;
+        vm.userUid = userService.getUser() && userService.getUser().uid;
+        vm.addMember = addMember;
 
         vm.communities.$loaded().then( function () {
             vm.communities.forEach( function ( community ) {
@@ -26,28 +30,52 @@
                 user = userService.getUser();
             if ( vm.newCommunity ) {
                 community.name = vm.newCommunity;
-                community.admins = {};
-                community.members = {};
-                community.admins[user.uid] = {
-                    name: user[user.provider].displayName
-                };
-                community.members[user.uid] = {
-                    name: user[user.provider].displayName
-                };
                 vm.communities.$add( community )
                     .then( function ( ref ) {
-                        var membership = {};
-                        membership[ref.key()] = {
-                            name: vm.newCommunity
-                        };
-                        vm.newCommunity = '';
                         collapseState[ref.key()] = false;
-                        Ref.child('player/' + user.uid).child('memberIn').set( membership );
+                        Players.findBy( 'userUid', user.uid ).then( function ( playerSnapshot ) {
+                            var membership = {},
+                                playerUid = playerSnapshot.key(),
+                                player = playerSnapshot.val(),
+                                admins = {};
+                            membership[ref.key()] = vm.newCommunity;
+                            playerSnapshot.ref().child( 'memberIn' ).set( membership );
+
+                            admins[playerUid] = player.name;
+                            ref.child( 'admins' ).set( admins );
+                            ref.child( 'members' ).set( admins );
+
+                            vm.newCommunity = '';
+                        } );
                     } )
                     .finally( function () {
                         vm.inputDisabled = false;
                     } );
             }
+        }
+
+        function join() {
+            //userService
+        }
+
+        function addMember( community ) {
+            playerModal.open()
+                .then( function ( player ) {
+                    return Players.save( player );
+                } )
+                .then( function ( savedPlayer ) {
+                    var idx = vm.communities.$indexFor( community.$id ),
+                        membership = {};
+
+                    membership[ community.$id ] = community.name;
+                    if ( idx !== -1 ) {
+                        savedPlayer.once( 'value', function ( snap ) {
+                            vm.communities[ idx ].members[ snap.key() ] = snap.child( 'name' ).val();
+                            vm.communities.$save( idx );
+                        } );
+                        Ref.child( 'players/' + savedPlayer.key() ).child( 'memberIn' ).set( membership );
+                    }
+                } );
         }
 
         function isCollapsed( communityId ) {
@@ -56,6 +84,10 @@
 
         function toggleCollapsed( communityId ) {
             collapseState[communityId] = !collapseState[communityId];
+        }
+
+        function communitiesDropdownToggle() {
+            vm.communityDropdownOpen = !vm.communityDropdownOpen;
         }
     }
 }());

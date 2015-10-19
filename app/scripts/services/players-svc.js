@@ -18,12 +18,13 @@ angular.module( 'pokerManager' ).
 
 		provider.$get = PlayersService;
 
-		PlayersService.$inject = [ '$resource', '$filter', '$q', 'Ref', '$firebaseArray' ];
+		PlayersService.$inject = [ '$q', 'Ref', '$firebaseArray' ];
 
-		function PlayersService( $resource, $filter, $q, Ref, $firebaseArray ) {
+		function PlayersService( $q, Ref, $firebaseArray ) {
             var service = {
                 create: create,
                 save: save,
+                playersOfCommunity: playersOfCommunity,
                 findBy: findBy,
                 matchUserToPlayer: matchUserToPlayer,
                 players: $firebaseArray( Ref.child( 'players' ) )
@@ -42,7 +43,6 @@ angular.module( 'pokerManager' ).
                     currentChipCount: 0,
                     email: '',
                     phone:'',
-                    id: 0,
                     createDate: new Date(),
                     isNew: true
                 };
@@ -50,26 +50,50 @@ angular.module( 'pokerManager' ).
 
             function save( player ) {
                 var toSave = preSave( player );
+                return service.players.$add( toSave );
             }
 
             function preSave( player ) {
                 var clone = angular.extend( {}, player );
-                delete clone.currentChipCount;
-                delete clone.id;
-                delete clone.isNew;
 
                 clone.createDate = player.createDate.getTime();
 
                 return clone;
             }
 
+            function playersOfCommunity( community ) {
+                var playerIds = Object.keys( community.members ),
+                    baseRef = Ref.child( 'players' ),
+                    players = [];
+
+                return $q(function (resolve) {
+                    playerIds.forEach(function (playerId) {
+                        baseRef.child(playerId).once('value', function (snap) {
+                            players.push( snap.val() );
+
+                            if (players.length === playerIds.length) {
+                                resolve( players );
+                            }
+                        });
+                    });
+                });
+            }
+
             function findBy( field, value ) {
                 return $q( function ( resolve ) {
-                    service.players.$ref().off('child_added');
+                    service.players.$ref().off('value');
                     service.players.$ref()
                         .orderByChild( field )
                         .equalTo( value )
-                        .on( 'child_added', resolve );
+                        .on( 'value', function ( querySnapshot ) {
+                            if ( querySnapshot.hasChildren() ) {
+                                querySnapshot.forEach( function ( playerSnap ) {
+                                    resolve( playerSnap );
+                                } );
+                            } else {
+                                resolve();
+                            }
+                        } );
                 } );
             }
 
@@ -77,23 +101,24 @@ angular.module( 'pokerManager' ).
                 return findBy( 'email', user.email )
                     .then(addUser);
 
-                function addUser( player ) {
-                    var userToMatch = {},
-                        idx = service.players.$indexFor( player.key() );
+                function addUser( playerSnapshot ) {
+                    var idx = -1;
 
                     // Stop listening
-                    service.players.$ref().off('child_added');
+                    service.players.$ref().off( 'value' );
 
-                    userToMatch[user.uid] = true;
-
-                    if ( idx !== -1 ) {
-                        service.players[ idx ].user = userToMatch;
-                        service.players.$save( idx );
+                    if ( playerSnapshot ) {
+                        idx = service.players.$indexFor( playerSnapshot.key() );
+                        if ( idx !== -1 ) {
+                            service.players[ idx ].userUid = user.uid;
+                            service.players.$save( idx );
+                        }
                     } else {
                         var newPlayer = preSave( create() );
-                        newPlayer.user = userToMatch;
+                        newPlayer.userUid = user.uid;
                         newPlayer.name = user.name;
                         newPlayer.email = user.email;
+                        newPlayer.imageUrl = user.imageUrl;
                         service.players.$add( newPlayer )
                             .catch(function ( error ) {
                                 console.log( error );

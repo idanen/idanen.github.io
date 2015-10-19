@@ -1,5 +1,23 @@
 <div class="container">
     <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>Welcome to Pokermunity</h2>
+            <div class="btn-group btn-group-justified">
+                <div class="btn-group btn-group-lg">
+                    <button class="btn btn-default btn-block" ng-click="vm.add()">Create a community</button>
+                </div>
+                <div class="btn-group btn-group-lg" ng-class="{'open': vm.communityDropdownOpen}">
+                    <button class="btn btn-default btn-block dropdown-toggle" ng-click="vm.communitiesDropdownToggle()">Join a community <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="community in vm.communities">
+                            <a ng-click="vm.join( community )">{{ community.name }} <em ng-show="vm.admins[$index]">(administered by adminhere)</em></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-xs-8">
             <input class="form-control" type="text" ng-model="vm.newCommunity" placeholder="Community name">
         </div>
@@ -16,10 +34,20 @@
                             <a role="button" aria-expanded="true" aria-controls="collapseOne">
                                 {{ community.name }}
                             </a>
+                            <button class="btn btn-sm btn-success" ng-click="vm.addMember( community )">Add members</button>
                         </h4>
                     </div>
                     <div class="panel-collapse collapse" ng-class="{'in': vm.isCollapsed( community.$id )}" role="tabpanel" aria-labelledby="headingOne">
-                        <button class="btn btn-link" ng-repeat="player in community.members">{{ player }}</button>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <button class="btn btn-link" ng-repeat="player in community.members">{{ player }}</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a href="#/game/0" class="btn btn-success">Start a new game</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

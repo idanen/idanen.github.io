@@ -38,12 +38,9 @@ angular.module( 'pokerManager' ).
 		vm.isGameInProgress = isGameInProgress;
 		vm.saveGame = saveGame;
 
-		vm.initGame();
-
 		function initGame() {
-
-			angular.element.extend( $scope.game, new Game() );
-			delete $scope.game.id;
+			vm.game.players.splice(0, vm.game.players.length);
+			vm.game.name = '';
 
 			// vm.game = new Game();
 
@@ -58,14 +55,14 @@ angular.module( 'pokerManager' ).
 
 		function clearGame() {
 			// Reset is-playing state
-			$scope.game.players.forEach( function( player ) {
+			vm.game.players.forEach( function( player ) {
 				player.isPlaying = false;
 				player.balance += ( player.buyout - player.buyin );
 			} );
-			$scope.game.players.splice( 0, $scope.game.players.length );
+			vm.game.players.splice( 0, vm.game.players.length );
 			
 			// Reset game
-			$scope.game = Game.create();
+			vm.game = Game.create();
 		}
 
 		function buyin( player, rationalBuyin ) {
@@ -75,7 +72,7 @@ angular.module( 'pokerManager' ).
 				player.buyin = 0;
 				player.currentChipCount = 0;
 				player.paidHosting = false;
-				$scope.game.players.push( player );
+				vm.game.players.push( player );
 			}
 			player.buyin += calculatedBuyin;
 			player.balance -= player.buyin;
@@ -88,7 +85,7 @@ angular.module( 'pokerManager' ).
 		}
 
 		function startGame() {
-			$scope.game.players.forEach( function ( player ) {
+			vm.game.players.forEach( function ( player ) {
 				vm.buyin( player, 1 );
 			} );
 		}
@@ -103,10 +100,10 @@ angular.module( 'pokerManager' ).
 
 		function cancelAddPlayer( player ) {
 			// Remove from current game
-			var index = $scope.game.players.indexOf( player );
+			var index = vm.game.players.indexOf( player );
 
 			if ( index > -1 ) {
-				$scope.game.players.splice( index, 1 );
+				vm.game.players.splice( index, 1 );
 				
 				// Reset fields
 				if ( player ) {
@@ -158,17 +155,21 @@ angular.module( 'pokerManager' ).
 		}
 	
 		function totalBuyin() {
-			return utils.totalsCalc( $scope.game.players, 'buyin' );
+			return utils.totalsCalc( vm.game.players, 'buyin' );
 		}
 	
 		function totalChips() {
-			return utils.totalsCalc( $scope.game.players, 'currentChipCount' );
+			return utils.totalsCalc( vm.game.players, 'currentChipCount' );
 		}
 		
 		function totalHosting() {
+			if (!vm.game.players) {
+				return 0;
+			}
+
 			var sum = 0;
-			for( var i = 0; i < $scope.game.players.length; ++i ) {
-				sum += $scope.game.players[ i ].paidHosting ? 10 : 0;
+			for( var i = 0; i < vm.game.players.length; ++i ) {
+				sum += vm.game.players[ i ].paidHosting ? 10 : 0;
 			}
 			return sum;
 		}
@@ -177,17 +178,17 @@ angular.module( 'pokerManager' ).
 			$event.preventDefault();
 			$event.stopPropagation();
 			
-			$scope.game.dateOpen = !$scope.game.dateOpen;
+			vm.game.dateOpen = !vm.game.dateOpen;
 		}
 
 		function isGameInProgress() {
-			return $scope.game.players.some( function ( player ) {
+			return vm.players && vm.game.players.some( function ( player ) {
 				return player.isPlaying;
 			} );
 		}
 
 		function saveGame() {
-			Game.save( $scope.game ).$promise.then( function gameSaveSuccess( data ) {
+			Game.save( vm.game ).$promise.then( function gameSaveSuccess( data ) {
 				if ( angular.isFunction( $scope.saveSuccessCallback ) ) {
 					$scope.saveSuccessCallback( data );
 				}

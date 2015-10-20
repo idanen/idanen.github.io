@@ -16,7 +16,10 @@
         $routeProvider.when('/game/:gameId', {
             templateUrl: 'partials/partial1.html',
             controller: 'PokerManagerCtrl',
-            controllerAs: 'vm'
+            controllerAs: 'vm',
+            resolve: {
+                game: gameRouteResolver
+            }
         });
         $routeProvider.when('/login', {
             templateUrl: 'partials/login.html',
@@ -39,5 +42,10 @@
             controllerAs: 'vm'
         });
         $routeProvider.otherwise({redirectTo: '/stats'});
+    }
+
+    gameRouteResolver.$inject = ['$route', '$firebaseObject', 'Ref'];
+    function gameRouteResolver($route, $firebaseObject, Ref) {
+        return $firebaseObject(Ref.child('game/' + $route.current.params.gameId));
     }
 }());

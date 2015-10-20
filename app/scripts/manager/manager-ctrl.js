@@ -5,9 +5,9 @@
 angular.module( 'pokerManager' ).
 	controller( 'PokerManagerCtrl', PokerManagerController );
 
-	PokerManagerController.$inject = [ '$scope', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games', 'playerModal', 'communitiesSvc' ];
+	PokerManagerController.$inject = [ '$scope', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games', 'playerModal', 'communitiesSvc', 'game', 'Ref', '$firebaseObject' ];
 
-	function PokerManagerController( $scope, $filter, $analytics, toaster, utils, Players, Games, playerModal, communitiesSvc ) {
+	function PokerManagerController( $scope, $filter, $analytics, toaster, utils, Players, Games, playerModal, communitiesSvc, game, Ref, $firebaseObject ) {
 		'use strict';
 
 		var vm = this;
@@ -23,7 +23,10 @@ angular.module( 'pokerManager' ).
 		vm.today = new Date();
 		vm.serverMsg = [];
 		vm.players = [];
-		vm.game = Games.create();
+        // init game so not all methods fail before the game is loaded
+        vm.game = {};
+        // Binding the firebase instance to the scope. This assumes that the controller's name is `vm`
+        $firebaseObject(Ref.child('games/' + game.$id)).$bindTo($scope, 'vm.game');
 
 		vm.init = init;
 		vm.openPlayersControl = openPlayersControl;
@@ -50,11 +53,17 @@ angular.module( 'pokerManager' ).
 		}
 
 		function saveGameToLocalStorage() {
-			utils.saveLocal( 'game', vm.game );
+			var copy = angular.extend({}, vm.game);
+			for (var key in copy) {
+				if (copy.hasOwnProperty(key) && /^\$/.test(key)) {
+					delete copy[key];
+				}
+			}
+			utils.saveLocal( 'game', copy );
 		}
 			
 		function loadLocalStorageGame() {
-			var oldChipValue = vm.game.settings.chipValue,
+			var oldChipValue = vm.game.chipValue,
 				newChipValue;
 
 			function playerEntity( aPlayer ) {
@@ -66,8 +75,8 @@ angular.module( 'pokerManager' ).
 				return found && found[0];
 			}
 
-			vm.game = utils.loadLocal( 'game' );
-			newChipValue = parseInt( vm.game.settings.chipValue, 10 );
+			angular.extend(vm.game, utils.loadLocal( 'game' ));
+			newChipValue = parseInt( vm.game.chipValue, 10 );
 			// Players in game should be with same reference as players returned by the server
 			for ( var i = 0; i < vm.game.players.length; ++i ) {
 				var foundPlayer = playerEntity( vm.game.players[ i ] );
@@ -185,20 +194,22 @@ angular.module( 'pokerManager' ).
 		}, true );
 
 		$scope.$watch( function () {
-			return vm.game.settings.chipValue;
+			return vm.game.chipValue;
 		}, chipsValueChanged );
 
 		function chipsValueChanged( current, previous ) {
 			if ( !current ) {
-				current = vm.game.settings.chipValue = 1;
+				current = vm.game.chipValue = 1;
 			}
-			vm.game.players.forEach( function updateChipsAndValue( player, idx ) {
-				if ( player.currentChipCount ) {
-					player.currentChipCount = player.currentChipCount * current / ( previous || 1 );
-				} else {
-					player.currentChipCount = ( player.buyin * current ) * current / ( previous || 1 );
-				}
-			} );
+			if (vm.game.players && vm.game.players.length) {
+				vm.game.players.forEach(function updateChipsAndValue(player, idx) {
+					if (player.currentChipCount) {
+						player.currentChipCount = player.currentChipCount * current / ( previous || 1 );
+					} else {
+						player.currentChipCount = ( player.buyin * current ) * current / ( previous || 1 );
+					}
+				});
+			}
 		}
 	}
 })();

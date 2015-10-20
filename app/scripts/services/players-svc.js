@@ -42,23 +42,15 @@ angular.module( 'pokerManager' ).
                     buyin: 0,
                     currentChipCount: 0,
                     email: '',
-                    phone:'',
-                    createDate: new Date(),
+                    phone: '',
+                    createDate: Date.now(),
                     isNew: true
                 };
             }
 
             function save( player ) {
-                var toSave = preSave( player );
-                return service.players.$add( toSave );
-            }
-
-            function preSave( player ) {
-                var clone = angular.extend( {}, player );
-
-                clone.createDate = player.createDate.getTime();
-
-                return clone;
+                delete player.isNew;
+                return service.players.$add( player );
             }
 
             function playersOfCommunity( community ) {
@@ -114,11 +106,12 @@ angular.module( 'pokerManager' ).
                             service.players.$save( idx );
                         }
                     } else {
-                        var newPlayer = preSave( create() );
+                        var newPlayer = create();
                         newPlayer.userUid = user.uid;
                         newPlayer.name = user.name;
                         newPlayer.email = user.email;
                         newPlayer.imageUrl = user.imageUrl;
+                        delete newPlayer.isNew;
                         service.players.$add( newPlayer )
                             .catch(function ( error ) {
                                 console.log( error );

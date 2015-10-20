@@ -7,6 +7,10 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 
 		var utils = {
 			totalsCalc: function ( anArray, fieldNameToSum ) {
+				if (!anArray) {
+					return 0;
+				}
+
 				var sum = 0;
 				for( var i = 0; i < anArray.length; ++i ) {
 					sum += parseInt( anArray[ i ][ fieldNameToSum ] );
@@ -14,6 +18,10 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 				return sum;
 			},
 			avgsCalc: function ( anArray, fieldNameToSum ) {
+				if (!anArray) {
+					return 0;
+				}
+
 				var sum = 0;
 				for( var i = 0; i < anArray.length; ++i ) {
 					sum += parseInt( anArray[ i ][ fieldNameToSum ] );
@@ -21,6 +29,10 @@ angular.module( 'pokerManager.services', [ 'ngResource' ] ).
 				return ( sum / anArray.length );
 			},
 			maxCalc: function ( anArray, fieldNameToSum ) {
+				if (!anArray) {
+					return 0;
+				}
+
 				var max = 0;
 				for( var i = 0; i < anArray.length; ++i ) {
 					max = Math.max( anArray[ i ][ fieldNameToSum ], max );

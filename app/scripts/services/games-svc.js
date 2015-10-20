@@ -16,10 +16,14 @@ angular.module( 'pokerManager.services' ).
 
 		this.$get = GamesService;
 
-		GamesService.$inject = [ '$resource', '$filter', 'Ref', '$firebaseObject' ];
+		GamesService.$inject = [ '$resource', '$filter', 'Ref', '$firebaseObject', '$firebaseArray' ];
 
-		function GamesService( $resource, $filter, Ref, $firebaseObject ) {
-			var gamesRef = Ref.child('communities').child('games');
+		function GamesService( $resource, $filter, Ref, $firebaseObject, $firebaseArray ) {
+			var service = {
+					newGame: newGame
+				},
+				games = $firebaseArray(Ref.child('games'));
+
 			var Resource = $resource( baseUrl + 'games/:gameId', {gameId: '@id'}, {
 				'update': {method: 'PUT'},
 				'getPlayers': {
@@ -36,21 +40,25 @@ angular.module( 'pokerManager.services' ).
 				}
 			} );
 
-			Resource.create = function () {
-				return angular.element.extend( new Resource(), {
+			function newGame(communityId) {
+				var gameToSave = {
 					location: '',
-					date: $filter( 'date' )( new Date(), 'y-MM-dd' ),
+					date: Date.now(),
 					numberOfHands: 0,
-					players: [],
-					settings: {
-						chipValue: 4,
-						maxBuyin: 250,
-						defaultBuyin: 50
-					}
-				} );
-			};
+					chipValue: 4,
+					defaultBuyin: 50,
+					communityId: communityId,
+					players: []
+				};
 
-			return Resource;
+				return games.$add(gameToSave)
+					.then(function (gameRef) {
+						var gameId = gameRef.key();
+						return games[games.$indexFor(gameId)];
+					});
+			}
+
+			return service;
 		}
 	}
 })();

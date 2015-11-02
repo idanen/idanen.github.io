@@ -48,12 +48,6 @@
 		</nav>
 	
 		<div class="row" ng-cloak>
-			<ul class="nav nav-tabs">
-				<li class="slide" ng-repeat="tab in tabs" ng-class="{'active': isTabSelected( tab.href )}">
-					<a href="{{ tab.href }}" role="tab"><span class="fa {{tab.icon}}"></span> {{ tab.title }}</a>
-				</li>
-			</ul>
-				
 			<div ng-view></div>
 
 			<toaster-container></toaster-container>

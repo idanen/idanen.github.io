@@ -54,7 +54,7 @@
 	<button class="btn btn-default" ng-click="vm.startGame()">Start game</button>
 
 	<div class="row game-container">
-		<div class="col-md-4 col-xs-6 fader" ng-repeat="player in vm.game.players | orderBy:'name'">
+		<div class="col-md-4 col-xs-6 fader" ng-repeat="(playerId, player) in vm.game.players | orderBy:'name'">
 			<player-card player="player"/>
 		</div>
 	</div>

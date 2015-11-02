@@ -41,7 +41,7 @@
             controller: 'MyCtrl2',
             controllerAs: 'vm'
         });
-        $routeProvider.otherwise({redirectTo: '/stats'});
+        $routeProvider.otherwise({redirectTo: '/communities'});
     }
 
     gameRouteResolver.$inject = ['$route', '$firebaseObject', 'Ref'];

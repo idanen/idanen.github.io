@@ -10,12 +10,18 @@
 
         service.communities = $firebaseArray(Ref.child('communities'));
 
+        service.communities.$loaded().then(function () {
+            service.setSelectedCommunity(selectedCommunityIdx);
+        });
+
         service.setSelectedCommunity = function ( idx ) {
             selectedCommunityIdx = idx;
         };
 
         service.getSelectedCommunity = function () {
-            return service.communities[ selectedCommunityIdx ];
+            return service.communities.$loaded().then(function () {
+                return service.communities[ selectedCommunityIdx ];
+            });
         };
     }
 }());

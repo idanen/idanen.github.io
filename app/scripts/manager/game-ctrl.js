@@ -99,22 +99,25 @@ angular.module( 'pokerManager' ).
 		}
 
 		function cancelAddPlayer( player ) {
-			// Remove from current game
-			var index = vm.game.players.indexOf( player );
-
-			if ( index > -1 ) {
-				vm.game.players.splice( index, 1 );
-				
-				// Reset fields
-				if ( player ) {
-					player.isPlaying = false;
-					player.balance += ( player.buyout - player.buyin );
-					player.buyin = 0;
-					player.buyout = 0;
-					player.currentChipCount = 0;
-					player.paidHosting = false;
-				}
+			if ( player.id in vm.game.players ) {
+				delete vm.game.players[ player.id ];
 			}
+			// Remove from current game
+			//var index = vm.game.players.indexOf( player );
+            //
+			//if ( index > -1 ) {
+			//	vm.game.players.splice( index, 1 );
+			//
+			//	// Reset fields
+			//	if ( player ) {
+			//		player.isPlaying = false;
+			//		player.balance += ( player.buyout - player.buyin );
+			//		player.buyin = 0;
+			//		player.buyout = 0;
+			//		player.currentChipCount = 0;
+			//		player.paidHosting = false;
+			//	}
+			//}
 		}
 
 		function bust( player ) {

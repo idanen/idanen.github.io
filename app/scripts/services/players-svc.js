@@ -61,7 +61,9 @@ angular.module( 'pokerManager' ).
                 return $q(function (resolve) {
                     playerIds.forEach(function (playerId) {
                         baseRef.child(playerId).once('value', function (snap) {
-                            players.push( snap.val() );
+                            var player = snap.val();
+                            player.id = snap.key();
+                            players.push( player );
 
                             if (players.length === playerIds.length) {
                                 resolve( players );
@@ -78,13 +80,13 @@ angular.module( 'pokerManager' ).
                         .orderByChild( field )
                         .equalTo( value )
                         .on( 'value', function ( querySnapshot ) {
+                            var result = {};
                             if ( querySnapshot.hasChildren() ) {
                                 querySnapshot.forEach( function ( playerSnap ) {
-                                    resolve( playerSnap );
+                                    result = playerSnap;
                                 } );
-                            } else {
-                                resolve();
                             }
+                            resolve( result );
                         } );
                 } );
             }

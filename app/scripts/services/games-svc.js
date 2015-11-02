@@ -16,11 +16,12 @@ angular.module( 'pokerManager.services' ).
 
 		this.$get = GamesService;
 
-		GamesService.$inject = [ '$resource', '$filter', 'Ref', '$firebaseObject', '$firebaseArray' ];
+		GamesService.$inject = [ '$resource', '$filter', '$q', 'Ref', '$firebaseObject', '$firebaseArray' ];
 
-		function GamesService( $resource, $filter, Ref, $firebaseObject, $firebaseArray ) {
+		function GamesService( $resource, $filter, $q, Ref, $firebaseObject, $firebaseArray ) {
 			var service = {
-					newGame: newGame
+					newGame: newGame,
+					findBy: findBy
 				},
 				games = $firebaseArray(Ref.child('games'));
 
@@ -56,6 +57,25 @@ angular.module( 'pokerManager.services' ).
 						var gameId = gameRef.key();
 						return games[games.$indexFor(gameId)];
 					});
+			}
+
+			function findBy( field, value ) {
+				return $q( function ( resolve ) {
+					games.$ref()
+						.orderByChild( field )
+						.equalTo( value )
+						.on( 'value', function ( querySnapshot ) {
+							var games = [];
+							if ( querySnapshot.hasChildren() ) {
+								querySnapshot.forEach( function ( gameSnap ) {
+									games.push( gameSnap.val() );
+								} );
+								resolve( games );
+							} else {
+								resolve( [] );
+							}
+						} );
+				} );
 			}
 
 			return service;

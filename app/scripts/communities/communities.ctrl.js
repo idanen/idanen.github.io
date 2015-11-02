@@ -19,10 +19,12 @@
         vm.userUid = userService.getUser() && userService.getUser().uid;
         vm.addMember = addMember;
         vm.createGame = createGame;
+        vm.getCommunityGames = getCommunityGames;
 
         vm.communities.$loaded().then( function () {
             vm.communities.forEach( function ( community ) {
                 collapseState[ community.$id ] = true;
+                vm.getCommunityGames( community );
             } );
         } );
 
@@ -84,6 +86,13 @@
                 .then(function (game) {
                     $location.url('/game/' + (game.$id || '0'));
                 });
+        }
+
+        function getCommunityGames( community ) {
+            Games.findBy( 'communityId', community.$id )
+                .then( function ( games ) {
+                    community.games = games;
+                } );
         }
 
         function isCollapsed( communityId ) {

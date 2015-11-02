@@ -103,9 +103,14 @@ angular.module( 'pokerManager' ).
 
 		function init() {
 			//Refresh view
-			Players.playersOfCommunity( communitiesSvc.getSelectedCommunity() ).then( function ( players ) {
-				vm.players = players;
-			} );
+			communitiesSvc.getSelectedCommunity()
+				.then( function (community) {
+					return Players.playersOfCommunity( community );
+				} )
+				.then( function ( players ) {
+					vm.players = players;
+					return players;
+				} );
 		}
 
 		function refreshPlayersList() {
@@ -119,7 +124,11 @@ angular.module( 'pokerManager' ).
 			} );
 			
 			// Reset game
-			vm.game = Games.create();
+			//vm.game = Games.create();
+			vm.game.location = '';
+			vm.game.date = Date.now();
+			vm.game.numberOfHands = 0;
+			vm.game.players = [];
 
 			// Save empty game as local
 			vm.saveGameToLocalStorage();
@@ -134,13 +143,20 @@ angular.module( 'pokerManager' ).
 		}
 
 		function addPlayerToGame( player ) {
+			var playerInGame = {};
+			if ( !vm.game.players ) {
+				vm.game.players = {};
+			}
 			if ( !player.isPlaying ) {
 				player.isPlaying = true;
-				player.buyin = 0;
-				player.buyout = 0;
-				player.currentChipCount = 0;
-				player.paidHosting = false;
-				vm.game.players.push( player );
+				playerInGame.id = player.id;
+				playerInGame.name = player.name;
+				playerInGame.isPlaying = true;
+				playerInGame.buyin = 0;
+				playerInGame.buyout = 0;
+				playerInGame.currentChipCount = 0;
+				playerInGame.paidHosting = false;
+				vm.game.players[ player.id ] = ( playerInGame );
 			}
 			
 			try {

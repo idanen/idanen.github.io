@@ -45,6 +45,11 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-12">
+                                <a class="btn btn-link" href="#/game/{{ game.$id }}" ng-repeat="game in community.games">{{ game.date | date }}</a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12">
                                 <button class="btn btn-success" ng-click="vm.createGame( community )">Start a new game</button>
                             </div>
                         </div>

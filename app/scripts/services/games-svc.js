@@ -68,7 +68,9 @@ angular.module( 'pokerManager.services' ).
 							var games = [];
 							if ( querySnapshot.hasChildren() ) {
 								querySnapshot.forEach( function ( gameSnap ) {
-									games.push( gameSnap.val() );
+									var game = gameSnap.val();
+									game.$id = gameSnap.key();
+									games.push( game );
 								} );
 								resolve( games );
 							} else {

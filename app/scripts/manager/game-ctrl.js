@@ -40,7 +40,7 @@ angular.module( 'pokerManager' ).
 
 		function initGame() {
 			vm.game.players.splice(0, vm.game.players.length);
-			vm.game.name = '';
+			vm.game.location = '';
 
 			// vm.game = new Game();
 
@@ -57,7 +57,7 @@ angular.module( 'pokerManager' ).
 			// Reset is-playing state
 			vm.game.players.forEach( function( player ) {
 				player.isPlaying = false;
-				player.balance += ( player.buyout - player.buyin );
+				//player.balance += ( player.buyout - player.buyin );
 			} );
 			vm.game.players.splice( 0, vm.game.players.length );
 			
@@ -66,7 +66,7 @@ angular.module( 'pokerManager' ).
 		}
 
 		function buyin( player, rationalBuyin ) {
-			var calculatedBuyin = rationalBuyin * defaultBuyin;
+			var calculatedBuyin = rationalBuyin * vm.game.defaultBuyin;
 			if ( !player.isPlaying ) {
 				player.isPlaying = true;
 				player.buyin = 0;
@@ -75,9 +75,9 @@ angular.module( 'pokerManager' ).
 				vm.game.players.push( player );
 			}
 			player.buyin += calculatedBuyin;
-			player.balance -= player.buyin;
-			player.currentChipCount = parseInt( player.currentChipCount, 10 ) + ( calculatedBuyin * chipValue );
-			player.buyout = player.currentChipCount / chipValue;
+			//player.balance -= player.buyin;
+			player.currentChipCount = parseInt( player.currentChipCount, 10 ) + ( calculatedBuyin * vm.game.chipValue );
+			player.buyout = player.currentChipCount / vm.game.chipValue;
 			
 			try {
 				$analytics.eventTrack('Buyin', { category: 'Actions', label: player.name });
@@ -91,11 +91,11 @@ angular.module( 'pokerManager' ).
 		}
 
 		function cancelBuyin( player, rationalBuyin ) {
-			var buyin = rationalBuyin * defaultBuyin;
+			var buyin = rationalBuyin * vm.game.defaultBuyin;
 			player.buyin -= buyin;
-			player.balance += player.buyin;
-			player.currentChipCount = parseInt( player.currentChipCount, 10 ) - ( buyin * chipValue );
-			player.buyout = player.currentChipCount / chipValue;
+			//player.balance += player.buyin;
+			player.currentChipCount = parseInt( player.currentChipCount, 10 ) - ( buyin * vm.game.chipValue );
+			player.buyout = player.currentChipCount / vm.game.chipValue;
 		}
 
 		function cancelAddPlayer( player ) {
@@ -131,8 +131,8 @@ angular.module( 'pokerManager' ).
 			}
 
 			// Add payout to player's balance
-			player.buyout = player.currentChipCount / chipValue;
-			player.balance += player.buyout;
+			player.buyout = player.currentChipCount / vm.game.chipValue;
+			//player.balance += player.buyout;
 		}
 	
 		function comeBack( player ) {
@@ -141,18 +141,18 @@ angular.module( 'pokerManager' ).
 			}
 
 			// Add payout to player's balance
-			player.balance -= player.buyout;
+			//player.balance -= player.buyout;
 		}
 		
 		function chipCountUpdate( player ) {
-			player.buyout = player.currentChipCount / chipValue;
+			player.buyout = player.currentChipCount / vm.game.chipValue;
 		}
 
 		function addOrSubtractChips( player, howMany, toAdd ) {
 			if ( toAdd ) {
-				player.currentChipCount += ( howMany * defaultBuyin );
+				player.currentChipCount += ( howMany * vm.game.defaultBuyin );
 			} else {
-				player.currentChipCount -= ( howMany * defaultBuyin );
+				player.currentChipCount -= ( howMany * vm.game.defaultBuyin );
 			}
 			vm.chipCountUpdate( player );
 		}
@@ -202,10 +202,10 @@ angular.module( 'pokerManager' ).
 			} );
 		}
 
-		$scope.$watch( 'game.settings.chipValue', function ( newVal ) {
+		$scope.$watch( 'game.chipValue', function ( newVal ) {
 			chipValue = newVal;
 		} );
-		$scope.$watch( 'game.settings.defaultBuyin', function ( newVal ) {
+		$scope.$watch( 'game.defaultBuyin', function ( newVal ) {
 			defaultBuyin = newVal;
 		} );
 	}

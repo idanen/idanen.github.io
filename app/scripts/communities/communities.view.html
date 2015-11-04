@@ -45,7 +45,11 @@
                         </div>
                         <div class="row">
                             <div class="col-xs-12">
-                                <a class="btn btn-link" href="#/game/{{ game.$id }}" ng-repeat="game in community.games">{{ game.date | date }}</a>
+                                <ul class="nav nav-tabs">
+                                    <li class="slide" ng-repeat="game in community.games" ng-class="{'active': $index === 0}">
+                                        <a ng-href="#/game/{{ game.$id }}" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                         <div class="row">

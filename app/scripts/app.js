@@ -2,7 +2,7 @@
     'use strict';
 
     angular.module('pokerManager', ['ngRoute', 'ngAnimate', 'angulartics', 'angulartics.google.analytics',
-        'ui.bootstrap', 'mgcrea.ngStrap.tooltip', 'mgcrea.ngStrap.popover', 'toaster', 'firebase', 'firebase.ref',
+        'ui.bootstrap', 'mgcrea.ngStrap', 'toaster', 'firebase', 'firebase.ref',
         'firebase.auth', 'jackrabbitsgroup.angular-google-auth', 'directive.g+signin', 'pokerManager.filters',
         'pokerManager.services', 'pokerManager.directives', 'pokerManager.controllers'])
         .constant('BASE_URL', {

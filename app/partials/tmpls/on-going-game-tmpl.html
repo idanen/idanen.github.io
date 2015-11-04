@@ -1,5 +1,5 @@
 <div class="current-game">
-	<h3>Current Game: played at &quot;{{ vm.game.location }}&quot; (# of players: {{ vm.game.players.length }}).</h3>
+	<h3>Current Game: played at &quot;{{ vm.game.location }}&quot; (# of players: {{ vm.playersCount() }}).</h3>
 
 	<accordion class="settings-menu">
 		<accordion-group>
@@ -23,19 +23,14 @@
 		</accordion-group>
 	</accordion>
 
-	<form class="form-inline" role="form">
+	<form class="form-inline" role="form" name="vm.gameSettings">
 		<div class="form-group input-group-sm">
 			<label for="gameLocation">Playing at</label>
 			<input id="gameLocation" type="text" ng-model="vm.game.location" placeholder="Game Location" class="form-control" />
 		</div>
 		<div class="form-group">
-			<label for="gameDate">on</label>
-			<div class="input-group input-group-sm">
-				<input id="gameDate" class="form-control" type="text" datepicker-popup="yyyy-MM-dd" readonly="readonly" ng-model="vm.game.date" datepicker-options="vm.dateOptions" is-open="vm.game.dateOpen" show-weeks="false" />
-				<span class="input-group-btn">
-					<button type="button" class="btn btn-default" ng-click="vm.toggleGameDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-				</span>
-			</div>
+			<label>on</label>
+			<input type="text" class="form-control input-sm" ng-model="vm.game.date" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" name="date" bs-datepicker>
 		</div>
 		<div class="form-group">
 			<label># of hands:</label>

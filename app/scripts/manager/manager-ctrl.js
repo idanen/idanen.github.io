@@ -217,8 +217,8 @@ angular.module( 'pokerManager' ).
 			if ( !current ) {
 				current = vm.game.chipValue = 1;
 			}
-			if (vm.game.players && vm.game.players.length) {
-				vm.game.players.forEach(function updateChipsAndValue(player, idx) {
+			if (vm.game.players) {
+				_.forEach(vm.game.players, function updateChipsAndValue(player) {
 					if (player.currentChipCount) {
 						player.currentChipCount = player.currentChipCount * current / ( previous || 1 );
 					} else {

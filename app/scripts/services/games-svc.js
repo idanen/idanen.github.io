@@ -49,7 +49,7 @@ angular.module( 'pokerManager.services' ).
 					chipValue: 4,
 					defaultBuyin: 50,
 					communityId: communityId,
-					players: []
+					players: {}
 				};
 
 				return games.$add(gameToSave)

@@ -12,7 +12,29 @@
         .config(config);
 
     config.$inject = ['$routeProvider'];
-    function config($routeProvider) {
+    function config($routeProvider, $stateProvider) {
+        $stateProvider.state('main', {
+            templateUrl: 'main/main.view.html',
+            controller: 'MainCtrl',
+            controllerAs: 'vm'
+        });
+        $stateProvider.state('main.community', {
+            parent: 'main',
+            url: '/:communityId',
+            templateUrl: 'scripts/communities/communities.view.html',
+            controller: 'CommunitiesCtrl',
+            controllerAs: 'vm'
+        });
+        $stateProvider.state('main.community.game', {
+            parent: 'main.community',
+            url: '/:gameId',
+            templateUrl: 'partials/partial1.html',
+            controller: 'PokerManagerCtrl',
+            controllerAs: 'vm',
+            resolve: {
+                game: gameRouteResolver
+            }
+        });
         $routeProvider.when('/game/:gameId', {
             templateUrl: 'partials/partial1.html',
             controller: 'PokerManagerCtrl',
@@ -44,8 +66,13 @@
         $routeProvider.otherwise({redirectTo: '/communities'});
     }
 
-    gameRouteResolver.$inject = ['$route', '$firebaseObject', 'Ref'];
-    function gameRouteResolver($route, $firebaseObject, Ref) {
-        return $firebaseObject(Ref.child('game/' + $route.current.params.gameId));
+    //gameRouteResolver.$inject = ['$route', '$firebaseObject', 'Ref'];
+    //function gameRouteResolver($route, $firebaseObject, Ref) {
+    //    return $firebaseObject(Ref.child('game/' + $route.current.params.gameId));
+    //}
+
+    gameRouteResolver.$inject = ['$stateParams', '$firebaseObject', 'Ref'];
+    function gameRouteResolver($stateParams, $firebaseObject, Ref) {
+        return $firebaseObject(Ref.child('game/' + $stateParams.gameId));
     }
 }());

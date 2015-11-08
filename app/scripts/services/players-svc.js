@@ -62,7 +62,7 @@ angular.module( 'pokerManager' ).
                     playerIds.forEach(function (playerId) {
                         baseRef.child(playerId).once('value', function (snap) {
                             var player = snap.val();
-                            player.id = snap.key();
+                            player.$id = player.id = snap.key();
                             players.push( player );
 
                             if (players.length === playerIds.length) {
@@ -73,17 +73,21 @@ angular.module( 'pokerManager' ).
                 });
             }
 
-            function findBy( field, value ) {
+            function findBy( field, value, multi ) {
                 return $q( function ( resolve ) {
                     service.players.$ref().off('value');
                     service.players.$ref()
                         .orderByChild( field )
                         .equalTo( value )
                         .on( 'value', function ( querySnapshot ) {
-                            var result = {};
+                            var result = multi ? [] : {};
                             if ( querySnapshot.hasChildren() ) {
                                 querySnapshot.forEach( function ( playerSnap ) {
-                                    result = playerSnap;
+                                    if (multi) {
+                                        result.push(playerSnap);
+                                    } else {
+                                        result = playerSnap;
+                                    }
                                 } );
                             }
                             resolve( result );

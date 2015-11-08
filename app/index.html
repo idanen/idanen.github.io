@@ -23,11 +23,11 @@
 	<script src="https://apis.google.com/js/client:platform.js" async defer></script>
 </head>
 <body>
-	<div class="container" ng-controller="MainCtrl" ng-init="init();">
+	<div class="container" ng-controller="MainCtrl as main" ng-init="main.init();">
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<button class="navbar-toggle" type="button" data-target=".navbar-collapse" data-toggle="collapse" ng-click="openPlayersControl()">
+					<button class="navbar-toggle" type="button" data-target=".navbar-collapse" data-toggle="collapse" ng-click="main.openPlayersControl()">
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
@@ -36,7 +36,7 @@
 				</div>
 				<div class="collapse navbar-collapse" id="main-navbar-collapse">
 					<ul class="nav navbar-nav">
-						<li ng-repeat="tab in tabs" ng-class="{'active': isTabSelected( tab.href )}">
+						<li ng-repeat="tab in main.tabs" ng-class="{'active': main.isTabSelected( tab.href )}">
 							<a ng-href="{{ tab.href }}"><span class="fa {{ tab.icon }}"></span> {{ tab.title }}</a>
 						</li>
 					</ul>
@@ -46,9 +46,9 @@
 				</div>
 			</div>
 		</nav>
-	
+
 		<div class="row" ng-cloak>
-			<div ng-view></div>
+			<div ui-view></div>
 
 			<toaster-container></toaster-container>
 		</div>
@@ -78,10 +78,12 @@
 	<!-- endbuild -->
 	<!-- build:js scripts/main.min.js -->
 	<script src="scripts/app.js"></script>
+	<script src="scripts/app.routes.js"></script>
 	<script src="scripts/angularfire/auth.js"></script>
 	<script src="scripts/angularfire/config.js"></script>
 	<script src="scripts/angularfire/firebase.ref.js"></script>
 	<script src="scripts/services.js"></script>
+	<script src="scripts/home/home.controller.js"></script>
 	<script src="scripts/auth/user.service.js"></script>
 	<script src="scripts/auth/auth-interceptor.js"></script>
 	<script src="scripts/auth/login-state-drtv.js"></script>

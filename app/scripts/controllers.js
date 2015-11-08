@@ -6,71 +6,67 @@
 
 	MainController.$inject = [ '$scope', '$location', 'userService' ];
 	function MainController( $scope, $location, userService ) {
-		var adminTab = {
+
+		var vm = this,
+		adminTab = {
 			title: "Current Game",
 			href: "#/game/0",
 			icon: "icon-spades"
 		};
 
-		$scope.tabs = [];
+		this.tabs = [];
 
-		$scope.getLocation = function() {
+		this.getLocation = function() {
 			return $location.path();
 		};
-		$scope.setLocation = function( location ) {
+		this.setLocation = function( location ) {
 			$location.path( location );
 		};
 
-		$scope.isTabSelected = function( tabHref ) {
-            var pathRoot = $location.path().split('/')[1],
-                tabHrefRoot = tabHref.split('/')[1];
+		this.isTabSelected = function( tabHref ) {
+			var pathRoot = $location.path().split('/')[1],
+			tabHrefRoot = tabHref.split('/')[1];
 			return ( pathRoot === tabHrefRoot );
 		};
 
-		$scope.isAdmin = function() {
+		this.isAdmin = function() {
 			return ( !!userService.getUser() );
 		};
 
-		$scope.signOut = signOut;
+		this.signOut = signOut;
 
 		$scope.$watch( function () {
-			return $scope.isAdmin();
+			return vm.isAdmin();
 		}, function ( newVal ) {
-			if ( newVal && $scope.tabs.indexOf(adminTab) === -1 ) {
-				$scope.tabs.push( adminTab );
+			if ( newVal && vm.tabs.indexOf(adminTab) === -1 ) {
+				vm.tabs.push( adminTab );
 			} else {
-				var adminTabIdx = $scope.tabs.indexOf( adminTab );
+				var adminTabIdx = vm.tabs.indexOf( adminTab );
 				if ( adminTabIdx > -1 ) {
-					$scope.tabs.splice( adminTabIdx, 1 );
+					vm.tabs.splice( adminTabIdx, 1 );
 				}
 			}
 		} );
 
-		$scope.init = function() {
-			$scope.tabs.push( {
+		vm.init = function() {
+			vm.tabs.push( {
 				title: "Stats",
 				href: "#/stats",
 				icon: "fa-bar-chart"
 			} );
-            $scope.tabs.push( {
-                title: 'communities',
-                href: '#/communities',
-                icon: 'fa-users'
-            } );
-			if ( $scope.isAdmin() ) {
-				$scope.tabs.push( adminTab );
+			vm.tabs.push( {
+				title: 'communities',
+				href: '#/communities',
+				icon: 'fa-users'
+			} );
+			if ( vm.isAdmin() ) {
+				vm.tabs.push( adminTab );
 			}
 		};
 
-		$scope.$on( '$locationChangeStart', function ( ev, from, to ) {
-			if ( /login$/i.test( to ) ) {
-				$scope.currentUser = userService.getUser();
-			}
-		} );
-
 		function signOut() {
-            userService.logout();
-            delete $scope.currentUser;
+			userService.logout();
+			delete vm.currentUser;
 		}
 	}
 }());

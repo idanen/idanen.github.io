@@ -3,11 +3,18 @@
         .module( 'pokerManager' )
         .controller( 'CommunitiesCtrl', CommunitiesController );
 
-    CommunitiesController.$inject = [ 'communitiesSvc', 'userService', 'Players', 'playerModal', 'Games', 'Ref', '$location' ];
-    function CommunitiesController( communitiesSvc, userService, Players, playerModal, Games, Ref, $location ) {
+    CommunitiesController.$inject = [ 'communitiesSvc', 'userService', 'Players', 'playerModal', 'Games', 'Ref', '$location', 'community', 'players' ];
+    function CommunitiesController( communitiesSvc, userService, Players, playerModal, Games, Ref, $location, community, players ) {
         var vm = this,
             collapseState = {};
 
+        vm.prefs = {
+            playersOpen: false
+        };
+
+        vm.openPlayersControl = openPlayersControl;
+        vm.community = community;
+        vm.players = players;
         vm.newCommunity = '';
         vm.inputDisabled = false;
         vm.communityDropdownOpen = false;
@@ -27,6 +34,10 @@
                 vm.getCommunityGames( community );
             } );
         } );
+
+        function openPlayersControl() {
+            vm.prefs.playersOpen = !vm.prefs.playersOpen;
+        }
 
         function add() {
             var community = {},

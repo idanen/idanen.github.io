@@ -2,7 +2,8 @@
     'use strict';
 
     angular.module('pokerManager')
-        .config(config);
+        .config(config)
+        .run(run);
 
     config.$inject = ['$stateProvider', '$urlRouterProvider'];
     function config($stateProvider, $urlRouterProvider) {
@@ -65,6 +66,13 @@
         $urlRouterProvider.when('/community', '/community/:communityId');
     }
 
+    run.$inject = ['$rootScope'];
+    function run($rootScope) {
+        $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
+            console.log(error);
+        });
+    }
+
     communitiesResolver.$inject = ['communitiesSvc'];
     function communitiesResolver(communitiesSvc) {
         return communitiesSvc.communities;
@@ -72,7 +80,10 @@
 
     communityResolver.$inject = ['communitiesSvc', '$stateParams'];
     function communityResolver(communitiesSvc, $stateParams) {
-        return communitiesSvc.communities.$getRecord($stateParams.communityId);
+        return communitiesSvc.communities.$loaded()
+            .then(function () {
+                return communitiesSvc.communities.$getRecord($stateParams.communityId);
+            });
     }
 
     communityIdResolver.$inject = ['$stateParams'];

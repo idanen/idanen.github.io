@@ -2,14 +2,13 @@
     'use strict';
 
     angular.module('pokerManager')
-        .config(config)
-        .run(run);
+        .config(config);
 
     config.$inject = ['$stateProvider', '$urlRouterProvider'];
     function config($stateProvider, $urlRouterProvider) {
         $stateProvider.state({
             name:'home',
-            url: 'home',
+            url: '/',
             templateUrl: 'scripts/home/home.view.html',
             controller: 'HomeCtrl',
             controllerAs: 'vm',
@@ -20,7 +19,7 @@
         $stateProvider.state({
             name: 'community',
             parent: 'home',
-            url: '/:communityId',
+            url: '^/community/:communityId',
             templateUrl: 'scripts/communities/communities.view.html',
             controller: 'CommunitiesCtrl',
             controllerAs: 'vm',
@@ -62,14 +61,8 @@
         });
 
         //$urlRouterProvider.otherwise('/home');
-    }
-
-    run.$inject = ['$state', '$rootScope'];
-    function run($state, $rootScope) {
-        $state.go('home');
-        $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
-            console.log(error);
-        });
+        $urlRouterProvider.when('', '/');
+        $urlRouterProvider.when('/community', '/community/:communityId');
     }
 
     communitiesResolver.$inject = ['communitiesSvc'];

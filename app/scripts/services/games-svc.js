@@ -21,7 +21,8 @@ angular.module( 'pokerManager.services' ).
 		function GamesService( $resource, $filter, $q, Ref, $firebaseObject, $firebaseArray ) {
 			var service = {
 					newGame: newGame,
-					findBy: findBy
+					findBy: findBy,
+					findBetweenDates: findBetweenDates
 				},
 				games = $firebaseArray(Ref.child('games'));
 
@@ -64,13 +65,38 @@ angular.module( 'pokerManager.services' ).
 					games.$ref()
 						.orderByChild( field )
 						.equalTo( value )
-						.on( 'value', function ( querySnapshot ) {
+						.once( 'value', function ( querySnapshot ) {
 							var games = [];
 							if ( querySnapshot.hasChildren() ) {
 								querySnapshot.forEach( function ( gameSnap ) {
 									var game = gameSnap.val();
 									game.$id = gameSnap.key();
 									games.push( game );
+								} );
+								resolve( games );
+							} else {
+								resolve( [] );
+							}
+						} );
+				} );
+			}
+
+			function findBetweenDates( from, to, communityId ) {
+				return $q( function ( resolve ) {
+					games.$ref()
+						.orderByChild('date')
+						.startAt(parseInt(from, 10))
+						.endAt(parseInt(to, 10))
+						.once( 'value', function ( querySnapshot ) {
+							var games = [];
+							if ( querySnapshot.hasChildren() ) {
+								querySnapshot.forEach( function ( gameSnap ) {
+									var game = gameSnap.val();
+									if (game.communityId === communityId) {
+										game.$id = gameSnap.key();
+										game.players = gameSnap.child('players').val();
+										games.push(game);
+									}
 								} );
 								resolve( games );
 							} else {

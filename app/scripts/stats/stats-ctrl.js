@@ -5,9 +5,9 @@
 angular.module( 'pokerManager' ).
 	controller( 'PokerStatsCtrl', PokerStatsController );
 
-	PokerStatsController.$inject = [ '$filter', 'Utils', 'Games', 'Players', 'playerModal' ];
+	PokerStatsController.$inject = [ '$filter', '$stateParams', 'communityId', 'Utils', 'Games', 'Players', 'playerModal' ];
 
-	function PokerStatsController( $filter, utils, Games, Players, playerModal ) {
+	function PokerStatsController( $filter, $stateParams, communityId, utils, Games, Players, playerModal ) {
 		'use strict';
 
 		var vm = this;
@@ -59,27 +59,47 @@ angular.module( 'pokerManager' ).
 		}
 
 		function getPlayers() {
-			return Games.players( { fromDate: formatDate( vm.displayGames.fromDate ), toDate: formatDate ( vm.displayGames.toDate ) } );
+			//return Games.players( { fromDate: formatDate( vm.displayGames.fromDate ), toDate: formatDate ( vm.displayGames.toDate ) } );
+			return Games.findBetweenDates($stateParams.fromDate || vm.displayGames.fromDate, $stateParams.toDate || vm.displayGames.toDate, communityId)
+				.then(function (games) {
+					var players = {};
+					games.forEach(function (game) {
+						if (game.players) {
+							_.forEach(game.players, function (player, playerId) {
+								if (playerId in players) {
+									players[playerId].buyin += player.buyin;
+									players[playerId].buyout += player.buyout;
+								} else {
+									players[playerId] = player;
+								}
+							});
+						}
+					});
+					return players;
+				})
+				.then(function (players) {
+					vm.displayGames.players = players;
+				});
 		}
 
 		function init() {
 			// Refresh view
-			vm.displayGames.players = getPlayers();
+			getPlayers();
 		}
-	
+
 		function toggleDateRange( which, $event ) {
 			$event.preventDefault();
 			$event.stopPropagation();
-			
+
 			if (vm.displayGames[which + 'DateOpen']) {
 				vm.displayGames[which + 'DateOpen'] = false;
 			} else {
 				vm.displayGames[which + 'DateOpen'] = true;
 			}
 		}
-		
+
 		function loadGames() {
-			vm.displayGames.players = getPlayers();
+			getPlayers();
 		}
 
 		function loadGamesBetweenDates(from, to, gamesCountOptionIdx) {
@@ -88,7 +108,7 @@ angular.module( 'pokerManager' ).
 			if (!isNaN(gamesCountOptionIdx)) {
 				vm.filter.gamesCount = vm.filterOptions.gamesCount[gamesCountOptionIdx || 0];
 			}
-			vm.displayGames.players = getPlayers();
+			getPlayers();
 		}
 
 		function loadLastGame() {
@@ -110,14 +130,14 @@ angular.module( 'pokerManager' ).
 			var today = new Date();
 			loadGamesBetweenDates(new Date(today.getFullYear() - 1, today.getMonth(), today.getDate()), today);
 		}
-	
+
 		function loadAllTimeGames() {
 			vm.displayGames.fromDate = formatDate(new Date( 2000, 9, 1 ));
 			vm.displayGames.toDate = formatDate(new Date());
 			vm.filter.gamesCount = vm.filterOptions.gamesCount[ 1 ];
-			vm.displayGames.players = getPlayers();
+			getPlayers();
 		}
-		
+
 		function statsAvgBuyin() {
 			return utils.avgsCalc( vm.displayGames.players, 'buyin' );
 		}
@@ -129,7 +149,7 @@ angular.module( 'pokerManager' ).
 		function statsAvgGameCount() {
 			return utils.avgsCalc( vm.displayGames.players, 'gamesCount' );
 		}
-		
+
 		function statsAvgWinnings() {
 			var sum = 0;
 			for( var i = 0; i < vm.displayGames.players.length; ++i ) {
@@ -137,7 +157,7 @@ angular.module( 'pokerManager' ).
 			}
 			return sum;
 		}
-	
+
 		function statsAvgWinningsPerGame() {
 			var sum = 0;
 			for( var i = 0; i < vm.displayGames.players.length; ++i ) {

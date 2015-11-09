@@ -61,7 +61,7 @@ angular.module( 'pokerManager' ).
 			}
 			utils.saveLocal( 'game', copy );
 		}
-			
+
 		function loadLocalStorageGame() {
 			var oldChipValue = vm.game.chipValue,
 				newChipValue;
@@ -80,7 +80,7 @@ angular.module( 'pokerManager' ).
 			// Players in game should be with same reference as players returned by the server
 			for ( var i = 0; i < vm.game.players.length; ++i ) {
 				var foundPlayer = playerEntity( vm.game.players[ i ] );
-				
+
 				if ( foundPlayer ) {
 					// Copy fields from saved game
 					var //isPlaying = vm.game.players[ i ].isPlaying,
@@ -116,13 +116,13 @@ angular.module( 'pokerManager' ).
 		function refreshPlayersList() {
 			vm.init();
 		}
-		
+
 		function clearCurrentGame() {
 			// Reset is-playing state
 			vm.players.forEach( function( player ) {
 				player.isPlaying = false;
 			} );
-			
+
 			// Reset game
 			//vm.game = Games.create();
 			vm.game.location = '';
@@ -158,7 +158,7 @@ angular.module( 'pokerManager' ).
 				playerInGame.paidHosting = false;
 				vm.game.players[ player.id ] = ( playerInGame );
 			}
-			
+
 			try {
 				$analytics.eventTrack( 'Join Game', { category: 'Actions', label: player.name } );
 			} catch (err) {}
@@ -184,7 +184,7 @@ angular.module( 'pokerManager' ).
 
 		function openPlayerDetailsDialog( player ) {
 			vm.closePlayersControl();
-			
+
 			playerModal.open( player )
 				.then( function ( savedPlayer ) {
 					// If new -> update default values
@@ -193,7 +193,7 @@ angular.module( 'pokerManager' ).
 						savedPlayer.isPlaying = false;
 						vm.players.push( savedPlayer );
 					}
-					
+
 					player = savedPlayer;
 
 					return Players.update( player ).$promise;

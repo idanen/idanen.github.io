@@ -7,63 +7,56 @@
 
     config.$inject = ['$stateProvider', '$urlRouterProvider'];
     function config($stateProvider, $urlRouterProvider) {
-        $stateProvider.state({
-            name:'home',
-            url: '/',
-            templateUrl: 'scripts/home/home.view.html',
-            controller: 'HomeCtrl',
-            controllerAs: 'vm',
-            resolve: {
-                communities: communitiesResolver
-            }
-        });
-        $stateProvider.state({
-            name: 'community',
-            parent: 'home',
-            url: '^/community/:communityId',
-            templateUrl: 'scripts/communities/communities.view.html',
-            controller: 'CommunitiesCtrl',
-            controllerAs: 'vm',
-            resolve: {
-                communityId: communityIdResolver,
-                community: communityResolver,
-                players: communityPlayersResolver
-            }
-        });
-        $stateProvider.state({
-            name: 'game',
-            parent: 'community',
-            url: '/games/:gameId',
-            templateUrl: 'scripts/games/games.view.html',
-            controller: 'PokerManagerCtrl',
-            controllerAs: 'vm',
-            resolve: {
-                game: gameRouteResolver
-            }
-        });
-        $stateProvider.state({
-            name: 'players',
-            parent: 'community',
-            url: '/players',
-            templateUrl: 'scripts/players/players.view.html',
-            controller: 'PlayersCtrl',
-            controllerAs: 'vm',
-            resolve: {
-                players: playersRouteResolver
-            }
-        });
-        $stateProvider.state({
-            name: 'stats',
-            parent: 'community',
-            url: '/stats?fromDate&toDate',
-            templateUrl: 'partials/poker-stats.html',
-            controller: 'PokerStatsCtrl',
-            controllerAs: 'vm'
-        });
+        var home = {
+                name: 'home',
+                url: '/',
+                templateUrl: 'scripts/home/home.view.html',
+                controller: 'HomeCtrl',
+                controllerAs: 'vm',
+                resolve: {
+                    communities: communitiesResolver
+                }
+            },
+            community = {
+                name: 'community',
+                parent: 'home',
+                url: '^/community/:communityId',
+                templateUrl: 'scripts/communities/communities.view.html',
+                controller: 'CommunitiesCtrl',
+                controllerAs: 'vm',
+                resolve: {
+                    communityId: communityIdResolver,
+                    community: communityResolver,
+                    players: communityPlayersResolver
+                }
+            },
+            gameManager = {
+                name: 'game',
+                parent: 'community',
+                url: '/games/:gameId',
+                templateUrl: 'scripts/games/games.view.html',
+                controller: 'PokerManagerCtrl',
+                controllerAs: 'vm',
+                resolve: {
+                    game: gameRouteResolver
+                }
+            },
+            stats = {
+                name: 'stats',
+                parent: 'community',
+                url: '/stats?fromDate&toDate',
+                templateUrl: 'partials/poker-stats.html',
+                controller: 'PokerStatsCtrl',
+                controllerAs: 'vm'
+            };
 
-        //$urlRouterProvider.otherwise('/home');
+        $stateProvider.state(home);
+        $stateProvider.state(community);
+        $stateProvider.state(gameManager);
+        $stateProvider.state(stats);
+
         $urlRouterProvider.when('', '/');
-        $urlRouterProvider.when('/community', '/community/:communityId');
+        $urlRouterProvider.otherwise('/');
     }
 
     run.$inject = ['$rootScope'];

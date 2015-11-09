@@ -12,6 +12,8 @@
             playersOpen: false
         };
 
+        vm.monthAgo = Date.now() - (1000 * 60 * 60 * 24 * 30);
+        vm.today = Date.now();
         vm.openPlayersControl = openPlayersControl;
         vm.community = community;
         vm.players = players;

@@ -3,8 +3,8 @@
         .module( 'pokerManager' )
         .controller( 'CommunitiesCtrl', CommunitiesController );
 
-    CommunitiesController.$inject = [ 'communitiesSvc', 'userService', 'Players', 'playerModal', 'Games', 'Ref', '$location', 'community', 'players' ];
-    function CommunitiesController( communitiesSvc, userService, Players, playerModal, Games, Ref, $location, community, players ) {
+    CommunitiesController.$inject = [ 'communitiesSvc', 'userService', 'Players', 'playerModal', 'Games', 'Ref', '$state', '$location', 'community', 'players' ];
+    function CommunitiesController( communitiesSvc, userService, Players, playerModal, Games, Ref, $state, $location, community, players ) {
         var vm = this,
             collapseState = {};
 
@@ -12,8 +12,8 @@
             playersOpen: false
         };
 
-        vm.monthAgo = Date.now() - (1000 * 60 * 60 * 24 * 30);
-        vm.today = Date.now();
+        vm.fromDate = Date.now() - (1000 * 60 * 60 * 24 * 30);
+        vm.toDate = Date.now();
         vm.openPlayersControl = openPlayersControl;
         vm.community = community;
         vm.players = players;
@@ -29,6 +29,7 @@
         vm.addMember = addMember;
         vm.createGame = createGame;
         vm.getCommunityGames = getCommunityGames;
+        vm.loadStats = loadStats;
 
         vm.communities.$loaded().then( function () {
             vm.communities.forEach( function ( community ) {
@@ -39,6 +40,10 @@
 
         function openPlayersControl() {
             vm.prefs.playersOpen = !vm.prefs.playersOpen;
+        }
+
+        function loadStats() {
+            $state.go('stats', {communityId: community.$id, fromDate: vm.fromDate, toDate: vm.toDate});
         }
 
         function add() {

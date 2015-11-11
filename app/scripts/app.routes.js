@@ -44,7 +44,7 @@
             stats = {
                 name: 'stats',
                 parent: 'community',
-                url: '/stats?fromDate&toDate',
+                url: '/stats?{fromDate:int}&{toDate:int}',
                 templateUrl: 'partials/poker-stats.html',
                 controller: 'PokerStatsCtrl',
                 controllerAs: 'vm'

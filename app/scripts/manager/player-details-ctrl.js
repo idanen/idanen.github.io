@@ -7,19 +7,19 @@ angular.module( 'pokerManager' )
 	.controller( 'ModalPlayerDetailsCtrl', ModalPlayerDetailsController )
 	.controller( 'PlayerDetailsCtrl', PlayerDetailsController );
 
-	ModalPlayerDetailsController.$inject = [ '$scope', '$http', '$modalInstance', 'player' ];
+	ModalPlayerDetailsController.$inject = [ '$scope', '$http', '$uibModalInstance', 'player' ];
 
 	function ModalPlayerDetailsController( $scope, $http, $modalInstance, player ) {
 		var vm = this;
-		
+
 		vm.player = player;
 		vm.ok = okFn;
 		vm.cancel = cancelFn;
-		
+
 		function okFn() {
 			$modalInstance.close(vm.player);
 		}
-		
+
 		function cancelFn() {
 			$modalInstance.dismiss('cancel');
 		}
@@ -34,7 +34,7 @@ angular.module( 'pokerManager' )
 			//return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
 			return true;
 		};
-		
+
 		/*
 		$scope.isAdmin = function() {
 			return $scope.admin;

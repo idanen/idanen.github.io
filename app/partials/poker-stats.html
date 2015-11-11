@@ -1,4 +1,4 @@
-<div class="container" ng-init="vm.init();">
+<div ng-init="vm.init();">
 	<div ng-cloak>
 		<h5>
 			Games report ( Between {{ vm.displayGames.fromDate | date:'yyyy-MM-dd' }} and {{ vm.displayGames.toDate | date:'yyyy-MM-dd' }} )
@@ -31,7 +31,7 @@
 			<div class="col-md-9">
 				<em>Showing players who played over </em>
 				<div class="btn-group btn-group-sm">
-					<label class="btn btn-default" ng-repeat="option in vm.filterOptions.gamesCount" ng-model="vm.filter.gamesCount" btn-radio="option"><span class="badge">{{ option | percentage }}</span> <em>({{ option * vm.totalGames | number:0 }})</em></label>
+					<label class="btn btn-default" ng-repeat="option in vm.filterOptions.gamesCount" ng-model="vm.filter.gamesCount" uib-btn-radio="option"><span class="badge">{{ option | percentage }}</span> <em>({{ option * vm.totalGames | number:0 }})</em></label>
 				</div>
 				<em> of games</em>
 			</div>

@@ -2,13 +2,13 @@
 	angular
 		.module( 'pokerManager' )
 		.service( 'playerModal', PlayerModal );
-		
-	PlayerModal.$inject = [ '$modal', 'Players' ];
+
+	PlayerModal.$inject = [ '$uibModal', 'Players' ];
 	function PlayerModal( $modal, Players ) {
 		this.$modal = $modal;
 		this.Players = Players;
 	}
-	
+
 	PlayerModal.prototype = {
 		open: function ( player ) {
 			var isNew = ( typeof( player ) === 'undefined' || player === null );

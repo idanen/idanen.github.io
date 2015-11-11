@@ -5,12 +5,17 @@
 angular.module( 'pokerManager' ).
 	controller( 'PokerStatsCtrl', PokerStatsController );
 
-	PokerStatsController.$inject = [ '$filter', '$stateParams', 'communityId', 'Utils', 'Games', 'Players', 'playerModal' ];
+	PokerStatsController.$inject = [ '$filter', '$state', '$stateParams', 'communityId', 'Utils', 'Games', 'Players', 'playerModal' ];
 
-	function PokerStatsController( $filter, $stateParams, communityId, utils, Games, Players, playerModal ) {
+	function PokerStatsController( $filter, $state, $stateParams, communityId, utils, Games, Players, playerModal ) {
 		'use strict';
 
-		var vm = this;
+		var vm = this,
+			DAY = 1000 * 60 * 60 * 24,
+			WEEK = DAY * 7,
+			MONTH = DAY * 30,
+			QUARTER = MONTH * 3,
+			YEAR = DAY * 365;
 
 		vm.today = new Date();
 		vm.totalGames = 0;
@@ -28,9 +33,9 @@ angular.module( 'pokerManager' ).
 		};
 
 		vm.displayGames = {
-				fromDate: vm.today.setMonth( vm.today.getMonth() - 1 ),
+				fromDate: $stateParams.fromDate || vm.today.setMonth( vm.today.getMonth() - 1 ),
 				fromDateOpen: false,
-				toDate: vm.today.setMonth( vm.today.getMonth() + 1 ),
+				toDate: $stateParams.toDate || vm.today.setMonth( vm.today.getMonth() + 1 ),
 				toDateOpen: false,
 				players: [],
 				filtered: []
@@ -69,8 +74,10 @@ angular.module( 'pokerManager' ).
 								if (playerId in players) {
 									players[playerId].buyin += player.buyin;
 									players[playerId].buyout += player.buyout;
+									players[playerId].gamesCount += 1;
 								} else {
 									players[playerId] = player;
+									players[playerId].gamesCount = 1;
 								}
 							});
 						}
@@ -99,43 +106,43 @@ angular.module( 'pokerManager' ).
 		}
 
 		function loadGames() {
-			getPlayers();
+			$state.go('stats', { communityId: communityId, fromDate: vm.displayGames.fromDate, toDate: vm.displayGames.toDate });
 		}
 
 		function loadGamesBetweenDates(from, to, gamesCountOptionIdx) {
-			vm.displayGames.fromDate = formatDate(from);
-			vm.displayGames.toDate = formatDate(to);
+			vm.displayGames.fromDate = from;
+			vm.displayGames.toDate = to;
 			if (!isNaN(gamesCountOptionIdx)) {
 				vm.filter.gamesCount = vm.filterOptions.gamesCount[gamesCountOptionIdx || 0];
 			}
-			getPlayers();
+			vm.loadGames();
 		}
 
 		function loadLastGame() {
-			var today = new Date();
-			loadGamesBetweenDates(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 3), today);
+			var today = Date.now();
+			loadGamesBetweenDates(today - (DAY * 3), today);
 		}
 
 		function loadLastMonthGames() {
-			var today = new Date();
-			loadGamesBetweenDates(new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()), today);
+			var today = Date.now();
+			loadGamesBetweenDates(today - MONTH, today);
 		}
 
 		function loadLastQuarterGames() {
-			var today = new Date();
-			loadGamesBetweenDates(new Date(today.getFullYear(), today.getMonth() - 3, today.getDate()), today);
+			var today = Date.now();
+			loadGamesBetweenDates(today - QUARTER, today);
 		}
 
 		function loadLastYearGames() {
-			var today = new Date();
-			loadGamesBetweenDates(new Date(today.getFullYear() - 1, today.getMonth(), today.getDate()), today);
+			var today = Date.now();
+			loadGamesBetweenDates(today - YEAR, today);
 		}
 
 		function loadAllTimeGames() {
-			vm.displayGames.fromDate = formatDate(new Date( 2000, 9, 1 ));
-			vm.displayGames.toDate = formatDate(new Date());
+			vm.displayGames.fromDate = new Date( 2000, 9, 1 ).getDate();
+			vm.displayGames.toDate = Date.now();
 			vm.filter.gamesCount = vm.filterOptions.gamesCount[ 1 ];
-			getPlayers();
+			vm.loadGames();
 		}
 
 		function statsAvgBuyin() {

@@ -85,8 +85,8 @@ angular.module( 'pokerManager.services' ).
 				return $q( function ( resolve ) {
 					games.$ref()
 						.orderByChild('date')
-						.startAt(parseInt(from, 10))
-						.endAt(parseInt(to, 10))
+						.startAt(from)
+						.endAt(to)
 						.once( 'value', function ( querySnapshot ) {
 							var games = [];
 							if ( querySnapshot.hasChildren() ) {

@@ -83,7 +83,8 @@ angular.module( 'pokerManager' ).
 					dates: [],
 					profits: [],
 					balances: []
-				};
+				},
+                prev = 0;
 
 			if ( player.games ) {
 				var iterations = 0;
@@ -106,6 +107,13 @@ angular.module( 'pokerManager' ).
                 chartData.balances.map(function (balance, idx, arr) {
                     chartData.balances[idx] += (arr[idx - 1] || 0);
                 });
+
+                _.forEach(player.games, function (game) {
+                    game.balance = prev + (game.buyout - game.buyin);
+                    prev = game.balance;
+                });
+
+                player.games = _.sortByOrder(player.games, 'date', 'desc');
 			}
 
 			return chartData;

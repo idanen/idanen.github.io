@@ -66,14 +66,18 @@ angular.module( 'pokerManager.services' ).
 						.orderByChild( field )
 						.equalTo( value )
 						.once( 'value', function ( querySnapshot ) {
-							var games = [];
 							if ( querySnapshot.hasChildren() ) {
-								querySnapshot.forEach( function ( gameSnap ) {
-									var game = gameSnap.val();
-									game.$id = gameSnap.key();
-									games.push( game );
-								} );
-								resolve( games );
+                                querySnapshot.ref()
+                                    .orderByChild('date')
+                                    .once('value', function ( gamesSnap ) {
+                                        var games = [];
+                                        gamesSnap.forEach(function ( gameSnap ) {
+                                            var game = gameSnap.val();
+                                            game.$id = gameSnap.key();
+                                            games.push( game );
+                                        });
+                                        resolve( games );
+                                    });
 							} else {
 								resolve( [] );
 							}

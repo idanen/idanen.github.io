@@ -24,6 +24,8 @@ angular.module( 'pokerManager' ).
             var service = {
                 create: create,
                 save: save,
+                saveResult: saveResult,
+                getPlayer: getPlayer,
                 playersOfCommunity: playersOfCommunity,
                 findBy: findBy,
                 matchUserToPlayer: matchUserToPlayer,
@@ -51,6 +53,21 @@ angular.module( 'pokerManager' ).
             function save( player ) {
                 delete player.isNew;
                 return service.players.$add( player );
+            }
+
+            function saveResult(gameResult, game) {
+                var playerToUpdate = service.players.$getRecord(gameResult.id);
+                if (!playerToUpdate.games) {
+                    playerToUpdate.games = {};
+                }
+                gameResult.date = game.date;
+                playerToUpdate.games[game.$id] = gameResult;
+
+                service.players.$save(playerToUpdate);
+            }
+
+            function getPlayer(playerId) {
+                return service.players.$getRecord(playerId);
             }
 
             function playersOfCommunity( community ) {

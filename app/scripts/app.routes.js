@@ -27,7 +27,8 @@
                 resolve: {
                     communityId: communityIdResolver,
                     community: communityResolver,
-                    players: communityPlayersResolver
+                    players: communityPlayersResolver,
+                    user: authRequiredResolver
                 }
             },
             gameManager = {
@@ -38,7 +39,8 @@
                 controller: 'PokerManagerCtrl',
                 controllerAs: 'vm',
                 resolve: {
-                    game: gameRouteResolver
+                    game: gameRouteResolver,
+                    user: authRequiredResolver
                 }
             },
             stats = {
@@ -64,6 +66,16 @@
         $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error) {
             console.log(error);
         });
+    }
+
+    waitForAuthResolver.$inject = ['userService'];
+    function waitForAuthResolver(userService) {
+        return userService.save();
+    }
+
+    authRequiredResolver.$inject = ['Auth'];
+    function authRequiredResolver(Auth) {
+        return Auth.$requireAuth();
     }
 
     communitiesResolver.$inject = ['communitiesSvc'];

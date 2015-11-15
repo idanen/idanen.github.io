@@ -102,7 +102,7 @@
         function createGame(community) {
             return Games.newGame(community.$id)
                 .then(function (game) {
-                    $location.url('/game/' + (game.$id || '0'));
+                    $state.go('game', {communityId: community.$id, gameId: game.$id});
                 });
         }
 

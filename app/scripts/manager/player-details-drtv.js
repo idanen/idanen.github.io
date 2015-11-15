@@ -5,9 +5,9 @@
 angular.module( 'pokerManager' ).
 	directive( 'playerDetails', playerDetailsDirective );
 
-	playerDetailsDirective.$inject = [ '$filter', '$timeout', 'Players', 'Stats' ];
+	playerDetailsDirective.$inject = [ '$filter', '$timeout', 'Players' ];
 
-	function playerDetailsDirective( $filter, $timeout, Players, stats ) {
+	function playerDetailsDirective( $filter, $timeout, Players ) {
 		'use strict';
 
 		return {
@@ -32,12 +32,16 @@ angular.module( 'pokerManager' ).
 				ctrl.loading = false;
 
 				// Calculate extra data
+                ctrl.player.gamesCount = ctrl.player.games ? Object.keys(ctrl.player.games).length : 0;
 				ctrl.player.winningSessions = winningSessions( ctrl.player );
 				ctrl.player.avgWinning = avgWinning( ctrl.player, true );
 
 				chartData = createData( ctrl.player );
 
-				chartHolder.highcharts().destroy();
+				var chart = chartHolder.highcharts();
+                if (chart) {
+                    chart.destroy();
+                }
 
 				updateChartData( chartObj, chartData );
 
@@ -46,7 +50,7 @@ angular.module( 'pokerManager' ).
 					chartHolder.highcharts( chartObj );
 				}, 0, false);
 			}
-		
+
 			// Create a placeholder for the chart
 			refreshBtn.after( chartHolder );
 			chartHolder.attr( 'id', 'player-chart' );
@@ -57,11 +61,12 @@ angular.module( 'pokerManager' ).
 			}, 0, false);
 
 			if ( !ctrl.player.isNew ) {
-				ctrl.player = Players.get( { playerId: ctrl.player.id }, refreshData );
+				ctrl.player = Players.getPlayer( ctrl.player.id );
+                refreshData();
 			} else {
 				ctrl.loading = false;
 			}
-			
+
 			refreshBtn.on( 'click', refreshData );
 
 			scope.$on( '$destroy', function () {
@@ -78,24 +83,29 @@ angular.module( 'pokerManager' ).
 					dates: [],
 					profits: [],
 					balances: []
-				},
-				sum = 0;
+				};
 
 			if ( player.games ) {
-				// Build data rows
-				var idx = ( player.games.length > 20 ) ? player.games.length - 20 : 0;
-				for ( ; idx < player.games.length; ++idx ) {
-					var game = player.games[ idx ];
-					if ( game.players.length ) {
-						if ( angular.isNumber( game.date ) ) {
-							chartData.dates.push( $filter( 'date' )( game.date, 'y-MM-dd' ) );
-						} else {
-							chartData.dates.push( game.date );
-						}
-						chartData.profits.push( game.players[ 0 ].buyout - game.players[ 0 ].buyin );
-						chartData.balances.push( game.players[ 0 ].balance );
-					}
-				}
+				var iterations = 0;
+                _.forEach(player.games, function (gameResult) {
+                    iterations += 1;
+                    if (!isNaN(gameResult.date)) {
+                        chartData.dates.push( $filter( 'date' )( gameResult.date, 'y-MM-dd' ) );
+                    } else {
+                        chartData.dates.push( gameResult.date );
+                    }
+                    var profit = gameResult.buyout - gameResult.buyin;
+                    chartData.profits.push( profit );
+                    chartData.balances.push( profit );
+
+                    if (iterations > 20) {
+                        return false;
+                    }
+                });
+                // Accumulate balance
+                chartData.balances.map(function (balance, idx, arr) {
+                    chartData.balances[idx] += (arr[idx - 1] || 0);
+                });
 			}
 
 			return chartData;
@@ -103,26 +113,26 @@ angular.module( 'pokerManager' ).
 
 		function winningSessions( player ) {
 			var count = 0;
-			if ( player.games && player.games.length ) {
-				player.games.forEach( function ( game ) {
-					if ( game && game.players && game.players.length && ( game.players[ 0 ].buyout - game.players[ 0 ].buyin ) >= 0 ) {
+			if ( player.games ) {
+				_.forEach(player.games, function ( game ) {
+					if ( game.buyout >= game.buyin ) {
 						count++;
 					}
-				} );
+				});
 			}
 			return count;
 		}
 
 		function avgWinning( player, bb ) {
-			var sum = 0;
-			if ( player.games && player.games.length ) {
-				player.games.forEach( function ( game ) {
-					if ( game && game.players && game.players.length ) {
-						sum += ( ( game.players[ 0 ].buyout - game.players[ 0 ].buyin ) / ( bb ? 50 : 1 ) );
-					}
-				} );
+			var sum = 0,
+                gamesCount = 0;
+			if ( player.games ) {
+				_.forEach(player.games, function ( game ) {
+                    sum += ( ( game.buyout - game.buyin ) / ( bb ? 50 : 1 ) );
+                    gamesCount += 1;
+				});
 			}
-			return sum / ( player.games ? player.games.length || 1 : 1 );
+			return sum / (gamesCount || 1);
 		}
 
 		function createChartObject( playerName, chartData ) {

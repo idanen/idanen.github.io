@@ -14,7 +14,8 @@ function LoginController( userService, Players ) {
 
 	vm.signIn = signIn;
 	vm.signOut = signOut;
-	vm.user = null;
+
+	userService.save().then(obtainedUserInfo);
 
 	function signIn(provider) {
         userService.login(provider)
@@ -38,7 +39,8 @@ function LoginController( userService, Players ) {
             };
 
         vm.user = angular.extend({}, user, player);
-		console.log(vm.user);
+		//console.log(vm.user);
+
 		// Save user as a player
         return Players.matchUserToPlayer( vm.user );
 	}

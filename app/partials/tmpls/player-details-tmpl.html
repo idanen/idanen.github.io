@@ -34,7 +34,7 @@
 <div class="loader" ng-show="loading">Loading...</div>
 <div ng-hide="loading">
 	<button class="btn btn-info refresh-data-btn" analytics-on analytics-event="Player Performance" analytics-category="Actions" analytics-label="{{ pCtrl.player.name }}">Refresh <span class="fa fa-refresh"></span></button>
-	<table class="table table-striped table-hover" ng-hide="pCtrl.player.balance == 0">
+	<table class="table table-striped table-hover">
 		<thead>
 			<tr>
 				<th>Date</th>
@@ -44,23 +44,23 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="game in pCtrl.player.games" ng-class="{'success': (game.players[ 0 ].balance > 0), 'danger': (game.players[ 0 ].balance < 0)}">
+			<tr ng-repeat="(gameId, game) in pCtrl.player.games" ng-class="{'success': (game.balance > 0), 'danger': (game.balance < 0)}">
 				<td>{{ game.date | date:'y-MM-dd' }}</td>
 				<td>
-					<span ng-class="{'label label-success': (game.players[0].buyout > game.players[0].buyin), 'label label-danger': (game.players[0].buyout < game.players[0].buyin), 'label label-default': (game.players[0].buyout == game.players[0].buyin)}">{{ game.players[0].buyout - game.players[0].buyin }}</span>
+					<span ng-class="{'label label-success': (game.buyout > game.buyin), 'label label-danger': (game.buyout < game.buyin), 'label label-default': (game.buyout == game.buyin)}">{{ game.buyout - game.buyin }}</span>
 				</td>
 				<td>
-					<span ng-class="{'label label-success': (game.players[0].buyout > game.players[0].buyin), 'label label-danger': (game.players[0].buyout < game.players[0].buyin), 'label label-default': (game.players[0].buyout == game.players[0].buyin)}">{{ (game.players[0].buyout - game.players[0].buyin) / 50 }}</span>
+					<span ng-class="{'label label-success': (game.buyout > game.buyin), 'label label-danger': (game.buyout < game.buyin), 'label label-default': (game.buyout == game.buyin)}">{{ (game.buyout - game.buyin) / 50 }}</span>
 				</td>
 				<td>
-					<span ng-class="{'label label-success': (game.players[0].balance > 0), 'label label-danger': (game.players[0].balance < 0), 'label label-default': (game.players[0].balance == 0)}">{{ game.players[0].balance }}</span>
+					<span ng-class="{'label label-success': (game.balance > 0), 'label label-danger': (game.balance < 0), 'label label-default': (game.balance == 0)}">{{ game.balance }}</span>
 				</td>
 			</tr>
 		</tbody>
 		<tfoot>
-			<tr ng-class="{'success': pCtrl.player.games[pCtrl.player.games.length - 1].balance > 0, 'danger': pCtrl.player.games[pCtrl.player.games.length - 1].balance < 0}">
-				<th>Played {{ pCtrl.player.games.length }} games</th>
-				<th>{{ pCtrl.player.winningSessions }} winning sessions <span class="badge">{{ pCtrl.player.winningSessions / pCtrl.player.games.length | percentage:1 }}</span></th>
+			<tr>
+				<th>Played {{ pCtrl.player.gamesCount }} games</th>
+				<th>{{ pCtrl.player.winningSessions }} winning sessions <span class="badge">{{ pCtrl.player.winningSessions / (pCtrl.player.gamesCount || 1) | percentage:1 }}</span></th>
 				<th>Average winnings (in BBs): <span class="badge">{{ pCtrl.player.avgWinning | number:2 }}</span></th>
 				<th>
 					{{ pCtrl.player.games[pCtrl.player.games.length - 1].balance }}

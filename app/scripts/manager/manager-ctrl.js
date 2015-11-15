@@ -119,9 +119,9 @@ angular.module( 'pokerManager' ).
 
 		function clearCurrentGame() {
 			// Reset is-playing state
-			vm.players.forEach( function( player ) {
+			_.forEach(vm.players, function( player ) {
 				player.isPlaying = false;
-			} );
+			});
 
 			// Reset game
 			//vm.game = Games.create();
@@ -206,6 +206,9 @@ angular.module( 'pokerManager' ).
 			// When game is loaded the $watch is called even if the new and old values are the same - preventing it here by comparing them
 			if ( !angular.equals( newVal, oldVal ) ) {
 				vm.saveGameToLocalStorage();
+				_.forEach(vm.game.players, function (gameResult) {
+                    Players.saveResult(gameResult, vm.game);
+                });
 			}
 		}, true );
 

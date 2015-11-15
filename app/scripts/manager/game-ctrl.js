@@ -5,9 +5,9 @@
 angular.module( 'pokerManager' ).
 	controller( 'GameCtrl', GameController );
 
-	GameController.$inject = [ '$scope', '$analytics', '$routeParams', 'toaster', 'Games', 'Utils' ];
+	GameController.$inject = [ '$scope', '$analytics', 'toaster', 'Games' ];
 
-	function GameController( $scope, $analytics, $routeParams, toaster, Game, utils ) {
+	function GameController( $scope, $analytics, toaster, Game ) {
 		'use strict';
 
 		var vm = this,
@@ -81,7 +81,7 @@ angular.module( 'pokerManager' ).
 			//player.balance -= player.buyin;
 			player.currentChipCount = parseInt( player.currentChipCount, 10 ) + ( calculatedBuyin * vm.game.chipValue );
 			player.buyout = player.currentChipCount / vm.game.chipValue;
-			
+
 			try {
 				$analytics.eventTrack('Buyin', { category: 'Actions', label: player.name });
 			} catch ( err ) {}
@@ -137,7 +137,7 @@ angular.module( 'pokerManager' ).
 			player.buyout = player.currentChipCount / vm.game.chipValue;
 			//player.balance += player.buyout;
 		}
-	
+
 		function comeBack( player ) {
 			if ( !player.isPlaying ) {
 				player.isPlaying = true;
@@ -146,7 +146,7 @@ angular.module( 'pokerManager' ).
 			// Add payout to player's balance
 			//player.balance -= player.buyout;
 		}
-		
+
 		function chipCountUpdate( player ) {
 			player.buyout = player.currentChipCount / vm.game.chipValue;
 		}
@@ -166,15 +166,15 @@ angular.module( 'pokerManager' ).
 			}
 			return Object.keys(vm.game.players).length;
 		}
-	
+
 		function totalBuyin() {
 			return _.sum(vm.game.players, 'buyin');
 		}
-	
+
 		function totalChips() {
 			return _.sum(vm.game.players, 'currentChipCount');
 		}
-		
+
 		function totalHosting() {
 			if (!vm.game.players) {
 				return 0;
@@ -186,11 +186,11 @@ angular.module( 'pokerManager' ).
 			});
 			return sum;
 		}
-	
+
 		function toggleGameDate( $event ) {
 			$event.preventDefault();
 			$event.stopPropagation();
-			
+
 			vm.game.dateOpen = !vm.game.dateOpen;
 		}
 

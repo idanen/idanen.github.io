@@ -26,20 +26,18 @@
 	<form class="form-inline" role="form" name="vm.gameSettings">
 		<div class="form-group input-group-sm">
 			<label for="gameLocation">Playing at</label>
-			<input id="gameLocation" type="text" ng-model="vm.game.location" placeholder="Game Location" class="form-control" />
+			<input class="form-control" id="gameLocation" type="text" ng-model="vm.game.location" placeholder="Game Location" />
 		</div>
 		<div class="form-group">
 			<label>on</label>
-			<input type="text" class="form-control input-sm" ng-model="vm.game.date" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" name="date" bs-datepicker>
+			<input class="form-control input-sm" type="text" ng-model="vm.game.date" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" name="date" bs-datepicker>
 		</div>
 		<div class="form-group">
 			<label># of hands:</label>
 			<div class="btn-group">
-				<button class="btn btn-sm btn-success" ng-click="vm.game.numberOfHands = vm.game.numberOfHands + 1"><i class="glyphicon glyphicon-plus"></i>
-				</button>
+				<button class="btn btn-sm btn-success" ng-click="vm.game.numberOfHands = vm.game.numberOfHands + 1"><i class="glyphicon glyphicon-plus"></i></button>
 				<button class="btn btn-sm btn-default" style="width: 80px;">{{ vm.game.numberOfHands }}</button>
-				<button class="btn btn-sm btn-danger" ng-click="vm.game.numberOfHands = vm.game.numberOfHands - 1" ng-disabled="vm.game.numberOfHands <= 0"><i class="glyphicon glyphicon-minus"></i>
-				</button>
+				<button class="btn btn-sm btn-danger" ng-click="vm.game.numberOfHands = vm.game.numberOfHands - 1" ng-disabled="vm.game.numberOfHands <= 0"><i class="glyphicon glyphicon-minus"></i></button>
 			</div>
 		</div>
 	</form>

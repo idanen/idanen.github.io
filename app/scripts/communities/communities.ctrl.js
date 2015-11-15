@@ -82,20 +82,7 @@
         function addMember( community ) {
             playerModal.open()
                 .then( function ( player ) {
-                    return Players.save( player );
-                } )
-                .then( function ( savedPlayer ) {
-                    var idx = vm.communities.$indexFor( community.$id ),
-                        membership = {};
-
-                    membership[ community.$id ] = community.name;
-                    if ( idx !== -1 ) {
-                        savedPlayer.once( 'value', function ( snap ) {
-                            vm.communities[ idx ].members[ snap.key() ] = snap.child( 'name' ).val();
-                            vm.communities.$save( idx );
-                        } );
-                        Ref.child( 'players/' + savedPlayer.key() ).child( 'memberIn' ).set( membership );
-                    }
+                    return communitiesSvc.addMember(player, community);
                 } );
         }
 

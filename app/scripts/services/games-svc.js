@@ -60,11 +60,12 @@ angular.module( 'pokerManager.services' ).
 					});
 			}
 
-			function findBy( field, value ) {
+			function findBy( field, value, limit ) {
 				return $q( function ( resolve ) {
 					games.$ref()
 						.orderByChild( field )
 						.equalTo( value )
+                        .limitToLast(limit || 100)
 						.once( 'value', function ( querySnapshot ) {
                             var games = [];
                             if ( querySnapshot.hasChildren() ) {

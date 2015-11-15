@@ -52,7 +52,13 @@ angular.module( 'pokerManager' ).
 
             function save( player ) {
                 delete player.isNew;
-                return service.players.$add( player );
+                var existingPlayer = service.players.$getRecord(player.$id);
+                if (!existingPlayer) {
+                    return service.players.$add(player);
+                }
+
+                angular.extend(existingPlayer, player);
+                return service.players.$save(existingPlayer);
             }
 
             function saveResult(gameResult, game) {

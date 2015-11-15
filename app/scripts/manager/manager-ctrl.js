@@ -5,9 +5,9 @@
 angular.module( 'pokerManager' ).
 	controller( 'PokerManagerCtrl', PokerManagerController );
 
-	PokerManagerController.$inject = [ '$scope', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games', 'playerModal', 'communitiesSvc', 'game', 'Ref', '$firebaseObject' ];
+	PokerManagerController.$inject = [ '$scope', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games', 'playerModal', 'communitiesSvc', 'community', 'game', 'Ref', '$firebaseObject' ];
 
-	function PokerManagerController( $scope, $filter, $analytics, toaster, utils, Players, Games, playerModal, communitiesSvc, game, Ref, $firebaseObject ) {
+	function PokerManagerController( $scope, $filter, $analytics, toaster, utils, Players, Games, playerModal, communitiesSvc, community, game, Ref, $firebaseObject ) {
 		'use strict';
 
 		var vm = this;
@@ -191,13 +191,13 @@ angular.module( 'pokerManager' ).
 					if ( savedPlayer.isNew ) {
 						savedPlayer.buyin = 0;
 						savedPlayer.isPlaying = false;
-						vm.players.push( savedPlayer );
 					}
 
 					player = savedPlayer;
 
-					return Players.update( player ).$promise;
-				} );
+                    return communitiesSvc.addMember(player, community);
+				} )
+                .then(init);
 		}
 
 		$scope.$watch( function () {

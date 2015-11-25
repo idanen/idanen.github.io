@@ -5,3 +5,4 @@ dist
 *.sublime*
 app/google-login-sample.html
 npm-debug.log
+firebase.json

@@ -41,6 +41,7 @@ angular.module( 'pokerManager' ).
 		vm.gameSaved = gameSaved;
 		vm.saveGameFailed = saveGameFailed;
 		vm.openPlayerDetailsDialog = openPlayerDetailsDialog;
+		vm.chipsValueChanged = chipsValueChanged;
 
 		vm.init();
 
@@ -131,7 +132,7 @@ angular.module( 'pokerManager' ).
 			vm.game.players = [];
 
 			// Save empty game as local
-			vm.saveGameToLocalStorage();
+			//vm.saveGameToLocalStorage();
 		}
 
 		function addServerMsg(msg) {
@@ -205,16 +206,16 @@ angular.module( 'pokerManager' ).
 		}, function ( newVal, oldVal ) {
 			// When game is loaded the $watch is called even if the new and old values are the same - preventing it here by comparing them
 			if ( !angular.equals( newVal, oldVal ) ) {
-				vm.saveGameToLocalStorage();
+				//vm.saveGameToLocalStorage();
 				_.forEach(vm.game.players, function (gameResult) {
                     Players.saveResult(gameResult, vm.game);
                 });
 			}
 		}, true );
 
-		$scope.$watch( function () {
-			return vm.game.chipValue;
-		}, chipsValueChanged );
+		//$scope.$watch( function () {
+		//	return vm.game.chipValue;
+		//}, chipsValueChanged );
 
 		function chipsValueChanged( current, previous ) {
 			if ( !current ) {

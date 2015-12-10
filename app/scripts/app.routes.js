@@ -68,10 +68,10 @@
         });
     }
 
-    waitForAuthResolver.$inject = ['userService'];
-    function waitForAuthResolver(userService) {
-        return userService.save();
-    }
+    //waitForAuthResolver.$inject = ['userService'];
+    //function waitForAuthResolver(userService) {
+    //    return userService.save();
+    //}
 
     authRequiredResolver.$inject = ['Auth'];
     function authRequiredResolver(Auth) {

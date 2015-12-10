@@ -30,7 +30,9 @@
             return $q.when( Auth.$waitForAuth() )
                 .then(function ( user ) {
                     service.user = user;
-                    users[user.uid] = user;
+                    if (user) {
+                        users[user.uid] = user;
+                    }
                     return service.user;
                 });
         }

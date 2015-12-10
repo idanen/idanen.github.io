@@ -9,7 +9,7 @@
 			<form action="" class="form-inline row">
 				<div class="form-group col-md-4">
 					<label for="chipValue">Chip value:</label>
-					<input class="form-control" type="range" min="1" step="1" max="400" id="chipValue" ng-model="vm.game.chipValue" />
+					<input class="form-control" type="range" min="1" step="1" max="400" id="chipValue" ng-model="vm.game.chipValue" ng-change="vm.chipsValueChanged()" />
 				</div>
 				<div class="form-group col-md-4">
 					<label for="defaultBuyin">Default buyin:</label>

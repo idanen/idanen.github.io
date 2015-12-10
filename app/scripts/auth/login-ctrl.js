@@ -32,17 +32,19 @@ function LoginController( userService, Players ) {
 	}
 
 	function obtainedUserInfo( user ) {
-		var player = {
-                name: user[user.provider].displayName,
-                email: user[user.provider].email,
-                imageUrl: user[user.provider].profileImageURL
-            };
+		if (user) {
+			var player = {
+				name: user[user.provider].displayName,
+				email: user[user.provider].email,
+				imageUrl: user[user.provider].profileImageURL
+			};
 
-        vm.user = angular.extend({}, user, player);
-		//console.log(vm.user);
+			vm.user = angular.extend({}, user, player);
+			//console.log(vm.user);
 
-		// Save user as a player
-        return Players.matchUserToPlayer( vm.user );
+			// Save user as a player
+			return Players.matchUserToPlayer(vm.user);
+		}
 	}
 }
 })();

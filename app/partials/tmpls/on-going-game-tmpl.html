@@ -31,7 +31,7 @@
 		<div class="form-group">
 			<label for="gameDate">on</label>
 			<div class="input-group input-group-sm">
-				<input id="gameDate" class="form-control" type="text" datepicker-popup="yyyy-MM-dd" readonly="readonly" ng-model="game.date" datepicker-options="vm.dateOptions" is-open="game.dateOpen" show-weeks="false" />
+				<input id="gameDate" class="form-control" type="text" uib-datepicker-popup="yyyy-MM-dd" readonly="readonly" ng-model="game.date" datepicker-options="vm.dateOptions" is-open="game.dateOpen" show-weeks="false" />
 				<span class="input-group-btn">
 					<button type="button" class="btn btn-default" ng-click="vm.toggleGameDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
 				</span>

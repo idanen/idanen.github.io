@@ -9,7 +9,7 @@
 					<div class="form-group">
 						<label for="fromDate">From</label>
 						<div class="input-group input-group-sm">
-							<input ng-change="vm.loadGames()" class="form-control" id="fromDate" type="text" datepicker-popup="yyyy-MM-dd" ng-model="vm.displayGames.fromDate" datepicker-options="vm.dateOptions" show-weeks="false" is-open="vm.displayGames.fromDateOpen" readonly="readonly" />
+							<input ng-change="vm.loadGames()" class="form-control" id="fromDate" type="text" uib-datepicker-popup="yyyy-MM-dd" ng-model="vm.displayGames.fromDate" datepicker-options="vm.dateOptions" show-weeks="false" is-open="vm.displayGames.fromDateOpen" readonly="readonly" />
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="vm.toggleDateRange('from', $event)"><i class="glyphicon glyphicon-calendar"></i></button>
 							</span>
@@ -18,7 +18,7 @@
 					<div class="form-group">
 						<label for="toDate">To</label>
 						<div class="input-group input-group-sm">
-							<input ng-change="vm.loadGames()" class="form-control" id="toDate" type="text" datepicker-popup="yyyy-MM-dd" ng-model="vm.displayGames.toDate" datepicker-options="vm.dateOptions" show-weeks="false" is-open="vm.displayGames.toDateOpen" readonly="readonly" />
+							<input ng-change="vm.loadGames()" class="form-control" id="toDate" type="text" uib-datepicker-popup="yyyy-MM-dd" ng-model="vm.displayGames.toDate" datepicker-options="vm.dateOptions" show-weeks="false" is-open="vm.displayGames.toDateOpen" readonly="readonly" />
 							<span class="input-group-btn">
 								<button type="button" class="btn btn-default" ng-click="vm.toggleDateRange('to', $event)"><i class="glyphicon glyphicon-calendar"></i></button>
 							</span>
@@ -41,7 +41,7 @@
 			<div class="col-md-9">
 				<em>Showing players who played over </em>
 				<div class="btn-group btn-group-sm">
-					<label class="btn btn-default" ng-repeat="option in vm.filterOptions.gamesCount" ng-model="vm.filter.gamesCount" btn-radio="option"><span class="badge">{{ option | percentage }}</span> <em>({{ option * vm.totalGames | number:0 }})</em></label>
+					<label class="btn btn-default" ng-repeat="option in vm.filterOptions.gamesCount" ng-model="vm.filter.gamesCount" uib-btn-radio="option"><span class="badge">{{ option | percentage }}</span> <em>({{ option * vm.totalGames | number:0 }})</em></label>
 				</div>
 				<em> of games</em>
 			</div>

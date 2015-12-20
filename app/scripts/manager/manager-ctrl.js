@@ -5,9 +5,9 @@
 angular.module( 'pokerManager' ).
 	controller( 'PokerManagerCtrl', PokerManagerController );
 
-	PokerManagerController.$inject = [ '$scope', '$modal', '$filter', '$analytics', 'toaster', 'Utils', 'Players', 'Games' ];
+	PokerManagerController.$inject = [ '$scope', '$uibModal', '$analytics', 'toaster', 'Utils', 'Players', 'Games' ];
 
-	function PokerManagerController( $scope, $modal, $filter, $analytics, toaster, utils, Players, Games ) {
+	function PokerManagerController( $scope, $uibModal, $analytics, toaster, utils, Players, Games ) {
 		'use strict';
 
 		var vm = this;
@@ -46,14 +46,14 @@ angular.module( 'pokerManager' ).
 			var isNew = true,
 				playerIdx, len,
 				players = vm.players;
-			
+
 			for ( playerIdx = 0, len = players.length; playerIdx < len; ++playerIdx ) {
 				if ( players[ playerIdx ].id === savedPlayer.id) {
 					isNew = false;
 					break;
 				}
 			}
-			
+
 			if ( isNew ) {
 				players.push( savedPlayer );
 			} else {
@@ -72,7 +72,7 @@ angular.module( 'pokerManager' ).
 		function saveGameToLocalStorage() {
 			utils.saveLocal( 'game', vm.game );
 		}
-			
+
 		function loadLocalStorageGame() {
 			var oldChipValue = vm.game.settings.chipValue,
 				newChipValue;
@@ -91,7 +91,7 @@ angular.module( 'pokerManager' ).
 			// Players in game should be with same reference as players returned by the server
 			for ( var i = 0; i < vm.game.players.length; ++i ) {
 				var foundPlayer = playerEntity( vm.game.players[ i ] );
-				
+
 				if ( foundPlayer ) {
 					// Copy fields from saved game
 					var isPlaying = vm.game.players[ i ].isPlaying,
@@ -126,13 +126,13 @@ angular.module( 'pokerManager' ).
 		function refreshPlayersList() {
 			vm.init();
 		}
-		
+
 		function clearCurrentGame() {
 			// Reset is-playing state
 			vm.players.forEach( function( player ) {
 				player.isPlaying = false;
 			} );
-			
+
 			// Reset game
 			vm.game = Games.create();
 
@@ -157,7 +157,7 @@ angular.module( 'pokerManager' ).
 				player.paidHosting = false;
 				vm.game.players.push( player );
 			}
-			
+
 			try {
 				$analytics.eventTrack( 'Join Game', { category: 'Actions', label: player.name } );
 			} catch (err) {}
@@ -189,7 +189,7 @@ angular.module( 'pokerManager' ).
 			if (isNew) {
 				player = Players.create();
 			}
-			var modalInstance = $modal.open( {
+			var modalInstance = $uibModal.open( {
 				templateUrl: './partials/modals/addNewPlayer.html',
 				controller: 'ModalPlayerDetailsCtrl',
 				resolve: {
@@ -206,9 +206,9 @@ angular.module( 'pokerManager' ).
 					savedPlayer.isPlaying = false;
 				// Update changed fields
 				}
-				
+
 				player = savedPlayer;
-				
+
 				// Model.savePlayer( player );
 				Players.update( player ).$promise.then( playerSaved );
 			} );

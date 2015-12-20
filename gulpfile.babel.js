@@ -194,7 +194,7 @@ gulp.task('serve:dist', ['default'], () =>
           //       will present a certificate warning in the browser.
           // https: true,
           server: 'dist',
-          port: 3001
+          port: 3000
         })
 );
 

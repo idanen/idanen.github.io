@@ -28,7 +28,8 @@ module.exports = function (gulp, $, config) {
   gulp.task('styles', ['clean'], function () {
     return gulp.src([
       config.appStyleFiles,
-      '!' + config.appComponents
+      '!' + config.appComponents,
+      '!' + config.appStyleComponents
     ])
       .pipe($.plumber({errorHandler: function (err) {
         $.notify.onError({
@@ -133,7 +134,13 @@ module.exports = function (gulp, $, config) {
   // copy bower components into build directory
   gulp.task('bowerCopy', ['inject'], function () {
     var cssFilter = $.filter('**/*.css', {restore: true})
-      , jsFilter = $.filter('**/*.js', {restore: true});
+      , jsFilter = $.filter('**/*.js', {restore: true})
+      , ngStrapPath = 'bower_components/angular-strap/';
+
+    // Fix ui-bootstrap and angular-strap colliding
+    gulp.src(ngStrapPath + '**/*.js')
+      .pipe($.ngAnnotate({add: true, remove: true, rename: [{from: '$tooltip', to: '$asTooltip'}]}))
+      .pipe(gulp.dest(ngStrapPath));
 
     return gulp.src($.mainBowerFiles(), {base: bowerDir})
       .pipe(cssFilter)

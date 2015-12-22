@@ -18,12 +18,12 @@ module.exports = {
   // build directories
   buildDir: outDir + 'app/',
   buildComponents: outDir + 'app/components/',
-  buildCss: outDir + 'app/',
-  buildFonts: outDir + 'app/fonts/',
+  buildCss: outDir + 'app/styles/',
+  buildFonts: outDir + 'app/styles/fonts/',
   buildImages: outDir + 'app/img/',
   buildJs: outDir + 'app/js/',
-  extDir: outDir + 'app/',
-  extCss: outDir + 'app/',
-  extFonts: outDir + 'app/fonts/',
+  extDir: outDir + 'app/vendor/',
+  extCss: outDir + 'app/vendor/styles/',
+  extFonts: outDir + 'app/vendor/fonts/',
   extJs: outDir + 'app/vendor/js/'
 };

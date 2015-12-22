@@ -60,3 +60,7 @@ gulp.task('dev', ['build'], function () {
 });
 
 gulp.task('default', ['dev']);
+
+gulp.task('runProd', ['build'], function () {
+  gulp.start('browserSync');
+});

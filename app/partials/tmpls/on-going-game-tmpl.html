@@ -1,11 +1,11 @@
 <div class="current-game">
 	<h3>Current Game: played at &quot;{{ game.location }}&quot; (# of players: {{ game.players.length }}).</h3>
 
-	<accordion class="settings-menu">
-		<accordion-group>
-			<accordion-heading>
+	<uib-accordion class="settings-menu">
+		<uib-accordion-group>
+			<uib-accordion-heading>
 				<i class="glyphicon glyphicon-tasks"></i> Game Preferences: Chip value - {{ game.settings.chipValue }}, Default buyin - {{ game.settings.defaultBuyin }}, Max buyin - {{ game.settings.maxBuyin }}
-			</accordion-heading>
+			</uib-accordion-heading>
 			<form action="" class="form-inline row">
 				<div class="form-group col-md-4">
 					<label for="chipValue">Chip value:</label>
@@ -20,8 +20,8 @@
 					<input class="form-control" type="number" min="50" step="50" id="maxBuyin" ng-model="game.settings.maxBuyin" />
 				</div>
 			</form>
-		</accordion-group>
-	</accordion>
+		</uib-accordion-group>
+	</uib-accordion>
 
 	<form class="form-inline" role="form">
 		<div class="form-group input-group-sm">
@@ -70,16 +70,16 @@
 		</div>
 	</div>
 
-	<accordion>
-		<accordion-group>
-			<accordion-heading>
+	<uib-accordion>
+		<uib-accordion-group>
+			<uib-accordion-heading>
 				<i class="glyphicon glyphicon-trash"></i> Clear game
-			</accordion-heading>
+			</uib-accordion-heading>
 			<hr/>
 			<div class="row">
 				<button class="btn btn-lg btn-danger btn-block" ng-click="vm.clearGame()">Clear Game</button>
 			</div>
 			<hr/>
-		</accordion-group>
-	</accordion>
+		</uib-accordion-group>
+	</uib-accordion>
 </div>

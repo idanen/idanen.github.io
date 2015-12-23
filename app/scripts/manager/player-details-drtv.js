@@ -16,7 +16,7 @@ angular.module( 'pokerManager' ).
 				player: '='
 			},
 			controller: 'PlayerDetailsCtrl',
-			templateUrl: '/app/partials/tmpls/player-details-tmpl.html',
+			templateUrl: 'partials/tmpls/player-details-tmpl.html',
 			link: postLinkFn
 		};
 

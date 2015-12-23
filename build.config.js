@@ -20,6 +20,7 @@ module.exports = {
   buildComponents: outDir + 'app/components/',
   buildCss: outDir + 'app/styles/',
   buildFonts: outDir + 'app/styles/fonts/',
+  buildFontsProd: outDir + 'app/fonts/',
   buildImages: outDir + 'app/img/',
   buildJs: outDir + 'app/js/',
   extDir: outDir + 'app/vendor/',

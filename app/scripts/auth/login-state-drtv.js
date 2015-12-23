@@ -13,7 +13,7 @@ function loginStateDirective() {
         restrict: 'EA',
         controller: 'LoginCtrl',
         controllerAs: 'authCtrl',
-        templateUrl: '/app/partials/tmpls/login-state-tmpl.html',
+        templateUrl: 'partials/tmpls/login-state-tmpl.html',
         link: function ( $scope, $element, $attrs, vm ) {
 
         }

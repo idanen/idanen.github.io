@@ -17,7 +17,7 @@ angular.module( 'pokerManager' ).
 			},
 			controller: 'GameCtrl',
 			controllerAs: 'vm',
-			templateUrl: '/app/partials/tmpls/on-going-game-tmpl.html',
+			templateUrl: 'partials/tmpls/on-going-game-tmpl.html',
 			link: {
 				pre: function ( scope, element, attrs ) {
 					// scope.game = scope.$eval( attrs.onGoingGame );

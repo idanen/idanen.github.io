@@ -30,7 +30,7 @@ _.merge(config, buildConfig);
 config.appComponents = path.join(config.appDir, 'components/**/*');
 config.appStyleComponents = path.join(config.appDir, 'styles/components/**/*');
 config.appFiles = path.join(config.appDir, '**/*');
-config.appFontFiles = path.join(config.appDir, 'fonts/**/*');
+config.appFontFiles = path.join(config.appDir, 'styles/fonts/**/*');
 config.appImageFiles = path.join(config.appDir, 'img/**/*');
 config.appMarkupFiles = path.join(config.appDir, '**/*.html');
 config.appScriptFiles = path.join(config.appDir, '**/*.js');

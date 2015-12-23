@@ -43,7 +43,7 @@ module.exports = function (gulp, $, config) {
       }}))
       .pipe($.sass())
       .pipe($.autoprefixer())
-      .pipe($.if(isProd, $.cssRebaseUrls()))
+      //.pipe($.if(isProd, $.cssRebaseUrls()))
       .pipe($.if(isProd, $.modifyCssUrls({
         modify: function (url) {
           // determine if url is using http, https, or data protocol
@@ -61,7 +61,8 @@ module.exports = function (gulp, $, config) {
           }
 
           // prepend all other urls
-          return '../' + url;
+          //return '../' + url;
+          return url;
         }
       })))
       .pipe($.if(isProd, $.concat('app.css')))
@@ -88,7 +89,7 @@ module.exports = function (gulp, $, config) {
         // lower camel case all app names
         moduleName: _.camelize(_.slugify(_.humanize(require('../package.json').name))),
         declareModule: false,
-        prefix: '/app/'
+        prefix: ''
       })))
       .pipe($.if(isProd, htmlFilter.restore))
       .pipe(jsFilter)
@@ -274,10 +275,11 @@ module.exports = function (gulp, $, config) {
 
   // copy custom fonts into build directory
   gulp.task('fonts', ['clean'], function () {
-    var fontFilter = $.filter('**/*.{eot,otf,svg,ttf,woff,woff2}', {restore: true});
+    var fontFilter = $.filter('**/*.{eot,otf,svg,ttf,woff,woff2}', {restore: true}),
+        fontsDest = isProd ? config.buildFontsProd : config.buildFonts;
     return gulp.src([config.appFontFiles])
       .pipe(fontFilter)
-      .pipe(gulp.dest(config.buildFonts))
+      .pipe(gulp.dest(fontsDest))
       .pipe(fontFilter.restore);
   });
 
@@ -313,6 +315,7 @@ module.exports = function (gulp, $, config) {
           '!' + config.buildComponents,
           '!' + config.buildCss,
           '!' + config.buildFonts,
+          '!' + config.buildFontsProd,
           '!' + config.buildImages,
           '!' + config.buildJs,
           '!' + config.extDir,

@@ -202,7 +202,7 @@
         };
       }
       modalInstance = $uibModal.open({
-        templateUrl: '/app/partials/modals/addNewPlayer.html',
+        templateUrl: 'partials/modals/addNewPlayer.html',
         controller: 'ModalPlayerDetailsCtrl',
         resolve: {
           player: function () {

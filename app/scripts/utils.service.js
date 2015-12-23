@@ -23,43 +23,55 @@
   }
 
   UtilService.prototype = {
-    totalsCalc: function (anArray, fieldNameToSum) {
+    totalsCalc: function ( anArray, fieldNameToSum ) {
+      if (!anArray) {
+        return 0;
+      }
+
       var sum = 0;
-      for (var i = 0; i < anArray.length; ++i) {
-        sum += parseInt(anArray[i][fieldNameToSum]);
+      for( var i = 0; i < anArray.length; ++i ) {
+        sum += parseInt( anArray[ i ][ fieldNameToSum ] );
       }
       return sum;
     },
-    avgsCalc: function (anArray, fieldNameToSum) {
+    avgsCalc: function ( anArray, fieldNameToSum ) {
+      if (!anArray) {
+        return 0;
+      }
+
       var sum = 0;
-      for (var i = 0; i < anArray.length; ++i) {
-        sum += parseInt(anArray[i][fieldNameToSum]);
+      for( var i = 0; i < anArray.length; ++i ) {
+        sum += parseInt( anArray[ i ][ fieldNameToSum ] );
       }
       return ( sum / anArray.length );
     },
-    maxCalc: function (anArray, fieldNameToSum) {
+    maxCalc: function ( anArray, fieldNameToSum ) {
+      if (!anArray) {
+        return 0;
+      }
+
       var max = 0;
-      for (var i = 0; i < anArray.length; ++i) {
-        max = Math.max(anArray[i][fieldNameToSum], max);
+      for( var i = 0; i < anArray.length; ++i ) {
+        max = Math.max( anArray[ i ][ fieldNameToSum ], max );
       }
       return max;
     },
-    saveLocal: function (key, content) {
-      if (angular.isObject(content)) {
-        localStorage.setItem(key, JSON.stringify(content));
+    saveLocal: function ( key, content ) {
+      if ( angular.isObject( content ) ) {
+        localStorage.setItem( key, JSON.stringify( content ) );
       }
     },
-    loadLocal: function (key) {
-      return JSON.parse(localStorage.getItem(key));
+    loadLocal: function ( key ) {
+      return JSON.parse( localStorage.getItem( key ) );
     },
-    saveToken: function (toSave) {
-      localStorage.setItem('token', toSave);
+    saveToken: function ( toSave ) {
+      localStorage.setItem( 'token', toSave );
     },
     getToken: function () {
-      return localStorage.getItem('token');
+      return localStorage.getItem( 'token' );
     },
     clearToken: function () {
-      localStorage.removeItem('token');
+      localStorage.removeItem( 'token' );
     }
   };
 }());

@@ -3,7 +3,7 @@
  * Players services
  */
 angular.module( 'pokerManager.services' ).
-	provider( 'Auth', function authProvider() {
+	provider( 'AuthOld', function authProvider() {
 		'use strict';
 
 		var baseUrl = '',
@@ -63,4 +63,4 @@ angular.module( 'pokerManager.services' ).
 			return service;
 		}
 	} );
-})();
+}());

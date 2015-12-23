@@ -2,6 +2,7 @@
 node_modules
 dist
 .tmp
+tmp
 *.sublime*
 app/google-login-sample.html
 npm-debug.log

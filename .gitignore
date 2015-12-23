@@ -6,3 +6,6 @@ dist
 app/google-login-sample.html
 npm-debug.log
 firebase.json
+report
+bower_components
+build

@@ -4,7 +4,7 @@
  */
 angular.module( 'pokerManager' ).
 	directive( 'playerCard', playerCardDirective );
-	
+
 
 	function playerCardDirective() {
 		'use strict';

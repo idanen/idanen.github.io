@@ -316,6 +316,7 @@ module.exports = function (gulp, $, config) {
           '!' + config.buildImages,
           '!' + config.buildJs,
           '!' + config.extDir,
+          '!' + config.buildDir + 'manifest.json',
           '!' + config.buildDir + 'index.html'
         ], {mark: true})
           .then(function () {

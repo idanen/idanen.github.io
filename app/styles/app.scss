@@ -1,6 +1,6 @@
-
 @import 'components/_components/_loader';
 @import 'components/_components/_icomoon';
+@import 'components/bootstrap-spacelab';
 @import 'components/_components/bootstrap-additions';
 @import 'components/_components/toaster';
 
@@ -80,7 +80,7 @@ ul {
 .chip-count {
 	width: 3em;
 }
- 
+
 .accordion-inner {
 	min-height: 350px;
 }
@@ -159,7 +159,7 @@ ul {
 	#players-control .table tbody>tr:nth-child(even)>td, .table-striped tbody>tr:nth-child(even)>th {
 		background-color: #f0f0f0;
 	}
-	
+
 	#players-control table {
 		overflow-y: auto;
 	}
@@ -169,7 +169,7 @@ ul {
 		top: 10px;
 		right: -50px;*/
 	}
-	
+
 	.current-game .form-control {
 		padding-right: 6px;
 		padding-left: 6px;

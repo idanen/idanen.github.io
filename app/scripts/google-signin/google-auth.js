@@ -1,7 +1,4 @@
 /**
- @todo
- - contacts: handle paging (& querying) instead of returning ALL (currently 3000 max)
- - once google fixes it's api, just use google plus people api to get current user's email..
 
  @fileOverview
  Handles google login

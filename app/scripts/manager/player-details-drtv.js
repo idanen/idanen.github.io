@@ -16,7 +16,7 @@ angular.module( 'pokerManager' ).
 				player: '='
 			},
 			controller: 'PlayerDetailsCtrl',
-			templateUrl: 'partials/tmpls/player-details-tmpl.html',
+			templateUrl: '/app/partials/tmpls/player-details-tmpl.html',
 			link: postLinkFn
 		};
 
@@ -44,7 +44,7 @@ angular.module( 'pokerManager' ).
 					chartHolder.highcharts( chartObj );
 				}, 0, false);
 			}
-		
+
 			// Create a placeholder for the chart
 			refreshBtn.after( chartHolder );
 			chartHolder.attr( 'id', 'player-chart' );
@@ -57,7 +57,7 @@ angular.module( 'pokerManager' ).
 			if ( !scope.player.isNew ) {
 				scope.player = Players.get( { playerId: scope.player.id }, refreshData );
 			}
-			
+
 			refreshBtn.on( 'click', refreshData );
 
 			scope.$on( '$destroy', function () {

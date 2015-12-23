@@ -25,21 +25,21 @@
       $httpProvider.defaults.headers.post.Authorization = $httpProvider.defaults.headers.put.Authorization = utilsProvider.getToken();
 
       $routeProvider.when('/view1/:gameId', {
-        templateUrl: 'partials/partial1.html',
+        templateUrl: '/app/partials/partial1.html',
         controller: 'PokerManagerCtrl',
         controllerAs: 'vm'
       });
       $routeProvider.when('/login', {
-        templateUrl: 'partials/login.html',
+        templateUrl: '/app/partials/login.html',
         controller: 'LoginCtrl',
         controllerAs: 'authCtrl'
       });
       $routeProvider.when('/stats', {
-        templateUrl: 'partials/poker-stats.html',
+        templateUrl: '/app/partials/poker-stats.html',
         controller: 'PokerStatsCtrl',
         controllerAs: 'vm'
       });
-      $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2', controllerAs: 'vm'});
+      $routeProvider.when('/view2', {templateUrl: '/app/partials/partial2.html', controller: 'MyCtrl2', controllerAs: 'vm'});
       $routeProvider.otherwise({redirectTo: '/stats'});
     }]);
 }(window.angular));

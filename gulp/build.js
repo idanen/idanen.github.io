@@ -65,7 +65,7 @@ module.exports = function (gulp, $, config) {
         }
       })))
       .pipe($.if(isProd, $.concat('app.css')))
-      .pipe($.if(isProd, $.cssmin()))
+      //.pipe($.if(isProd, $.cssmin()))
       .pipe($.if(isProd, $.rev()))
       .pipe(gulp.dest(config.buildCss));
   });
@@ -87,7 +87,8 @@ module.exports = function (gulp, $, config) {
       .pipe($.if(isProd, $.ngHtml2js({
         // lower camel case all app names
         moduleName: _.camelize(_.slugify(_.humanize(require('../package.json').name))),
-        declareModule: false
+        declareModule: false,
+        prefix: '/app/'
       })))
       .pipe($.if(isProd, htmlFilter.restore))
       .pipe(jsFilter)

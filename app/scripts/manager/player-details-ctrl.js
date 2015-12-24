@@ -22,11 +22,11 @@
     };
   }
 
-  playerDetailsController.$inject = ['$scope'];
-  function playerDetailsController($scope) {
-    $scope.loading = true;
+  playerDetailsController.$inject = [];
+  function playerDetailsController() {
+    this.loading = true;
 
-    $scope.isAdmin = function () {
+    this.isAdmin = function () {
       // return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
       return true;
     };

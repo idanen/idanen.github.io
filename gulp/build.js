@@ -226,7 +226,18 @@ module.exports = function (gulp, $, config) {
     // directory. The Bower directory is automatically prepended via the
     // map function.
     polymerBowerAssetsToCopy = [
-      'polymer/polymer*.html'
+      'polymer/polymer*.html',
+      'iron-a11y-announcer/iron-a11y-announcer.html',
+      'iron-overlay-behavior/iron-overlay-behavior.html',
+      'iron-flex-layout/iron-flex-layout.html',
+      'iron-flex-layout/classes/*.html',
+      'iron-resizable-behavior/iron-resizable-behavior.html',
+      'iron-overlay-behavior/iron-overlay-backdrop.html',
+      'iron-fit-behavior/iron-fit-behavior.html',
+      'iron-overlay-behavior/iron-overlay-manager.html',
+      'font-roboto/roboto.html ',
+      'paper-styles/{color,default-theme,paper-styles,shadow.html,typography.html}',
+      'paper-toast/paper-toast.html'
     ].map(function (file) {
       return bowerDir + file;
     });
@@ -248,7 +259,8 @@ module.exports = function (gulp, $, config) {
     // components directory is automatically prepended via the
     // map function.
     var polymerAssetsToInject = [
-      'polymer/polymer.html'
+      'polymer/polymer.html',
+      'paper-toast/paper-toast.html'
     ].map(function (file) {
       return config.buildComponents + file;
     });

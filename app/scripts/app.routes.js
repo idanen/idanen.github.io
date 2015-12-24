@@ -61,10 +61,13 @@
     $urlRouterProvider.otherwise('/');
   }
 
-  run.$inject = ['$rootScope'];
-  function run($rootScope) {
+  run.$inject = ['$rootScope', 'PolymerToaster'];
+  function run($rootScope, PolymerToaster) {
     var unwatch = $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
-      console.log(error);
+      console.log('error %s trying to change state from $o to %o', error, fromState, toState);
+      if (error === 'AUTH_REQUIRED') {
+        PolymerToaster.showToast();
+      }
     });
 
     $rootScope.$on('$destroy', function () {

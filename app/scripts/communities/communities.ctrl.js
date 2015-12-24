@@ -80,10 +80,6 @@
       }
     }
 
-    // function join() {
-    //  userService
-    // }
-
     function addMember(toCommunity) {
       playerModal.open()
         .then(function (player) {

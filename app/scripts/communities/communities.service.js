@@ -5,27 +5,32 @@
 
   CommunitiesService.$inject = ['Ref', '$firebaseArray', 'Players'];
   function CommunitiesService(Ref, $firebaseArray, Players) {
-    var service = this,
-        selectedCommunityIdx = 0;
+    var service = this;
 
+    service.selectedCommunityIdx = 0;
+    service.Ref = Ref;
+    service.Players = Players;
     service.communities = $firebaseArray(Ref.child('communities'));
 
-    service.communities.$loaded().then(function () {
-      service.setSelectedCommunity(selectedCommunityIdx);
-    });
-
-    service.setSelectedCommunity = function (idx) {
-      selectedCommunityIdx = idx;
-    };
-
-    service.getSelectedCommunity = function () {
-      return service.communities.$loaded().then(function () {
-        return service.communities[selectedCommunityIdx];
+    service.communities.$loaded()
+      .then(function () {
+        service.setSelectedCommunity(service.selectedCommunityIdx);
       });
-    };
+  }
 
-    service.addMember = function (player, community) {
-      return Players.save(player)
+  CommunitiesService.prototype = {
+    setSelectedCommunity: function (idx) {
+      this.selectedCommunityIdx = idx;
+    },
+    getSelectedCommunity: function () {
+      return this.communities.$loaded()
+        .then(function () {
+          return this.communities[this.selectedCommunityIdx];
+        }.bind(this));
+    },
+    addMember: function (player, community) {
+      var service = this;
+      return this.Players.save(player)
         .then(function (savedPlayer) {
           var idx = service.communities.$indexFor(community.$id),
               membership = {};
@@ -36,9 +41,9 @@
               service.communities[idx].members[snap.key()] = snap.child('name').val();
               service.communities.$save(idx);
             });
-            Ref.child('players/' + savedPlayer.key()).child('memberIn').set(membership);
+            service.Ref.child('players/' + savedPlayer.key()).child('memberIn').set(membership);
           }
         });
-    };
-  }
+    }
+  };
 }());

@@ -98,10 +98,10 @@
         });
     }
 
-    function getCommunityGames(community) {
-      Games.findBy('communityId', community.$id)
+    function getCommunityGames(aCommunity) {
+      Games.findBy('communityId', aCommunity.$id)
         .then(function (games) {
-          community.games = games;
+          aCommunity.games = games;
         });
     }
 

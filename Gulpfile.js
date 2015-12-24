@@ -34,6 +34,7 @@ config.appFontFiles = path.join(config.appDir, 'styles/fonts/**/*');
 config.appImageFiles = path.join(config.appDir, 'img/**/*');
 config.appMarkupFiles = path.join(config.appDir, '**/*.html');
 config.appScriptFiles = path.join(config.appDir, '**/*.js');
+config.appScriptSkipLintFiles = path.join(config.appDir, 'scripts/snippets/**/*.js');
 config.appDataFiles = path.join(config.appDir, '**/*.json');
 config.appStyleFiles = path.join(config.appDir, '**/*.scss');
 

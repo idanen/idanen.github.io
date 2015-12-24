@@ -8,11 +8,11 @@
     .module('pokerManager.services')
     .provider('Utils', UtilsProvider);
 
-  UtilsProvider.$inject = ['$window'];
-  function UtilsProvider($window) {
+  UtilsProvider.$inject = ['$windowProvider'];
+  function UtilsProvider($windowProvider) {
     var provider = this;
 
-    provider.service = new UtilService($window);
+    provider.service = new UtilService($windowProvider.$get());
     provider.getToken = provider.service.getToken;
 
     provider.$get = [function () {

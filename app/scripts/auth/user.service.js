@@ -1,44 +1,46 @@
 (function () {
-    angular
-        .module( 'pokerManager.services' )
-        .service( 'userService', UserService );
+  'use strict';
 
-    UserService.$inject = [ '$q', 'Auth', 'Ref', '$firebaseObject', 'GOOGLE_AUTH_SCOPES' ];
-    function UserService( $q, Auth, Ref, $firebaseObject, GOOGLE_AUTH_SCOPES ) {
-        var service = this,
-            users = $firebaseObject( Ref.child( 'users' ) );
+  angular
+    .module('pokerManager.services')
+    .service('userService', UserService);
 
-        service.login = login;
-        service.logout = logout;
-        service.save = save;
-        service.getUser = getUser;
+  UserService.$inject = ['$q', 'Auth', 'Ref', '$firebaseObject', 'GOOGLE_AUTH_SCOPES'];
+  function UserService($q, Auth, Ref, $firebaseObject, GOOGLE_AUTH_SCOPES) {
+    var service = this,
+        users = $firebaseObject(Ref.child('users'));
 
-        function login( provider ) {
-            return Auth.$authWithOAuthPopup(provider || 'google', {
-                    remember: 'default',
-                    scope: GOOGLE_AUTH_SCOPES
-                })
-                .then(save);
-        }
+    service.login = login;
+    service.logout = logout;
+    service.save = save;
+    service.getUser = getUser;
 
-        function logout() {
-            Auth.$unauth();
-            delete service.user;
-        }
-
-        function save() {
-            return $q.when( Auth.$waitForAuth() )
-                .then(function ( user ) {
-                    service.user = user;
-                    if (user) {
-                        users[user.uid] = user;
-                    }
-                    return service.user;
-                });
-        }
-
-        function getUser() {
-            return service.user;
-        }
+    function login(provider) {
+      return Auth.$authWithOAuthPopup(provider || 'google', {
+        remember: 'default',
+        scope: GOOGLE_AUTH_SCOPES
+      })
+        .then(save);
     }
+
+    function logout() {
+      Auth.$unauth();
+      delete service.user;
+    }
+
+    function save() {
+      return $q.when(Auth.$waitForAuth())
+        .then(function (user) {
+          service.user = user;
+          if (user) {
+            users[user.uid] = user;
+          }
+          return service.user;
+        });
+    }
+
+    function getUser() {
+      return service.user;
+    }
+  }
 }());

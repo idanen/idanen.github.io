@@ -1,22 +1,15 @@
 (function () {
-/**
- * Created by entini on 25/04/2015.
- */
+  'use strict';
 
-angular.module( 'pokerManager')
-    .directive( 'loginState', loginStateDirective );
+  angular.module('pokerManager')
+    .directive('loginState', loginStateDirective);
 
-function loginStateDirective() {
-    'use strict';
-
+  function loginStateDirective() {
     return {
-        restrict: 'EA',
-        controller: 'LoginCtrl',
-        controllerAs: 'authCtrl',
-        templateUrl: 'partials/tmpls/login-state-tmpl.html',
-        link: function ( $scope, $element, $attrs, vm ) {
-
-        }
+      restrict: 'EA',
+      controller: 'LoginCtrl',
+      controllerAs: 'authCtrl',
+      templateUrl: 'partials/tmpls/login-state-tmpl.html'
     };
-}
-})();
+  }
+}());

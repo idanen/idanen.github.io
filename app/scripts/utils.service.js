@@ -8,10 +8,11 @@
     .module('pokerManager.services')
     .provider('Utils', UtilsProvider);
 
-  function UtilsProvider() {
+  UtilsProvider.$inject = ['$window'];
+  function UtilsProvider($window) {
     var provider = this;
 
-    provider.service = new UtilService();
+    provider.service = new UtilService($window);
     provider.getToken = provider.service.getToken;
 
     provider.$get = [function () {
@@ -19,59 +20,60 @@
     }];
   }
 
-  function UtilService() {
+  function UtilService($window) {
+    this.localStorage = $window.localStorage;
   }
 
   UtilService.prototype = {
-    totalsCalc: function ( anArray, fieldNameToSum ) {
+    totalsCalc: function (anArray, fieldNameToSum) {
+      var sum = 0, i;
       if (!anArray) {
         return 0;
       }
 
-      var sum = 0;
-      for( var i = 0; i < anArray.length; ++i ) {
-        sum += parseInt( anArray[ i ][ fieldNameToSum ] );
+      for (i = 0; i < anArray.length; ++i) {
+        sum += parseInt(anArray[i][fieldNameToSum], 10);
       }
       return sum;
     },
-    avgsCalc: function ( anArray, fieldNameToSum ) {
+    avgsCalc: function (anArray, fieldNameToSum) {
+      var sum = 0, i;
       if (!anArray) {
         return 0;
       }
 
-      var sum = 0;
-      for( var i = 0; i < anArray.length; ++i ) {
-        sum += parseInt( anArray[ i ][ fieldNameToSum ] );
+      for (i = 0; i < anArray.length; ++i) {
+        sum += parseInt(anArray[i][fieldNameToSum], 10);
       }
-      return ( sum / anArray.length );
+      return sum / anArray.length;
     },
-    maxCalc: function ( anArray, fieldNameToSum ) {
+    maxCalc: function (anArray, fieldNameToSum) {
+      var max = 0, i;
       if (!anArray) {
         return 0;
       }
 
-      var max = 0;
-      for( var i = 0; i < anArray.length; ++i ) {
-        max = Math.max( anArray[ i ][ fieldNameToSum ], max );
+      for (i = 0; i < anArray.length; ++i) {
+        max = Math.max(anArray[i][fieldNameToSum], max);
       }
       return max;
     },
-    saveLocal: function ( key, content ) {
-      if ( angular.isObject( content ) ) {
-        localStorage.setItem( key, JSON.stringify( content ) );
+    saveLocal: function (key, content) {
+      if (angular.isObject(content)) {
+        this.localStorage.setItem(key, JSON.stringify(content));
       }
     },
-    loadLocal: function ( key ) {
-      return JSON.parse( localStorage.getItem( key ) );
+    loadLocal: function (key) {
+      return JSON.parse(this.localStorage.getItem(key));
     },
-    saveToken: function ( toSave ) {
-      localStorage.setItem( 'token', toSave );
+    saveToken: function (toSave) {
+      this.localStorage.setItem('token', toSave);
     },
     getToken: function () {
-      return localStorage.getItem( 'token' );
+      return this.localStorage.getItem('token');
     },
     clearToken: function () {
-      localStorage.removeItem( 'token' );
+      this.localStorage.removeItem('token');
     }
   };
 }());

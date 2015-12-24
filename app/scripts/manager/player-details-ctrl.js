@@ -1,4 +1,6 @@
 (function () {
+  'use strict';
+
   /**
    * Player Modal's controller
    */
@@ -9,8 +11,6 @@
   modalPlayerDetailsController.$inject = ['$scope', '$uibModalInstance', 'player'];
 
   function modalPlayerDetailsController($scope, $uibModalInstance, player) {
-    'use strict';
-
     $scope.player = player;
 
     $scope.ok = function () {
@@ -22,15 +22,12 @@
     };
   }
 
-  playerDetailsController.$inject = ['$scope', 'Utils'];
-
-  function playerDetailsController($scope, utils) {
-    'use strict';
-
+  playerDetailsController.$inject = ['$scope'];
+  function playerDetailsController($scope) {
     $scope.loading = true;
 
     $scope.isAdmin = function () {
-      //return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
+      // return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
       return true;
     };
 
@@ -40,4 +37,4 @@
      };
      */
   }
-})();
+}());

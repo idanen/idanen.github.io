@@ -1,16 +1,14 @@
 /* Filters */
+(function () {
+  'use strict';
 
-angular.module( 'pokerManager.filters', [] ).
-  filter( 'interpolate', [ 'version', function ( version ) {
-	'use strict';
+  angular.module('pokerManager.filters', [])
+    .filter('percentage', PercentageFilter);
 
-    return function ( text ) {
-      return String( text ).replace( /\%VERSION\%/mg, version );
+  PercentageFilter.$inject = ['$filter'];
+  function PercentageFilter($filter) {
+    return function (input, decimals) {
+      return $filter('number')(input * 100, decimals) + '%';
     };
-  } ] ).filter('percentage', ['$filter', function ($filter) {
-	'use strict';
-
-	return function ( input, decimals ) {
-		return $filter( 'number' )( input * 100, decimals ) + '%';
-	};
-}]);
+  }
+}());

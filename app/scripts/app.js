@@ -1,11 +1,11 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular.module('pokerManager', ['ui.router', 'ngAnimate', 'angulartics', 'angulartics.google.analytics',
-        'ui.bootstrap', 'mgcrea.ngStrap', 'toaster', 'firebase', 'firebase.ref', 'firebase.auth',
-		'pokerManager.filters', 'pokerManager.services', 'pokerManager.directives', 'pokerManager.controllers'])
-        .constant('BASE_URL', {
-            "DEV": "http://localhost:9880/services/",
-            "PROD": "https://awesome-sphere-397.appspot.com/services/"
-        });
+  angular.module('pokerManager', ['ui.router', 'ngAnimate', 'angulartics', 'angulartics.google.analytics',
+    'ui.bootstrap', 'mgcrea.ngStrap', 'toaster', 'firebase', 'firebase.ref', 'firebase.auth',
+    'pokerManager.filters', 'pokerManager.services', 'pokerManager.controllers'])
+    .constant('BASE_URL', {
+      DEV: 'http://localhost:9880/services/',
+      PROD: 'https://awesome-sphere-397.appspot.com/services/'
+    });
 }());

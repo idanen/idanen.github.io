@@ -1,4 +1,6 @@
 /* Services */
+(function () {
+  'use strict';
 
-angular.module( 'pokerManager.services', [ 'ngResource' ] ).
-	value( 'version', '0.1' );
+  angular.module('pokerManager.services', ['ngResource']);
+}());

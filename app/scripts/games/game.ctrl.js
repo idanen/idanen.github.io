@@ -1,9 +1,9 @@
-(function (app) {
-    app
-        .controller('GameRouteCtrl', GameController);
+(function () {
+  angular.module('pokerManager')
+    .controller('GameRouteCtrl', GameController);
 
-    GameController.$inject = ['game'];
-    function GameController(game) {
-        vm.game = game;
-    }
-}(angular.module('pokerManager')));
+  GameController.$inject = ['game'];
+  function GameController(game) {
+    this.game = game;
+  }
+}());

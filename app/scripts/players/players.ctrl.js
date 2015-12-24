@@ -1,9 +1,11 @@
 (function () {
-    angular.module('pokerManager')
-        .controller('PlayersCtrl', PlayersController);
+  'use strict';
 
-    PlayersController.$inject = ['players'];
-    function PlayersController(players) {
-        this.players = players;
-    }
+  angular.module('pokerManager')
+    .controller('PlayersCtrl', PlayersController);
+
+  PlayersController.$inject = ['players'];
+  function PlayersController(players) {
+    this.players = players;
+  }
 }());

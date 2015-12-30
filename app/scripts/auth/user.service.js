@@ -20,7 +20,7 @@
         remember: 'default',
         scope: GOOGLE_AUTH_SCOPES
       })
-        .then(save);
+        .then(service.save);
     }
 
     function logout() {

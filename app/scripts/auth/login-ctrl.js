@@ -7,15 +7,16 @@
   angular.module('pokerManager').
     controller('LoginCtrl', LoginController);
 
-  LoginController.$inject = ['userService', 'Players'];
+  LoginController.$inject = ['userService', 'Players', '$state'];
 
-  function LoginController(userService, Players) {
+  function LoginController(userService, Players, $state) {
     var vm = this;
 
     vm.signIn = signIn;
     vm.signOut = signOut;
 
-    userService.save().then(obtainedUserInfo);
+    userService.save()
+      .then(obtainedUserInfo);
 
     function signIn(provider) {
       userService.login(provider)
@@ -44,7 +45,15 @@
         // console.log(vm.user);
 
         // Save user as a player
-        return Players.matchUserToPlayer(vm.user);
+        return Players.matchUserToPlayer(vm.user)
+          .then(function (player) {
+            var communitiesIds = Object.keys(player.memberIn);
+            if (communitiesIds && communitiesIds.length && !$state.includes('community')) {
+              $state.go('community', {
+                communityId: communitiesIds[0]
+              });
+            }
+          });
       }
     }
   }

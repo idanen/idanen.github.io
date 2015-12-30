@@ -8,16 +8,17 @@
     controller('ModalPlayerDetailsCtrl', modalPlayerDetailsController).
     controller('PlayerDetailsCtrl', playerDetailsController);
 
-  modalPlayerDetailsController.$inject = ['$scope', '$uibModalInstance', 'player'];
+  modalPlayerDetailsController.$inject = ['$uibModalInstance', 'player'];
 
-  function modalPlayerDetailsController($scope, $uibModalInstance, player) {
-    $scope.player = player;
+  function modalPlayerDetailsController($uibModalInstance, player) {
+    var vm = this;
+    vm.player = player;
 
-    $scope.ok = function () {
-      $uibModalInstance.close($scope.player);
+    vm.ok = function () {
+      $uibModalInstance.close(vm.player);
     };
 
-    $scope.cancel = function () {
+    vm.cancel = function () {
       $uibModalInstance.dismiss('cancel');
     };
   }

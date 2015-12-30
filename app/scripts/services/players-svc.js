@@ -109,20 +109,22 @@
 
     function matchUserToPlayer(user) {
       return findBy('email', user.email)
-        .then(addUser);
+        .then(addUser)
+        .then(matchPlayerToUser);
 
       function addUser(playerSnapshot) {
         var idx = -1,
-            newPlayer;
+            newPlayer, playerId;
 
         // Stop listening
         service.players.$ref().off('value');
 
         if (playerSnapshot) {
-          idx = service.players.$indexFor(playerSnapshot.key());
+          playerId = playerSnapshot.key();
+          idx = service.players.$indexFor(playerId);
           if (idx !== -1) {
             service.players[idx].userUid = user.uid;
-            service.players.$save(idx);
+            return service.players.$save(idx);
           }
         } else {
           newPlayer = create();
@@ -131,11 +133,17 @@
           newPlayer.email = user.email;
           newPlayer.imageUrl = user.imageUrl;
           delete newPlayer.isNew;
-          service.players.$add(newPlayer)
+          return service.players.$add(newPlayer)
             .catch(function (error) {
               console.log(error);
             });
         }
+      }
+
+      function matchPlayerToUser(playerRef) {
+        var playerId = playerRef.key();
+        Ref.child('users').child(user.uid).child('playerId').set(playerId);
+        return service.players.$getRecord(playerId);
       }
     }
 

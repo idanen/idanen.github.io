@@ -41,12 +41,12 @@
           .equalTo(value)
           .limitToLast(limit || 100)
           .once('value', function (querySnapshot) {
-            var resultGames = [];
+            var resultGames = {};
             if (querySnapshot.hasChildren()) {
               querySnapshot.forEach(function (gameSnap) {
                 var game = gameSnap.val();
                 game.$id = gameSnap.key();
-                resultGames.push(game);
+                resultGames[game.$id] = game;
               });
             }
             resolve(_.sortByOrder(resultGames, 'date', 'desc'));

@@ -50,6 +50,11 @@
           templateUrl: 'partials/poker-stats.html',
           controller: 'PokerStatsCtrl',
           controllerAs: 'vm'
+        },
+        player = {
+          name: 'player',
+          url: '/player/:playerId',
+          onEnter: PlayerState
         };
 
     $stateProvider.state(home);
@@ -117,5 +122,11 @@
   function playersRouteResolver(communityId, Players, communitiesSvc) {
     var community = communitiesSvc.communities.$getRecord(communityId);
     return Players.playersOfCommunity(community);
+  }
+
+  PlayerState.$inject = ['$stateParams', 'Players', 'playerModal'];
+  function PlayerState($stateParams, Players, playerModal) {
+    var player = Players.getPlayer($stateParams.playerId);
+    playerModal.open(player);
   }
 }());

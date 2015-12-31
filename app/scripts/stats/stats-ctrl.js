@@ -64,8 +64,10 @@
     // }
 
     function getPlayers() {
+      var fromDate = $stateParams.fromDate || vm.displayGames.fromDate,
+          toDate = $stateParams.toDate || vm.displayGames.toDate;
       // return Games.players( { fromDate: formatDate( vm.displayGames.fromDate ), toDate: formatDate ( vm.displayGames.toDate ) } );
-      return Games.findBetweenDates($stateParams.fromDate || vm.displayGames.fromDate, $stateParams.toDate || vm.displayGames.toDate, communityId)
+      return Games.findBetweenDates(fromDate, toDate, communityId)
         .then(function (games) {
           var players = {};
           games.forEach(function (game) {

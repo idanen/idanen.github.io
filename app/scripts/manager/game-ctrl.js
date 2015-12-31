@@ -101,8 +101,8 @@
     }
 
     function cancelAddPlayer(player) {
-      if (player.id in vm.game.players) {
-        delete vm.game.players[player.id];
+      if (player.$id in vm.game.players) {
+        delete vm.game.players[player.$id];
       }
       // Remove from current game
       // var index = vm.game.players.indexOf( player );

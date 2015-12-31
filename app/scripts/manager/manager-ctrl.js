@@ -153,14 +153,14 @@
       }
       if (!player.isPlaying) {
         player.isPlaying = true;
-        playerInGame.id = player.id;
+        playerInGame.$id = player.$id;
         playerInGame.name = player.name;
         playerInGame.isPlaying = true;
         playerInGame.buyin = 0;
         playerInGame.buyout = 0;
         playerInGame.currentChipCount = 0;
         playerInGame.paidHosting = false;
-        vm.game.players[player.id] = playerInGame;
+        vm.game.players[player.$id] = playerInGame;
       }
 
       try {
@@ -213,6 +213,7 @@
         _.forEach(vm.game.players, function (gameResult) {
           Players.saveResult(gameResult, vm.game);
         });
+        // TODO (Idan): remove games from players (for cases where a player is removed from game)
       }
     }, true);
 

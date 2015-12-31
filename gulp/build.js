@@ -3,7 +3,7 @@
 var _ = require('underscore.string')
   , fs = require('fs')
   , path = require('path')
-
+  , swPrecache = require('sw-precache')
   , bowerDir = JSON.parse(fs.readFileSync('.bowerrc')).directory + path.sep;
 
 module.exports = function (gulp, $, config) {
@@ -81,7 +81,8 @@ module.exports = function (gulp, $, config) {
       config.buildDir + '**/*.html',
       '!' + config.appComponents,
       '!**/*_test.*',
-      '!**/index.html'
+      '!**/index.html',
+      '!**/service-worker.js'
     ])
       .pipe($.sourcemaps.init())
       .pipe($.if(isProd, htmlFilter))
@@ -357,7 +358,7 @@ module.exports = function (gulp, $, config) {
 
     return swPrecache.write(filepath, {
       // Used to avoid cache conflicts when serving on localhost.
-      cacheId: pkg.name || 'web-starter-kit',
+      cacheId: require('../package.json').name || 'web-starter-kit',
       // sw-toolbox.js needs to be listed first. It sets up methods used in runtime-caching.js.
       importScripts: [
         'scripts/sw/sw-toolbox.js',

@@ -30,7 +30,7 @@
       return games.$add(gameToSave)
         .then(function (gameRef) {
           var gameId = gameRef.key();
-          return games[games.$indexFor(gameId)];
+          return games.$getRecord(gameId);
         });
     }
 
@@ -49,7 +49,8 @@
                 resultGames[game.$id] = game;
               });
             }
-            resolve(_.sortByOrder(resultGames, 'date', 'desc'));
+            // resolve(_.sortByOrder(resultGames, 'date', 'desc'));
+            resolve(resultGames);
           });
       });
     }

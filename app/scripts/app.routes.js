@@ -53,6 +53,7 @@
         },
         player = {
           name: 'player',
+          parent: 'community',
           url: '/player/:playerId',
           onEnter: PlayerState
         };
@@ -61,6 +62,7 @@
     $stateProvider.state(community);
     $stateProvider.state(gameManager);
     $stateProvider.state(stats);
+    $stateProvider.state(player);
 
     $urlRouterProvider.when('', '/');
     $urlRouterProvider.otherwise('/');
@@ -124,9 +126,12 @@
     return Players.playersOfCommunity(community);
   }
 
-  PlayerState.$inject = ['$stateParams', 'Players', 'playerModal'];
-  function PlayerState($stateParams, Players, playerModal) {
+  PlayerState.$inject = ['$stateParams', '$state', 'Players', 'playerModal'];
+  function PlayerState($stateParams, $state, Players, playerModal) {
     var player = Players.getPlayer($stateParams.playerId);
-    playerModal.open(player);
+    playerModal.open(player)
+      .finally(function () {
+        $state.go('^');
+      });
   }
 }());

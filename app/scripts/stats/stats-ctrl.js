@@ -7,9 +7,9 @@
   angular.module('pokerManager').
     controller('PokerStatsCtrl', PokerStatsController);
 
-  PokerStatsController.$inject = ['$filter', '$state', '$stateParams', 'communityId', 'Utils', 'Games', 'Players', 'playerModal'];
+  PokerStatsController.$inject = ['$state', '$stateParams', 'communityId', 'Utils', 'Games', 'Players', 'playerModal'];
 
-  function PokerStatsController($filter, $state, $stateParams, communityId, utils, Games, Players, playerModal) {
+  function PokerStatsController($state, $stateParams, communityId, utils, Games, Players, playerModal) {
     var vm = this,
         DAY = 1000 * 60 * 60 * 24,
         // WEEK = DAY * 7,

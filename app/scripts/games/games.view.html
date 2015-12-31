@@ -20,8 +20,8 @@
                 <tbody>
                 <tr ng-repeat="player in vm.players | filter:playersFilter | orderBy:'name'">
                     <td>
-                      <button class="btn btn-sm btn-default" ng-click="vm.openPlayerDetailsDialog(player)" ng-disabled="player.isPlaying"><i class="fa fa-pencil"></i></button>
-                      <!--<a class="btn btn-sm btn-default" ui-sref="player({playerId: player.$id})" ng-disabled="player.isPlaying"><i class="fa fa-pencil"></i></a>-->
+                      <!--<button class="btn btn-sm btn-default" ng-click="vm.openPlayerDetailsDialog(player)" ng-disabled="player.isPlaying"><i class="fa fa-pencil"></i></button>-->
+                      <a class="btn btn-sm btn-default" ui-sref="player({playerId: player.$id})" ng-disabled="player.isPlaying"><i class="fa fa-pencil"></i></a>
                     </td>
                     <td>
                         <a href="mailto:{{ player.email }}" title="{{ player.email }}" target="_blank">{{ player.name }}</a>

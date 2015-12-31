@@ -46,8 +46,8 @@
 
         // Save user as a player
         return Players.matchUserToPlayer(vm.user)
-          .then(function (player) {
-            var communitiesIds = Object.keys(player.memberIn);
+          .then(function (userPlayer) {
+            var communitiesIds = Object.keys(userPlayer.memberIn);
             if (communitiesIds && communitiesIds.length && !$state.includes('community')) {
               $state.go('community', {
                 communityId: communitiesIds[0]

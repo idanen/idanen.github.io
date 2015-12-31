@@ -62,7 +62,7 @@
       }, 0, false);
 
       if (!ctrl.player.isNew) {
-        ctrl.player = Players.getPlayer(ctrl.player.id);
+        ctrl.player = Players.getPlayer(ctrl.player.$id);
         refreshData();
       } else {
         ctrl.loading = false;

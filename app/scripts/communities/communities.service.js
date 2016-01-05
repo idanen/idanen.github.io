@@ -5,11 +5,12 @@
     .module('pokerManager')
     .service('communitiesSvc', CommunitiesService);
 
-  CommunitiesService.$inject = ['Ref', '$firebaseArray', 'Players'];
-  function CommunitiesService(Ref, $firebaseArray, Players) {
+  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', 'Players'];
+  function CommunitiesService($q, Ref, $firebaseArray, Players) {
     var service = this;
 
     service.selectedCommunityIdx = 0;
+    service.$q = $q;
     service.Ref = Ref;
     service.Players = Players;
     service.communities = $firebaseArray(Ref.child('communities'));
@@ -46,6 +47,28 @@
             service.Ref.child('players/' + savedPlayer.key()).child('memberIn').set(membership);
           }
         });
+    },
+    getCommunitiesByIds: function (communityIds) {
+      var service = this,
+          baseRef = service.Ref.child('communities'),
+          communities = [];
+
+      return service.$q(function (resolve) {
+        communityIds.forEach(function (communityId) {
+          baseRef.child(communityId).once('value', function (snap) {
+            var community = snap.val();
+            community.$id = community.id = snap.key();
+            communities.push(community);
+
+            if (communities.length === communityIds.length) {
+              resolve(communities);
+            }
+          });
+        });
+      });
+    },
+    getPlayerCommunities: function (player) {
+      return this.getCommunitiesByIds(player.memberIn);
     }
   };
 }());

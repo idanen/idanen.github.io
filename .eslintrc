@@ -8,10 +8,12 @@
     "consistent-this": 0,
     "angular/ng_json_functions": 0,
     "angular/ng_controller_as_vm": 0,
-    "no-empty": 0
+    "no-empty": 0,
+    "no-extra-parens": 0
   },
   "globals": {
     "_": false,
-    "Highcharts": false
+    "Highcharts": false,
+    "angular": false
   }
 }

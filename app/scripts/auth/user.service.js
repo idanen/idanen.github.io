@@ -14,6 +14,7 @@
     service.logout = logout;
     service.save = save;
     service.getUser = getUser;
+    service.setUserCommunities = setUserCommunities;
 
     function login(provider) {
       return Auth.$authWithOAuthPopup(provider || 'google', {
@@ -35,6 +36,18 @@
           if (user) {
             users[user.uid] = user;
           }
+          return service.user;
+        });
+    }
+
+    function setUserCommunities(communitiesIds) {
+      if (service.user) {
+        service.user.communitiesIds = communitiesIds;
+        return service.user;
+      }
+      return service.save()
+        .then(function () {
+          service.user.communitiesIds = communitiesIds;
           return service.user;
         });
     }

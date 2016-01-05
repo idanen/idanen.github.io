@@ -21,7 +21,7 @@
                 <tr ng-repeat="player in vm.players | filter:playersFilter | orderBy:'name'">
                     <td>
                       <!--<button class="btn btn-sm btn-default" ng-click="vm.openPlayerDetailsDialog(player)" ng-disabled="player.isPlaying"><i class="fa fa-pencil"></i></button>-->
-                      <a class="btn btn-sm btn-default" ui-sref="player({playerId: player.$id})" ng-disabled="player.isPlaying"><i class="fa fa-pencil"></i></a>
+                      <a class="btn btn-sm btn-default" ui-sref="player({playerId: player.$id})"><i class="fa fa-pencil"></i></a>
                     </td>
                     <td>
                         <a href="mailto:{{ player.email }}" title="{{ player.email }}" target="_blank">{{ player.name }}</a>
@@ -32,7 +32,7 @@
                         <span class="label" ng-class="{'label-success': (player.balance > 0), 'label-danger': (player.balance < 0), 'label-default': (player.balance == 0)}">{{ player.balance }}</span>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-default" ng-click="vm.addPlayerToGame(player)" ng-disabled="player.isPlaying" title="Join game"><i class="glyphicon glyphicon-chevron-right"></i>
+                        <button class="btn btn-sm btn-default" ng-click="vm.addPlayerToGame(player)" title="Join game"><i class="glyphicon glyphicon-chevron-right"></i>
                         </button>
                     </td>
                 </tr>

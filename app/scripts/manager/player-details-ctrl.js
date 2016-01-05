@@ -5,12 +5,12 @@
    * Player Modal's controller
    */
   angular.module('pokerManager').
-    controller('ModalPlayerDetailsCtrl', modalPlayerDetailsController).
-    controller('PlayerDetailsCtrl', playerDetailsController);
+    controller('ModalPlayerDetailsCtrl', ModalPlayerDetailsController).
+    controller('PlayerDetailsCtrl', PlayerDetailsController);
 
-  modalPlayerDetailsController.$inject = ['$uibModalInstance', 'player'];
+  ModalPlayerDetailsController.$inject = ['$uibModalInstance', 'player'];
 
-  function modalPlayerDetailsController($uibModalInstance, player) {
+  function ModalPlayerDetailsController($uibModalInstance, player) {
     var vm = this;
     vm.player = player;
 
@@ -23,8 +23,8 @@
     };
   }
 
-  playerDetailsController.$inject = [];
-  function playerDetailsController() {
+  PlayerDetailsController.$inject = [];
+  function PlayerDetailsController() {
     this.loading = true;
 
     this.isAdmin = function () {

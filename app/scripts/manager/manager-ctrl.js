@@ -151,7 +151,7 @@
       if (!vm.game.players) {
         vm.game.players = {};
       }
-      if (!player.isPlaying) {
+      if (!(player.$id in vm.game.players)) {
         player.isPlaying = true;
         playerInGame.$id = player.$id;
         playerInGame.name = player.name;
@@ -213,7 +213,11 @@
         _.forEach(vm.game.players, function (gameResult) {
           Players.saveResult(gameResult, vm.game);
         });
-        // TODO (Idan): remove games from players (for cases where a player is removed from game)
+        _.forEach(oldVal.players, function (gameResult) {
+          if (!((gameResult.$id || gameResult.id) in vm.game.players)) {
+            Players.deleteResult(gameResult, oldVal);
+          }
+        });
       }
     }, true);
 

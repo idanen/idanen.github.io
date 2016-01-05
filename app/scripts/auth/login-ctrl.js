@@ -7,9 +7,9 @@
   angular.module('pokerManager').
     controller('LoginCtrl', LoginController);
 
-  LoginController.$inject = ['userService', 'Players', '$state'];
+  LoginController.$inject = ['userService', 'Players', '$state', '$analytics'];
 
-  function LoginController(userService, Players, $state) {
+  function LoginController(userService, Players, $state, $analytics) {
     var vm = this;
 
     vm.signIn = signIn;
@@ -27,7 +27,10 @@
     }
 
     function signOut() {
-      // TODO(idan): Add analytics event
+      try {
+        $analytics.eventTrack('Sign out', {category: 'Actions', label: vm.user.name});
+      } catch (err) {}
+
       userService.logout();
       delete vm.user;
     }
@@ -48,10 +51,13 @@
         return Players.matchUserToPlayer(vm.user)
           .then(function (userPlayer) {
             var communitiesIds = Object.keys(userPlayer.memberIn);
-            if (communitiesIds && communitiesIds.length && !$state.includes('community')) {
-              $state.go('community', {
-                communityId: communitiesIds[0]
-              });
+            if (communitiesIds && communitiesIds.length) {
+              userService.setUserCommunities(communitiesIds);
+              if (!$state.includes('community')) {
+                $state.go('community', {
+                  communityId: communitiesIds[0]
+                });
+              }
             }
           });
       }

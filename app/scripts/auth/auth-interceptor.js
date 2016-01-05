@@ -25,7 +25,6 @@
       },
       responseError: function (response) {
         if (response.status === 401) {
-          // TODO(idan): configure location, animation
           toaster.error('Login required', 'This action requires login');
         }
         return $q.reject(response);

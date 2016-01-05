@@ -13,6 +13,7 @@
       create: create,
       save: save,
       saveResult: saveResult,
+      deleteResult: deleteResult,
       getPlayer: getPlayer,
       playersOfCommunity: playersOfCommunity,
       findBy: findBy,
@@ -51,7 +52,7 @@
     }
 
     function saveResult(gameResult, game) {
-      var playerToUpdate = service.players.$getRecord(gameResult.id);
+      var playerToUpdate = service.players.$getRecord(gameResult.$id || gameResult.id);
       if (!playerToUpdate.games) {
         playerToUpdate.games = {};
       }
@@ -59,6 +60,15 @@
       playerToUpdate.games[game.$id] = gameResult;
 
       service.players.$save(playerToUpdate);
+    }
+
+    function deleteResult(gameResult, game) {
+      var playerToUpdate = service.players.$getRecord(gameResult.$id || gameResult.id);
+
+      if (game.$id in playerToUpdate.games) {
+        delete playerToUpdate.games[game.$id];
+        service.players.$save(playerToUpdate);
+      }
     }
 
     function getPlayer(playerId) {

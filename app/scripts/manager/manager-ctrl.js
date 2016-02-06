@@ -218,6 +218,10 @@
             Players.deleteResult(gameResult, oldVal);
           }
         });
+
+        if (newVal && oldVal && newVal.chipValue !== oldVal.chipValue) {
+          chipsValueChanged(newVal.chipValue, oldVal.chipValue);
+        }
       }
     }, true);
 

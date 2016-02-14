@@ -4,6 +4,7 @@ var _ = require('underscore.string')
   , fs = require('fs')
   , path = require('path')
   , swPrecache = require('sw-precache')
+  , vulcanize = require('gulp-vulcanize')
   , bowerDir = JSON.parse(fs.readFileSync('.bowerrc')).directory + path.sep;
 
 module.exports = function (gulp, $, config) {
@@ -277,6 +278,13 @@ module.exports = function (gulp, $, config) {
       .pipe(gulp.dest(config.buildDir));
   });
 
+  // vulcanize web components
+  gulp.task('vulcanize', ['bowerInject'], function () {
+    return gulp.src(config.appComponents)
+      .pipe(vulcanize())
+      .pipe(gulp.dest('build/app/components/'));
+  });
+
   // copy Bower fonts and images into build directory
   gulp.task('bowerAssets', ['clean'], function () {
     var assetFilter = $.filter('**/*.{eot,otf,svg,ttf,woff,woff2,gif,jpg,jpeg,png}', {restore: true});
@@ -303,7 +311,7 @@ module.exports = function (gulp, $, config) {
       .pipe(gulp.dest(config.buildImages));
   });
 
-  gulp.task('copyTemplates', ['componentsInject'], function () {
+  gulp.task('copyTemplates', ['vulcanize'], function () {
     // always copy templates to testBuild directory
     var stream = $.streamqueue({objectMode: true});
 
@@ -342,7 +350,7 @@ module.exports = function (gulp, $, config) {
   });
 
   // Copy over the scripts that are used in importScripts as part of the generate-service-worker task.
-  gulp.task('copy-sw-scripts', function () {
+  gulp.task('copy-sw-scripts', ['clean'], function () {
     return gulp.src(['node_modules/sw-toolbox/sw-toolbox.js', 'app/scripts/sw/runtime-caching.js'])
       .pipe(gulp.dest('build/app/js/scripts/sw'));
   });

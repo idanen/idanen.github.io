@@ -281,7 +281,7 @@ module.exports = function (gulp, $, config) {
   // vulcanize web components
   gulp.task('vulcanize', ['bowerInject'], function () {
     return gulp.src(config.appComponents)
-      .pipe(vulcanize())
+      .pipe($.if(isProd, vulcanize()))
       .pipe(gulp.dest('build/app/components/'));
   });
 

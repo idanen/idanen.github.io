@@ -3,6 +3,9 @@
     "angular",
     "dustinspecker"
   ],
+  "env": {
+    "es6": true
+  },
   "rules": {
     "angular/ng_controller_name": [2, "/[A-Z].*Ctrl$/"],
     "consistent-this": 0,

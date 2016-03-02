@@ -1,7 +1,11 @@
+/* eslint no-undef:0, no-warning-comments:0, spaced-comment:0 */
 (function (sw) {
+  'use strict';
+
   var API_ENDPOINT = 'https://fiery-heat-6939.firebaseio.com';
 
   sw.addEventListener('activate', function (event) {
+    console.log('notifications activated', event);
     // TODO: get the current user maybe from localStorage and his registered communities
     //event.waitUntil(
     //  fetch(API_ENDPOINT + '/notifications')
@@ -26,7 +30,7 @@
     //    })
     //);
     event.waitUntil(
-      self.registration.showNotification('Push success!!!', {
+      sw.registration.showNotification('Push success!!!', {
         body: 'This is the notification\'s body',
         //icon: '',
         tag: 'push-notification-test'

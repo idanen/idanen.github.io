@@ -281,7 +281,7 @@ module.exports = function (gulp, $, config) {
   // vulcanize web components
   gulp.task('vulcanize', ['bowerInject'], function () {
     return gulp.src(config.appComponents)
-      .pipe($.if(isProd, vulcanize()))
+      .pipe(vulcanize())
       .pipe(gulp.dest('build/app/components/'));
   });
 
@@ -370,7 +370,8 @@ module.exports = function (gulp, $, config) {
       // sw-toolbox.js needs to be listed first. It sets up methods used in runtime-caching.js.
       importScripts: [
         '/js/scripts/sw/sw-toolbox.js',
-        '/js/scripts/sw/runtime-caching.js'
+        '/js/scripts/sw/runtime-caching.js',
+        '/js/scripts/sw/notifications-sw.js'
       ],
       staticFileGlobs: [
         // Add/remove glob patterns to match your directory setup.

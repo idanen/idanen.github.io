@@ -19,6 +19,7 @@
   });
 
   sw.addEventListener('push', function (event) {
+    console.log('Got push :)');
     // TODO: get last notifications, filter for current user's communities, get data for the notification and present it
     //event.waitUntil(
     //  fetch(API_ENDPOINT + '/notifications')

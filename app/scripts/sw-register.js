@@ -18,14 +18,14 @@
  */
 /* eslint-env browser */
 /* eslint "angular/ng_window_service":0, "angular/ng_typecheck_function":0, "angular/ng_document_service":0 */
-(function (window, navigator) {
+(function (window, navigator, pushRegistration) {
   'use strict';
 
   // Check to make sure service workers are supported in the current browser,
   // and that the current page is accessed from a secure origin. Using a
   // service worker from an insecure origin will trigger JS console errors. See
   // http://www.chromium.org/Home/chromium-security/prefer-secure-origins-for-powerful-new-features
-  var isLocalhost = Boolean(window.location.hostname === 'localhost' ||
+  pushRegistration.isLocalhost = Boolean(window.location.hostname === 'localhost' ||
       // [::1] is the IPv6 localhost address.
     window.location.hostname === '[::1]' ||
       // 127.0.0.1/8 is considered localhost for IPv4.
@@ -35,7 +35,7 @@
   );
 
   if ('serviceWorker' in navigator &&
-    (window.location.protocol === 'https:' || isLocalhost)) {
+    (window.location.protocol === 'https:' || pushRegistration.isLocalhost)) {
     navigator.serviceWorker.register('service-worker.js')
       .then(function (registration) {
         var installingWorker;
@@ -142,11 +142,19 @@
   }
 
   function sendSubscriptionToServer(subscription) {
+    var endpoint,
+        endpointElement = document.createElement('span'),
+        pushButton = document.querySelector('.js-push-button');
     if (subscription && subscription.endpoint) {
-      console.log('sending subscription to server', extractGCMRegistrationId(subscription));
+      endpoint = extractGCMRegistrationId(subscription);
+      console.log('sending subscription to server', endpoint);
+      endpointElement.innerText = endpoint;
+      pushButton.parentNode.insertBefore(endpointElement, pushButton);
     } else {
       console.error('subscription does not contain an endpoint', subscription);
     }
+
+    return Promise.resolve(endpoint);
   }
 
   function subscribe() {
@@ -166,7 +174,15 @@
 
           // TODO: Send the subscription.endpoint to your server
           // and save it to send a push message at a later date
-          return sendSubscriptionToServer(subscription);
+          return sendSubscriptionToServer(subscription)
+            .then(function () {
+              return Notification.requestPermission();
+            })
+            .then(function () {
+              if (Notification.permission === 'granted') {
+                pushButton.checked = true;
+              }
+            });
         })
         .catch(function (e) {
           if (Notification.permission === 'denied') {
@@ -192,11 +208,12 @@
 
   }
 
-  function extractGCMRegistrationId(endpoint) {
+  function extractGCMRegistrationId(subscription) {
+    let endpoint = subscription.endpoint;
     if (endpoint.indexOf('https://android.googleapis.com/gcm/send') > -1) {
       let endpointParts = endpoint.split('/');
 
       return endpointParts[endpointParts.length - 1];
     }
   }
-}(window, window.navigator));
+}(window, window.navigator, window.pushRegistration = window.pushRegistration || {}));

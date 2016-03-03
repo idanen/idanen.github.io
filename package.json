@@ -8,6 +8,7 @@
     "gulp-vulcanize": "^6.1.0"
   },
   "devDependencies": {
+    "babel-eslint": "^5.0.0",
     "bower": "^1.7.7",
     "browser-sync": "^2.2.3",
     "del": "^2.0.0",

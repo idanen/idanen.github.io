@@ -7,12 +7,13 @@
   angular.module('pokerManager.services').
     factory('Games', GamesFactory);
 
-  GamesFactory.$inject = ['$q', 'Ref', '$firebaseArray'];
-  function GamesFactory($q, Ref, $firebaseArray) {
+  GamesFactory.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
+  function GamesFactory($q, Ref, $firebaseArray, $firebaseObject) {
     var service = {
           newGame: newGame,
           findBy: findBy,
-          findBetweenDates: findBetweenDates
+          findBetweenDates: findBetweenDates,
+          getGame: getGame
         },
         games = $firebaseArray(Ref.child('games'));
 
@@ -32,6 +33,10 @@
           var gameId = gameRef.key();
           return games.$getRecord(gameId);
         });
+    }
+
+    function getGame(gameId) {
+      return $firebaseObject(Ref.child('games').child(gameId));
     }
 
     function findBy(field, value, limit) {

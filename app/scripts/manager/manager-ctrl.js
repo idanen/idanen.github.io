@@ -7,9 +7,9 @@
   angular.module('pokerManager').
     controller('PokerManagerCtrl', PokerManagerController);
 
-  PokerManagerController.$inject = ['$scope', '$analytics', 'toaster', 'Utils', 'Players', 'playerModal', 'communitiesSvc', 'community', 'game', 'Ref', '$firebaseObject'];
+  PokerManagerController.$inject = ['$scope', '$analytics', 'toaster', 'Utils', 'Players', 'playerModal', 'communitiesSvc', 'community', 'game', 'Games'];
 
-  function PokerManagerController($scope, $analytics, toaster, utils, Players, playerModal, communitiesSvc, community, game, Ref, $firebaseObject) {
+  function PokerManagerController($scope, $analytics, toaster, utils, Players, playerModal, communitiesSvc, community, game, Games) {
     var vm = this;
 
     vm.prefs = {
@@ -26,7 +26,7 @@
     // init game so not all methods fail before the game is loaded
     vm.game = {};
     // Binding the firebase instance to the scope. This assumes that the controller's name is `vm`
-    $firebaseObject(Ref.child('games/' + game.$id)).$bindTo($scope, 'vm.game');
+    Games.getGame(game.$id).$bindTo($scope, 'vm.game');
 
     vm.init = init;
     vm.openPlayersControl = openPlayersControl;

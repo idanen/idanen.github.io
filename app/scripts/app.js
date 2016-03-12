@@ -2,7 +2,7 @@
   'use strict';
 
   angular.module('pokerManager', ['ui.router', 'ngAnimate', 'angulartics', 'angulartics.google.analytics',
-    'ui.bootstrap', 'mgcrea.ngStrap', 'toaster', 'firebase', 'firebase.ref', 'firebase.auth',
+    'ui.bootstrap', 'mgcrea.ngStrap', 'toaster', 'firebase', 'firebase.ref', 'firebase.auth', 'pushState',
     'pokerManager.filters', 'pokerManager.services', 'pokerManager.controllers'])
     .constant('BASE_URL', {
       DEV: 'http://localhost:9880/services/',

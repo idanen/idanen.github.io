@@ -8,9 +8,10 @@
 
   PushState.$inject = ['$window'];
   function PushState($window) {
-    this.subscriptionId = false;
+    this.subscription = false;
     this.notificationPermited = false;
     this.notificationDenied = false;
+    this.workerReadyPromise = $window.navigator.serviceWorker.ready;
     this.$window = $window;
   }
 
@@ -18,30 +19,34 @@
     // Once the service worker is registered set the initial state
     getInitialState: function () {
       // Are Notifications supported in the service worker?
-      if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
+      if (!('showNotification' in this.$window.ServiceWorkerRegistration.prototype)) {
         console.warn('Notifications aren\'t supported.');
-        return;
+        return Promise.reject('Notifications aren\'t supported.');
       }
 
       // Check the current Notification permission.
       // If its denied, it's a permanent block until the
       // user changes the permission
-      if (Notification.permission === 'denied') {
+      if (this.$window.Notification.permission === 'denied') {
         console.warn('The user has blocked notifications.');
-        return;
+        this.notificationDenied = true;
+        return Promise.reject('The user has blocked notifications.');
       }
 
       // Check if push messaging is supported
-      if (!('PushManager' in window)) {
+      if (!('PushManager' in this.$window)) {
         console.warn('Push messaging isn\'t supported.');
-        return;
+        return Promise.reject('Push messaging isn\'t supported.');
       }
 
       // Do we already have a push message subscription?
-      return PushState.serviceWorkerRegistration.pushManager.getSubscription()
+      return this.workerReadyPromise.then(function (registration) {
+        return registration.pushManager.getSubscription();
+      })
         .then(function (subscription) {
-          this.subscriptionId = subscription;
-          return this.subscriptionId;
+          this._updateSubscription(subscription);
+          this.notificationPermited = this.$window.Notification.permission === 'granted';
+          return this.subscription;
         }.bind(this))
         .catch(function (err) {
           console.warn('Error during getSubscription()', err);
@@ -49,21 +54,28 @@
         });
     },
     subscribe: function () {
-      PushState.serviceWorkerRegistration.pushManager.subscribe({
-        userVisibleOnly: true
+      if (this.notificationDenied) {
+        return Promise.reject('The user denied notifications');
+      }
+      return this.workerReadyPromise.then(function (registration) {
+        return registration.pushManager.subscribe({
+          userVisibleOnly: true
+        });
       })
         .then(function (subscription) {
           // The subscription was successful
-          this.subscriptionId = subscription;
-          return this.subscriptionId;
+          this._updateSubscription(subscription);
+          return this.subscription;
         }.bind(this))
-        .then(this.$window.Notification.requestPermission)
         .then(function () {
-          if (Notification.permission === 'granted') {
+          this.$window.Notification.requestPermission(angular.noop);
+        }.bind(this))
+        .then(function () {
+          if (this.$window.Notification.permission === 'granted') {
             this.notificationPermited = true;
           }
 
-          return this.subscriptionId;
+          return this.subscription;
         }.bind(this))
         .catch(function (e) {
           if (this.$window.Notification.permission === 'denied') {
@@ -82,14 +94,44 @@
             this.notificationPermited = false;
           }
         }.bind(this));
+    },
+    unsubscribe: function () {
+      this.subscription = false;
+    },
+    getSubscriptionEndpoint: function () {
+      return this._extractGCMRegistrationId(this.subscription);
+    },
+    _extractGCMRegistrationId: function (subscription) {
+      var endpoint, endpointParts;
+      if (subscription.endpoint) {
+        endpoint = subscription.endpoint;
+        if (endpoint.indexOf('https://android.googleapis.com/gcm/send') > -1) {
+          endpointParts = endpoint.split('/');
+          return endpointParts[endpointParts.length - 1];
+        }
+      }
+    },
+    isEnabled: function () {
+      return !!this.subscription;
+    },
+    /**
+     * Update the subscription property, but only if the value has changed.
+     * This prevents triggering the subscription-changed event twice on page
+     * load.
+     * @param {PushSubscription} subscription The new subscription object
+     */
+    _updateSubscription: function (subscription) {
+      if (JSON.stringify(subscription) !== JSON.stringify(this.subscription)) {
+        this.subscription = subscription;
+      }
     }
   };
 
-  init.$inject = ['$window'];
-  function init($window) {
+  init.$inject = ['$window', 'pushState'];
+  function init($window, pushState) {
     $window.navigator.serviceWorker.ready
-      .then(function (registration) {
-        PushState.serviceWorkerRegistration = registration;
+      .then(function () {
+        pushState.getInitialState();
       });
   }
 }());

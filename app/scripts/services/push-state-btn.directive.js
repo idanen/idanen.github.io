@@ -3,8 +3,8 @@
     .module('pokerManager')
     .directive('pushStateBtn', pushStateBtnFactory);
 
-  pushStateBtnFactory.$inject = ['pushState'];
-  function pushStateBtnFactory(pushState) {
+  pushStateBtnFactory.$inject = ['pushState', 'userService'];
+  function pushStateBtnFactory(pushState, userService) {
     return {
       restrict: 'E',
       template: '<paper-toggle-button class="push-state-btn" disabled>Allow push notifications</paper-toggle-button>',
@@ -15,12 +15,15 @@
       var toggler = $element.find('paper-toggle-button');
       pushState.getInitialState()
         .then(function (subscription) {
+          var subscriptionEndpoint;
           if (!pushState.notificationDenied) {
             toggler.removeAttr('disabled');
           }
 
           if (subscription && pushState.notificationPermited) {
-            $scope.$emit('pushState.subscription.successful', pushState.getSubscriptionEndpoint());
+            subscriptionEndpoint = pushState.getSubscriptionEndpoint();
+            $scope.$emit('pushState.subscription.successful', subscriptionEndpoint);
+            userService.addSubscriptionId(subscriptionEndpoint);
             toggler[0].checked = true;
           } else {
             toggler[0].checked = false;
@@ -37,6 +40,7 @@
               toggler[0].dataset.pushEnabled = true;
               toggler.addClass('active');
               $scope.$emit('pushState.subscription.successful', subscriptionEndpoint);
+              userService.addSubscriptionId(subscriptionEndpoint);
             })
             .catch(function (error) {
               toggler[0].dataset.pushEnabled = undefined;

@@ -15,6 +15,7 @@
     service.save = save;
     service.getUser = getUser;
     service.setUserCommunities = setUserCommunities;
+    service.addSubscriptionId = addSubscriptionId;
 
     function login(provider) {
       return Auth.$authWithOAuthPopup(provider || 'google', {
@@ -54,6 +55,12 @@
 
     function getUser() {
       return service.user;
+    }
+
+    function addSubscriptionId(subscriptionId) {
+      if (users[user.uid]) {
+        users[user.uid].subscriptionId = subscriptionId;
+      }
     }
   }
 }());

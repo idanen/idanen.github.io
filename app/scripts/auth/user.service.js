@@ -58,9 +58,10 @@
     }
 
     function addSubscriptionId(subscriptionId) {
-      if (service.user) {
-        users[service.user.uid].subscriptionId = subscriptionId;
-      }
+      service.save()
+        .then(function () {
+          users[service.user.uid].subscriptionId = subscriptionId;
+        });
     }
   }
 }());

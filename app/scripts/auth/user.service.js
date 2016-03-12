@@ -58,8 +58,8 @@
     }
 
     function addSubscriptionId(subscriptionId) {
-      if (users[user.uid]) {
-        users[user.uid].subscriptionId = subscriptionId;
+      if (service.user) {
+        users[service.user.uid].subscriptionId = subscriptionId;
       }
     }
   }

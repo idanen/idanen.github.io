@@ -61,6 +61,7 @@
       service.save()
         .then(function () {
           users[service.user.uid].subscriptionId = subscriptionId;
+          return users.$save();
         });
     }
   }

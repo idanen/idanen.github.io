@@ -25,7 +25,6 @@
           if (subscription && pushState.notificationPermited) {
             subscriptionEndpoint = pushState.getSubscriptionEndpoint();
             $scope.$emit('pushState.subscription.successful', subscriptionEndpoint);
-            userService.addSubscriptionId(subscriptionEndpoint);
             toggler[0].checked = true;
           } else {
             toggler[0].checked = false;

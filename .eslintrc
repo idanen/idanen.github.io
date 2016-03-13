@@ -19,6 +19,7 @@
   "globals": {
     "_": false,
     "Highcharts": false,
-    "angular": false
+    "angular": false,
+    "self": false
   }
 }

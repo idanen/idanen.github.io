@@ -6,12 +6,13 @@
     .service('pushState', PushState)
     .run(init);
 
-  PushState.$inject = ['$window'];
-  function PushState($window) {
+  PushState.$inject = ['$q', '$window'];
+  function PushState($q, $window) {
     this.subscription = false;
     this.notificationPermited = false;
     this.notificationDenied = false;
-    this.workerReadyPromise = $window.navigator.serviceWorker.ready;
+    this.workerReadyPromise = $q.when($window.navigator.serviceWorker.ready);
+    this.$q = $q;
     this.$window = $window;
   }
 
@@ -50,25 +51,25 @@
         }.bind(this))
         .catch(function (err) {
           console.warn('Error during getSubscription()', err);
-          return Promise.reject(err);
-        });
+          return this.$q.reject(err);
+        }.bind(this));
     },
     subscribe: function () {
       if (this.notificationDenied) {
-        return Promise.reject('The user denied notifications');
+        return this.$q.reject('The user denied notifications');
       }
       return this.workerReadyPromise.then(function (registration) {
-        return registration.pushManager.subscribe({
+        return this.$q.when(registration.pushManager.subscribe({
           userVisibleOnly: true
-        });
-      })
+        }));
+      }.bind(this))
         .then(function (subscription) {
           // The subscription was successful
           this._updateSubscription(subscription);
           return this.subscription;
         }.bind(this))
         .then(function () {
-          this.$window.Notification.requestPermission(angular.noop);
+          return this.$window.Notification.requestPermission(angular.noop);
         }.bind(this))
         .then(function () {
           if (this.$window.Notification.permission === 'granted') {

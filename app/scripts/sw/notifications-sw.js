@@ -2,7 +2,7 @@
 (function (sw) {
   'use strict';
 
-  var API_ENDPOINT = 'https://fiery-heat-6939.firebaseio.com';
+  //var API_ENDPOINT = 'https://fiery-heat-6939.firebaseio.com';
 
   sw.addEventListener('activate', function (event) {
     console.log('notifications activated', event);
@@ -43,7 +43,7 @@
     event.notification.close();
 
     event.waitUntil(
-      clients.matchAll({
+      sw.clients.matchAll({
         type: 'window'
       })
         .then(function (clientList) {
@@ -53,8 +53,8 @@
               return client.focus();
             }
           }
-          if (clients.openWindow) {
-            return clients.openWindow('/');
+          if (sw.clients.openWindow) {
+            return sw.clients.openWindow('/');
           }
         })
     );

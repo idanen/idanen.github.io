@@ -12,7 +12,7 @@
 
     service.login = login;
     service.logout = logout;
-    service.save = save;
+    service.waitForUser = waitForUser;
     service.getUser = getUser;
     service.setUserCommunities = setUserCommunities;
     service.addSubscriptionId = addSubscriptionId;
@@ -22,7 +22,7 @@
         remember: 'default',
         scope: GOOGLE_AUTH_SCOPES
       })
-        .then(service.save);
+        .then(service.waitForUser);
     }
 
     function logout() {
@@ -30,7 +30,7 @@
       delete service.user;
     }
 
-    function save() {
+    function waitForUser() {
       return $q.when(Auth.$waitForAuth())
         .then(function (user) {
           service.user = user;
@@ -46,7 +46,7 @@
         service.user.communitiesIds = communitiesIds;
         return service.user;
       }
-      return service.save()
+      return service.waitForUser()
         .then(function () {
           service.user.communitiesIds = communitiesIds;
           return service.user;
@@ -58,10 +58,12 @@
     }
 
     function addSubscriptionId(subscriptionId) {
-      service.save()
+      var subscription = {
+        subscriptionId: subscriptionId
+      };
+      service.waitForUser()
         .then(function () {
-          users[service.user.uid].subscriptionId = subscriptionId;
-          return users.$save();
+          return Ref.child('users').child(service.user.uid).child('devices').push().set(subscription);
         });
     }
   }

@@ -15,7 +15,7 @@
     vm.signIn = signIn;
     vm.signOut = signOut;
 
-    userService.save()
+    userService.waitForUser()
       .then(obtainedUserInfo);
 
     function signIn(provider) {

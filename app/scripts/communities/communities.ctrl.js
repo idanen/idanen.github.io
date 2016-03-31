@@ -97,7 +97,7 @@
     }
 
     function getCommunityGames(aCommunity) {
-      Games.findBy('communityId', aCommunity.$id)
+      communitiesSvc.gamesOfCommunity(aCommunity.$id)
         .then(function (games) {
           aCommunity.games = games;
         });

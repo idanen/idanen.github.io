@@ -31,6 +31,11 @@
             user: authRequiredResolver
           }
         },
+        // TODO (idan): build the add/join community state with modals by http://www.sitepoint.com/creating-stateful-modals-angularjs-angular-ui-router/
+        addCommunity = {
+          name: 'addCommunity',
+          parent: 'home'
+        },
         gameManager = {
           name: 'game',
           parent: 'community',

@@ -13,7 +13,8 @@
           newGame: newGame,
           findBy: findBy,
           findBetweenDates: findBetweenDates,
-          getGame: getGame
+          getGame: getGame,
+          gamesOfCommunity: gamesOfCommunity
         },
         games = $firebaseArray(Ref.child('games'));
 
@@ -58,6 +59,10 @@
             resolve(resultGames);
           });
       });
+    }
+
+    function gamesOfCommunity(communityId) {
+      return service.findBy('communityId', communityId);
     }
 
     function findBetweenDates(from, to, communityId) {

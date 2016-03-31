@@ -11,14 +11,18 @@
         adminTab = {
           title: 'Current Game',
           href: '#/game/0',
-          icon: 'icon-spades'
+          icon: 'icon-spades',
+          actions: [{
+            title: 'New game'
+          }]
         },
         communitiesTab = {
           title: 'communities',
           icon: 'fa-users',
           children: [],
           actions: [{
-            title: 'Add or join'
+            title: 'Add or join',
+            action: $state.go('addCommunity')
           }]
         },
         statsTab = {
@@ -100,6 +104,14 @@
           toDate: Date.now()
         });
       }
+
+      // TODO (idan): When entering a new game's state set the game's id to the current game state
+      // adminTab.href = $state.href('game', {
+      //   communityId: toParams.communityId,
+      //   gameId: toParams.gameId,
+      //   fromDate: Date.now() - DAY * 30,
+      //   toDate: Date.now()
+      // });
     });
 
     vm.init = function () {

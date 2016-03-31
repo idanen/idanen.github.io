@@ -18,11 +18,12 @@
       playersOfCommunity: playersOfCommunity,
       findBy: findBy,
       matchUserToPlayer: matchUserToPlayer,
+      playersRef: Ref.child('players'),
       players: $firebaseArray(Ref.child('players'))
     };
 
     service.fetchedPlayers = function () {
-      return service.players;
+      return $firebaseArray(service.playersRef);
     };
 
     function create() {
@@ -78,25 +79,25 @@
     function playersOfCommunity(community) {
       var playerIds = Object.keys(community.members),
           baseRef = Ref.child('players'),
-          players = [];
+          promises = [];
 
-      return $q(function (resolve) {
-        playerIds.forEach(function (playerId) {
+      playerIds.forEach(function (playerId) {
+        promises.push($q(function (resolve, reject) {
           baseRef.child(playerId).once('value', function (snap) {
             var player = snap.val();
             player.$id = player.id = snap.key();
-            players.push(player);
-
-            if (players.length === playerIds.length) {
-              resolve(players);
-            }
+            resolve(player);
+          }, function (error) {
+            reject(error);
           });
-        });
+        }));
       });
+
+      return $q.all(promises);
     }
 
     function findBy(field, value, multi) {
-      return $q(function (resolve) {
+      return $q(function (resolve, reject) {
         service.players.$ref().off('value');
         service.players.$ref()
           .orderByChild(field)
@@ -113,6 +114,8 @@
               });
             }
             resolve(result);
+          }, function (error) {
+            reject(error);
           });
       });
     }

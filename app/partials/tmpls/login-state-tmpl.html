@@ -2,5 +2,5 @@
 <button class="btn btn-default navbar-btn" ng-click="authCtrl.signIn()" ng-hide="authCtrl.user"><span class="fa fa-google-plus"></span> Google sign in</button>
 <span class="login-state-logged-in" ng-show="authCtrl.user">
     Logged in as <img class="img-circle" ng-src="{{ authCtrl.user.imageUrl }}?sz=25" alt=""/> {{ authCtrl.user.name }}
-    <button class="btn btn-sm btn-link navbar-link" ng-click="authCtrl.signOut()"><span class="fa fa-google-plus"></span> logout</button>
+    <button class="btn btn-sm btn-link navbar-btn" ng-click="authCtrl.signOut()"><span class="fa fa-google-plus"></span> logout</button>
 </span>

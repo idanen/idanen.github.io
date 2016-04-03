@@ -87,9 +87,7 @@
             var player = snap.val();
             player.$id = player.id = snap.key();
             resolve(player);
-          }, function (error) {
-            reject(error);
-          });
+          }, reject);
         }));
       });
 
@@ -114,9 +112,7 @@
               });
             }
             resolve(result);
-          }, function (error) {
-            reject(error);
-          });
+          }, reject);
       });
     }
 

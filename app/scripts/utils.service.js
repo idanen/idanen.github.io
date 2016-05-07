@@ -15,9 +15,9 @@
     provider.service = new UtilService($windowProvider.$get());
     provider.getToken = provider.service.getToken;
 
-    provider.$get = [function () {
+    provider.$get = function () {
       return provider.service;
-    }];
+    };
   }
 
   function UtilService($window) {
@@ -26,7 +26,8 @@
 
   UtilService.prototype = {
     totalsCalc: function (anArray, fieldNameToSum) {
-      var sum = 0, i;
+      var sum = 0,
+          i;
       if (!anArray) {
         return 0;
       }
@@ -37,7 +38,8 @@
       return sum;
     },
     avgsCalc: function (anArray, fieldNameToSum) {
-      var sum = 0, i;
+      var sum = 0,
+          i;
       if (!anArray) {
         return 0;
       }
@@ -48,7 +50,8 @@
       return sum / anArray.length;
     },
     maxCalc: function (anArray, fieldNameToSum) {
-      var max = 0, i;
+      var max = 0,
+          i;
       if (!anArray) {
         return 0;
       }

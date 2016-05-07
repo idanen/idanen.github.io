@@ -13,7 +13,7 @@
 
   PlayerModal.prototype = {
     open: function (player) {
-      var isNew = typeof player === 'undefined' || player === null,
+      var isNew = !player,
           modalInstance;
 
       if (isNew) {

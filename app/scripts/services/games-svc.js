@@ -4,8 +4,8 @@
   /**
    * Games services
    */
-  angular.module('pokerManager.services').
-    factory('Games', GamesFactory);
+  angular.module('pokerManager.services')
+    .factory('Games', GamesFactory);
 
   GamesFactory.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
   function GamesFactory($q, Ref, $firebaseArray, $firebaseObject) {

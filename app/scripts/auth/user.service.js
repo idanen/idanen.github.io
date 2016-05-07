@@ -63,7 +63,10 @@
       };
       service.waitForUser()
         .then(function () {
-          return Ref.child('users').child(service.user.uid).child('devices').push().set(subscription);
+          return Ref.child('users')
+            .child(service.user.uid)
+            .child('devices')
+            .push().set(subscription);
         });
     }
   }

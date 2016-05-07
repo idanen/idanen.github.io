@@ -21,8 +21,9 @@
           icon: 'fa-users',
           children: [],
           actions: [{
-            title: 'Add or join',
-            action: $state.go('addCommunity')
+            title: 'Add or join'
+            // ,
+            // action: $state.go('addCommunity')
           }]
         },
         statsTab = {

@@ -4,8 +4,8 @@
   /**
    * Login controller
    */
-  angular.module('pokerManager').
-    controller('LoginCtrl', LoginController);
+  angular.module('pokerManager')
+    .controller('LoginCtrl', LoginController);
 
   LoginController.$inject = ['userService', 'Players', '$state', '$analytics'];
 

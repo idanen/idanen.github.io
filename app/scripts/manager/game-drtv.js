@@ -4,8 +4,8 @@
   /**
    * The managed game's directive
    */
-  angular.module('pokerManager').
-    directive('onGoingGame', gameDirective);
+  angular.module('pokerManager')
+    .directive('onGoingGame', gameDirective);
 
   function gameDirective() {
     return {

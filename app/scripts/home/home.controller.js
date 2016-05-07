@@ -8,7 +8,7 @@
   function HomeController(communities, communitiesSvc) {
     var vm = this;
 
-    vm.communities = communities;
+    vm.communities = communitiesSvc.getCommunities();
     vm.communitiesSvc = communitiesSvc;
   }
 

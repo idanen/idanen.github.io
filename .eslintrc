@@ -5,16 +5,28 @@
     "dustinspecker"
   ],
   "env": {
+    "browser": true,
     "es6": true
   },
   "rules": {
-    "angular/ng_controller_name": [2, "/[A-Z].*Ctrl$/"],
+    "angular/controller-name": [2, "/[A-Z].*Ctrl$/"],
+    "angular/window-service": 0,
+    "angular/log": 0,
+    "angular/typecheck-function": 0,
+    "angular/json-functions": 0,
+    "angular/no-service-method": 0,
+    "angular/controller-as-vm": 0,
+    "newline-before-return": 0,
+    "newline-per-chained-call": 0,
     "consistent-this": 0,
     "angular/ng_json_functions": 0,
     "angular/ng_controller_as_vm": 0,
     "no-empty": 0,
     "no-extra-parens": 0,
-    "no-underscore-dangle": 0
+    "no-underscore-dangle": 0,
+    "no-param-reassign": 0,
+    "semi": 0,
+    "max-len": 0
   },
   "globals": {
     "_": false,

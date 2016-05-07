@@ -4,8 +4,8 @@
   /**
    * Game controller
    */
-  angular.module('pokerManager').
-    controller('GameCtrl', GameController);
+  angular.module('pokerManager')
+    .controller('GameCtrl', GameController);
 
   GameController.$inject = ['$scope', '$analytics', 'Games'];
 
@@ -45,6 +45,7 @@
     vm.isGameInProgress = isGameInProgress;
     vm.saveGame = saveGame;
     vm.playersCount = playersCount;
+    vm.chipsValueUpdated = chipsValueUpdated;
 
     function initGame() {
       Object.keys(vm.game.players).forEach(function (playerId) {
@@ -206,6 +207,12 @@
         if (angular.isFunction($scope.saveFailCallback)) {
           vm.saveFailCallback(err);
         }
+      });
+    }
+
+    function chipsValueUpdated(val) {
+      $scope.$applyAsync(function () {
+        vm.game.chipValue = val;
       });
     }
   }

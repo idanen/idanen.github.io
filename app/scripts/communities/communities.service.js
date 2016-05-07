@@ -11,9 +11,11 @@
 
     service.selectedCommunityIdx = 0;
     service.$q = $q;
+    service.$firebaseArray = $firebaseArray;
     service.Ref = Ref;
     service.Players = Players;
-    service.communities = $firebaseArray(Ref.child('communities'));
+    service.communitiesRef = Ref.child('communities');
+    service.communities = $firebaseArray(service.communitiesRef);
 
     service.communities.$loaded()
       .then(function () {
@@ -22,6 +24,9 @@
   }
 
   CommunitiesService.prototype = {
+    getCommunities: function () {
+      return this.$firebaseArray(this.communitiesRef);
+    },
     setSelectedCommunity: function (idx) {
       this.selectedCommunityIdx = idx;
     },

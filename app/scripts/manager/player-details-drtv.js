@@ -4,8 +4,8 @@
   /**
    * The managed game's directive
    */
-  angular.module('pokerManager').
-    directive('playerDetails', playerDetailsDirective);
+  angular.module('pokerManager')
+    .directive('playerDetails', playerDetailsDirective);
 
   playerDetailsDirective.$inject = ['$filter', '$timeout', 'Players'];
 
@@ -160,11 +160,9 @@
             var s;
             // the pie chart
             if (this.point.name) {
-              s = '' +
-                this.point.name + ': ' + this.y + ' fruits';
+              s = String(this.point.name) + ': ' + this.y + ' fruits';
             } else {
-              s = '' +
-                this.x + ': ' + this.y;
+              s = String(this.x) + ': ' + this.y;
             }
             return s;
           }

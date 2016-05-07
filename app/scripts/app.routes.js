@@ -31,10 +31,15 @@
             user: authRequiredResolver
           }
         },
-        // TODO (idan): build the add/join community state with modals by http://www.sitepoint.com/creating-stateful-modals-angularjs-angular-ui-router/
+        // TODO (idan): build the add/join community state with modals by
+        // http://www.sitepoint.com/creating-stateful-modals-angularjs-angular-ui-router/
         addCommunity = {
           name: 'addCommunity',
-          parent: 'home'
+          parent: 'home',
+          onEnter: newCommunityModal,
+          resolve: {
+            previousState: previousStateResolver
+          }
         },
         gameManager = {
           name: 'game',
@@ -65,6 +70,7 @@
 
     $stateProvider.state(home);
     $stateProvider.state(community);
+    $stateProvider.state(addCommunity);
     $stateProvider.state(gameManager);
     $stateProvider.state(stats);
     $stateProvider.state(player);
@@ -75,12 +81,13 @@
 
   run.$inject = ['$rootScope', 'PolymerToaster'];
   function run($rootScope, PolymerToaster) {
-    var unwatch = $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams, error) {
-      console.log('error %s trying to change state from $o to %o', error, fromState, toState);
-      if (error === 'AUTH_REQUIRED') {
-        PolymerToaster.showToast();
-      }
-    });
+    var unwatch = $rootScope.$on('$stateChangeError',
+      function (event, toState, toParams, fromState, fromParams, error) {
+        console.log('error %s trying to change state from $o to %o', error, fromState, toState);
+        if (error === 'AUTH_REQUIRED') {
+          PolymerToaster.showToast();
+        }
+      });
 
     $rootScope.$on('$destroy', function () {
       unwatch();
@@ -137,6 +144,32 @@
     playerModal.open(player)
       .finally(function () {
         $state.go('^');
+      });
+  }
+
+  previousStateResolver.$inject = ['$state'];
+  function previousStateResolver($state) {
+    return {
+      name: $state.current.name,
+      params: $state.params
+    };
+  }
+
+  newCommunityModal.$inject = ['$state', '$uibModal', 'previousState'];
+  function newCommunityModal($state, $uibModal, previousState) {
+    return $uibModal.open({
+      templateUrl: './partials/modals/addNewPlayer.html',
+      controller: 'CommunitySimpleCtrl',
+      controllerAs: '$ctrl',
+      bindToController: true
+    }).result
+      .then(function (community) {
+        console.log('Successfully added a new community ', community);
+        $state.go(previousState.name, previousState.params);
+      })
+      .catch(function (reason) {
+        console.log('New community modal dismissed with reason: ' + reason);
+        $state.go(previousState.name, previousState.params);
       });
   }
 }());

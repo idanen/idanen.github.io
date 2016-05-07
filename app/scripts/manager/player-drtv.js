@@ -4,8 +4,8 @@
   /**
    * A playing player's directive
    */
-  angular.module('pokerManager').
-    directive('playerCard', playerCardDirective);
+  angular.module('pokerManager')
+    .directive('playerCard', playerCardDirective);
 
   function playerCardDirective() {
     return {

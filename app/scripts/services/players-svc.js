@@ -4,8 +4,8 @@
   /**
    * Players services
    */
-  angular.module('pokerManager').
-    factory('Players', PlayersFactory);
+  angular.module('pokerManager')
+    .factory('Players', PlayersFactory);
 
   PlayersFactory.$inject = ['$q', 'Ref', '$firebaseArray'];
   function PlayersFactory($q, Ref, $firebaseArray) {
@@ -151,7 +151,9 @@
 
       function matchPlayerToUser(playerRef) {
         var playerId = playerRef.key();
-        Ref.child('users').child(user.uid).child('playerId').set(playerId);
+        Ref.child('users')
+          .child(user.uid)
+          .child('playerId').set(playerId);
         return service.players.$getRecord(playerId);
       }
     }

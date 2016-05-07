@@ -9,6 +9,7 @@
     .service('Stats', Stats);
 
   function Stats() {
+    this.name = 'Stats';
   }
 
   Stats.prototype = {

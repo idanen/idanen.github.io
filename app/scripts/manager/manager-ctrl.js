@@ -4,8 +4,8 @@
   /**
    * Game Manager controller
    */
-  angular.module('pokerManager').
-    controller('PokerManagerCtrl', PokerManagerController);
+  angular.module('pokerManager')
+    .controller('PokerManagerCtrl', PokerManagerController);
 
   PokerManagerController.$inject = ['$scope', '$analytics', 'toaster', 'Utils', 'Players', 'playerModal', 'communitiesSvc', 'community', 'game', 'Games'];
 

@@ -4,8 +4,8 @@
   /**
    * Stats controller
    */
-  angular.module('pokerManager').
-    controller('PokerStatsCtrl', PokerStatsController);
+  angular.module('pokerManager')
+    .controller('PokerStatsCtrl', PokerStatsController);
 
   PokerStatsController.$inject = ['$state', '$stateParams', 'communityId', 'Utils', 'Games', 'Players', 'playerModal'];
 
@@ -160,7 +160,8 @@
     }
 
     function statsAvgWinnings() {
-      var i, sum = 0;
+      var i,
+          sum = 0;
       for (i = 0; i < vm.displayGames.players.length; ++i) {
         sum += vm.displayGames.players[i].buyout - vm.displayGames.players[i].buyin;
       }
@@ -168,7 +169,8 @@
     }
 
     function statsAvgWinningsPerGame() {
-      var i, sum = 0;
+      var i,
+          sum = 0;
       for (i = 0; i < vm.displayGames.players.length; ++i) {
         sum += (vm.displayGames.players[i].buyout - vm.displayGames.players[i].buyin) / vm.displayGames.players[i].gamesCount;
       }

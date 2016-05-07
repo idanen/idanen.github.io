@@ -4,9 +4,9 @@
   /**
    * Player Modal's controller
    */
-  angular.module('pokerManager').
-    controller('ModalPlayerDetailsCtrl', ModalPlayerDetailsController).
-    controller('PlayerDetailsCtrl', PlayerDetailsController);
+  angular.module('pokerManager')
+    .controller('ModalPlayerDetailsCtrl', ModalPlayerDetailsController)
+    .controller('PlayerDetailsCtrl', PlayerDetailsController);
 
   ModalPlayerDetailsController.$inject = ['$uibModalInstance', 'player'];
 

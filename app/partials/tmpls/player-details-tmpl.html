@@ -44,8 +44,10 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="(gameId, game) in pCtrl.player.games" ng-class="{'success': (game.balance > 0), 'danger': (game.balance < 0)}">
-				<td>{{ game.date | date:'y-MM-dd' }}</td>
+			<tr ng-repeat="game in pCtrl.player.games" ng-class="{'success': (game.balance > 0), 'danger': (game.balance < 0)}">
+				<td>
+          <span>{{ game.date | date:'y-MM-dd' }}</span><a ui-sref="game({ gameId: (game.$id || game.id) })"><span class="fa fa-external-link"></span></a>
+        </td>
 				<td>
 					<span ng-class="{'label label-success': (game.buyout > game.buyin), 'label label-danger': (game.buyout < game.buyin), 'label label-default': (game.buyout == game.buyin)}">{{ game.buyout - game.buyin }}</span>
 				</td>

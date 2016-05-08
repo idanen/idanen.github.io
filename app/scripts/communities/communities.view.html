@@ -4,24 +4,26 @@
     </div>
     <div class="panel-body">
         <div class="row">
-            <div class="col-xs-3">
-                <input type="text" class="form-control" ng-model="vm.fromDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" name="fromDate" bs-datepicker>
-            </div>
-            <div class="col-xs-3">
-                <input type="text" class="form-control" ng-model="vm.toDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" name="toDate" bs-datepicker>
-            </div>
+          <div class="col-xs-4">
+              <input type="text" class="form-control" ng-model="vm.fromDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" name="fromDate" bs-datepicker>
+          </div>
+          <div class="col-xs-4">
+              <input type="text" class="form-control" ng-model="vm.toDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" name="toDate" bs-datepicker>
+          </div>
+          <div class="col-xs-4">
+            <a class="btn btn-link" ui-sref="stats({ fromDate: vm.fromDate, toDate: vm.toDate })">Stats</a>
+          </div>
         </div>
         <div class="row">
             <div class="col-xs-12">
-                    <a ui-sref="stats({ fromDate: vm.fromDate, toDate: vm.toDate })">Stats</a>
-                <ul class="nav nav-tabs">
-                    <li class="slide" ng-repeat="(gameId, game) in vm.community.games" ui-sref-active="active">
-                        <a ui-sref="game({ gameId: gameId })" title="gameId" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
-                    </li>
-                </ul>
-                <div ui-view></div>
+              <ul class="nav nav-tabs">
+                  <li class="slide" ng-repeat="(gameId, game) in vm.community.games" ui-sref-active="active">
+                      <a ui-sref="game({ gameId: gameId })" title="gameId" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
+                  </li>
+              </ul>
             </div>
         </div>
+        <div class="row" ui-view></div>
         <div class="row">
             <div class="col-xs-12">
                 <button class="btn btn-success" ng-click="vm.createGame( vm.community )">Start a new game</button>

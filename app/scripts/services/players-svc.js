@@ -7,8 +7,8 @@
   angular.module('pokerManager')
     .factory('Players', PlayersFactory);
 
-  PlayersFactory.$inject = ['$q', 'Ref', '$firebaseArray'];
-  function PlayersFactory($q, Ref, $firebaseArray) {
+  PlayersFactory.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
+  function PlayersFactory($q, Ref, $firebaseArray, $firebaseObject) {
     var service = {
       create: create,
       save: save,
@@ -73,7 +73,8 @@
     }
 
     function getPlayer(playerId) {
-      return service.players.$getRecord(playerId);
+      // return service.players.$getRecord(playerId);
+      return $firebaseObject(service.playersRef.child(playerId));
     }
 
     function playersOfCommunity(community) {

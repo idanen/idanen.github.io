@@ -129,7 +129,7 @@
 
   gameRouteResolver.$inject = ['$stateParams', '$firebaseObject', 'Ref'];
   function gameRouteResolver($stateParams, $firebaseObject, Ref) {
-    return $firebaseObject(Ref.child('game/' + $stateParams.gameId));
+    return $firebaseObject(Ref.child('games/' + $stateParams.gameId));
   }
 
   playersRouteResolver.$inject = ['communityId', 'Players', 'communitiesSvc'];

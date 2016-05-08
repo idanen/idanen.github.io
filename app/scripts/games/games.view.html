@@ -1,7 +1,7 @@
 <button class="btn btn-default players-drawer-btn visible-xs" ng-class="{ 'players-drawer-open': vm.prefs.playersOpen }" ng-click="vm.openPlayersControl()"><span class="fa fa-user-plus"></span></button>
-         
+
 <div id="players-control" class="col-sm-4" ng-class="{'nav-visible': vm.prefs.playersOpen}">
-    <h3 class="hidden-xs"><i class="glyphicon glyphicon-user"></i> Players</h3>
+    <h3 class="hidden-xs"><i class="fa fa-user"></i> Players</h3>
     <div class="row">
         <div class="col-xs-8">
             <div class="btn-group">
@@ -32,7 +32,7 @@
                         <span class="label" ng-class="{'label-success': (player.balance > 0), 'label-danger': (player.balance < 0), 'label-default': (player.balance == 0)}">{{ player.balance }}</span>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-default" ng-click="vm.addPlayerToGame(player)" title="Join game"><i class="glyphicon glyphicon-chevron-right"></i>
+                        <button class="btn btn-sm btn-default" ng-click="vm.addPlayerToGame(player)" title="Join game"><i class="fa fa-chevron-right"></i>
                         </button>
                     </td>
                 </tr>

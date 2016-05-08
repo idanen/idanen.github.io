@@ -185,6 +185,14 @@ ul {
   }
 }
 
+.new-community-btn {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  .new-community-btn-text {
+    text-overflow: ellipsis;
+  }
+}
+
 /* NG Animations */
 
 /* Slide */

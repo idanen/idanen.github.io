@@ -7,9 +7,9 @@
   angular.module('pokerManager')
     .directive('playerDetails', playerDetailsDirective);
 
-  playerDetailsDirective.$inject = ['$filter', '$timeout', 'Players'];
+  playerDetailsDirective.$inject = ['$timeout'];
 
-  function playerDetailsDirective($filter, $timeout, Players) {
+  function playerDetailsDirective($timeout) {
     return {
       restrict: 'AE',
       scope: {
@@ -23,21 +23,14 @@
     };
 
     function postLinkFn(scope, element, attrs, ctrl) {
-      var chartData = createData(ctrl.player),
+      var chartData = ctrl.chartData,
           chartHolder = angular.element('<div/>'),
-          chartObj = createChartObject(ctrl.player.name, chartData),
+          chartObj,
           refreshBtn = element.find('.refresh-data-btn'),
           chart;
 
       function refreshData() {
-        ctrl.loading = false;
-
-        // Calculate extra data
-        ctrl.player.gamesCount = ctrl.player.games ? Object.keys(ctrl.player.games).length : 0;
-        ctrl.player.winningSessions = winningSessions(ctrl.player);
-        ctrl.player.avgWinning = avgWinning(ctrl.player, true);
-
-        chartData = createData(ctrl.player);
+        chartData = ctrl.chartData;
 
         chart = chartHolder.highcharts();
         if (chart) {
@@ -56,17 +49,12 @@
       refreshBtn.after(chartHolder);
       chartHolder.attr('id', 'player-chart');
 
-      // Construct chart on next $digest loop so the chart container will fill width
-      $timeout(function () {
+      // Construct chart once the controller finished getting and processing the data
+      ctrl.ready.then(function () {
+        chartData = ctrl.chartData;
+        chartObj = createChartObject(ctrl.player.name, chartData);
         chartHolder.highcharts(chartObj);
-      }, 0, false);
-
-      if (!ctrl.player.isNew) {
-        ctrl.player = Players.getPlayer(ctrl.player.$id || ctrl.player.id);
-        refreshData();
-      } else {
-        ctrl.loading = false;
-      }
+      });
 
       refreshBtn.on('click', refreshData);
 
@@ -77,73 +65,6 @@
         }
         refreshBtn.off();
       });
-    }
-
-    function createData(player) {
-      var chartData = {
-            dates: [],
-            profits: [],
-            balances: []
-          },
-          prev = 0,
-          iterations = 0;
-
-      if (player.games) {
-        iterations = 0;
-        _.forEach(player.games, function (gameResult) {
-          var profit;
-          iterations += 1;
-          if (!isNaN(gameResult.date)) {
-            chartData.dates.push($filter('date')(gameResult.date, 'y-MM-dd'));
-          } else {
-            chartData.dates.push(gameResult.date);
-          }
-          profit = gameResult.buyout - gameResult.buyin;
-          chartData.profits.push(profit);
-          chartData.balances.push(profit);
-
-          if (iterations > 20) {
-            return false;
-          }
-        });
-        // Accumulate balance
-        chartData.balances.map(function (balance, idx, arr) {
-          chartData.balances[idx] += arr[idx - 1] || 0;
-        });
-
-        _.forEach(player.games, function (game) {
-          game.balance = prev + (game.buyout - game.buyin);
-          prev = game.balance;
-        });
-
-        player.games = _.sortByOrder(player.games, 'date', 'desc');
-      }
-
-      return chartData;
-    }
-
-    function winningSessions(player) {
-      var count = 0;
-      if (player.games) {
-        _.forEach(player.games, function (game) {
-          if (game.buyout >= game.buyin) {
-            count++;
-          }
-        });
-      }
-      return count;
-    }
-
-    function avgWinning(player, bb) {
-      var sum = 0,
-          gamesCount = 0;
-      if (player.games) {
-        _.forEach(player.games, function (game) {
-          sum += (game.buyout - game.buyin) / (bb ? 50 : 1);
-          gamesCount += 1;
-        });
-      }
-      return sum / (gamesCount || 1);
     }
 
     function createChartObject(playerName, chartData) {

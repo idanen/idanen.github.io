@@ -5,9 +5,9 @@
 		<div class="input-group input-group-sm">
 			<input class="form-control" ng-model="player.currentChipCount" ng-change="gameCtrl.chipCountUpdate(player)" type="number" min="0" step="{{ settings.chipValue }}" ng-disabled="!player.isPlaying" autofocus/>
 			<div class="input-group-btn">
-				<button ng-click="gameCtrl.buyout(player)" class="btn btn-primary" ng-show="player.isPlaying" title="Buy out"><i class="glyphicon glyphicon-share-alt"></i>&nbsp;<span class="hidden-xs">Buy out</span>
+				<button ng-click="gameCtrl.buyout(player)" class="btn btn-primary" ng-show="player.isPlaying" title="Buy out"><i class="fa fa-external-link"></i>&nbsp;<span class="hidden-xs">Buy out</span>
 				</button>
-				<button ng-click="gameCtrl.bust(player)" class="btn btn-danger" ng-show="player.isPlaying" title="Bust"><i class="glyphicon glyphicon-trash"></i>&nbsp;<span class="hidden-xs">Bust</span>
+				<button ng-click="gameCtrl.bust(player)" class="btn btn-danger" ng-show="player.isPlaying" title="Bust"><i class="fa fa-trash"></i>&nbsp;<span class="hidden-xs">Bust</span>
 				</button>
 				<button ng-click="gameCtrl.comeBack(player)" class="btn btn-primary" ng-show="!player.isPlaying" title="Come Back">Come Back</button>
 			</div>

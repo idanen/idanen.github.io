@@ -59,14 +59,14 @@
 	</ul>
 	<div class="row bg-info end-game-wrap">
 		<div class="col-md-12">
-			<button ng-click="vm.saveGame()" class="btn btn-block btn-primary" ng-disabled="(vm.game.players.length <= 0) || vm.isGameInProgress()" analytics-on analytics-event="Save Game" analytics-category="Actions" analytics-label="{{ vm.game.location }}"><i class="glyphicon glyphicon-download-alt"></i>&nbsp;End Game</button>
+			<button ng-click="vm.saveGame()" class="btn btn-block btn-primary" ng-disabled="(vm.game.players.length <= 0) || vm.isGameInProgress()" analytics-on analytics-event="Save Game" analytics-category="Actions" analytics-label="{{ vm.game.location }}"><i class="fa fa-download"></i>&nbsp;End Game</button>
 		</div>
 	</div>
 
 	<uib-accordion>
 		<uib-accordion-group>
 			<uib-accordion-heading>
-				<i class="glyphicon glyphicon-trash"></i> Clear game
+				<i class="fa fa-trash"></i> Clear game
 			</uib-accordion-heading>
 			<hr/>
 			<div class="row">

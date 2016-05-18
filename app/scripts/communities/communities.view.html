@@ -15,13 +15,19 @@
           </div>
         </div>
         <div class="row">
-            <div class="col-xs-12">
+          <div class="col-xs-1">
+            <span class="fa fa-arrow-left"></span>
+          </div>
+            <div class="col-xs-10">
               <ul class="nav nav-tabs">
                   <li class="slide" ng-repeat="(gameId, game) in vm.community.games" ui-sref-active="active">
                       <a ui-sref="game({ gameId: gameId })" title="gameId" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
                   </li>
               </ul>
             </div>
+          <div class="col-xs-1">
+            <span class="fa fa-arrow-right"></span>
+          </div>
         </div>
         <div class="row" ui-view></div>
         <div class="row">

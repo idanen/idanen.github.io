@@ -45,7 +45,7 @@
         games.$ref()
           .orderByChild(field)
           .equalTo(value)
-          .limitToLast(limit || 100)
+          .limitToLast(limit)
           .once('value', function (querySnapshot) {
             var resultGames = {};
             if (querySnapshot.hasChildren()) {
@@ -63,6 +63,29 @@
 
     function gamesOfCommunity(communityId) {
       return service.findBy('communityId', communityId);
+    }
+
+    function pagedGamesOfCommunity(communityId, pageSize, lastGameId) {
+      return $firebaseArray(
+        Ref.child('games')
+          .orderByChild('communityId')
+          .equalTo(communityId)
+          .once('value', function (querySnapshot) {
+            var resultGames = [];
+            if (querySnapshot.hasChildren()) {
+              querySnapshot.forEach(function (gameSnap) {
+                var game = gameSnap.val();
+                game.$id = gameSnap.key();
+                resultGames.push(_.pick(game, ['$id', 'date', 'location']));
+                if (resultGames.length >= pageSize) {
+                  return true;
+                }
+              });
+            }
+            // resolve(_.sortByOrder(resultGames, 'date', 'desc'));
+            resolve(resultGames);
+          })
+      );
     }
 
     function findBetweenDates(from, to, communityId) {

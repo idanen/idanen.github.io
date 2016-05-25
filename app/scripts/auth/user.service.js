@@ -16,6 +16,7 @@
     service.getUser = getUser;
     service.setUserCommunities = setUserCommunities;
     service.addSubscriptionId = addSubscriptionId;
+    service.removeSubscriptionId = removeSubscriptionId;
 
     function login(provider) {
       return Auth.$authWithOAuthPopup(provider || 'google', {
@@ -63,10 +64,36 @@
       };
       service.waitForUser()
         .then(function () {
+          Ref.child('users')
+            .child(service.user.uid)
+            .child('devices')
+            .orderByChild('subscriptionId')
+            .equalTo(subscriptionId)
+            .once('value', function (snapshot) {
+              if (!snapshot.exists()) {
+                snapshot.ref().push().set(subscription);
+              } else {
+                console.log('this endpoint is already subscribed');
+              }
+            });
+        });
+    }
+
+    function removeSubscriptionId(subscriptionId) {
+      service.waitForUser()
+        .then(function () {
           return Ref.child('users')
             .child(service.user.uid)
             .child('devices')
-            .push().set(subscription);
+            .orderByChild('subscriptionId')
+            .equalTo(subscriptionId)
+            .once('value', function (snapArr) {
+              if (snapArr.hasChildren()) {
+                snapArr.forEach(function (deviceSnap) {
+                  deviceSnap.ref().remove();
+                });
+              }
+            });
         });
     }
   }

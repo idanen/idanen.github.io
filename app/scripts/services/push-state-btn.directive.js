@@ -14,10 +14,10 @@
     };
 
     function linkFn($scope, $element) {
-      var toggler = $element.find('paper-toggle-button');
+      var toggler = $element.find('paper-toggle-button'),
+          subscriptionEndpoint;
       pushState.getInitialState()
         .then(function (subscription) {
-          var subscriptionEndpoint;
           if (!pushState.notificationDenied) {
             toggler.removeAttr('disabled');
           }
@@ -34,10 +34,9 @@
       toggler.on('iron-change', function (event) {
         if (event.target.checked) {
           pushState.subscribe()
-            .then(function () {
-              return pushState.getSubscriptionEndpoint();
-            })
-            .then(function (subscriptionEndpoint) {
+            .then(pushState.getSubscriptionEndpoint.bind(pushState))
+            .then(function (endpoint) {
+              subscriptionEndpoint = endpoint;
               toggler[0].dataset.pushEnabled = true;
               toggler.addClass('active');
               $scope.$emit('pushState.subscription.successful', subscriptionEndpoint);
@@ -49,7 +48,12 @@
               $scope.$emit('pushState.subscription.error', error);
             });
         } else {
-          pushState.unsubscribe();
+          pushState.unsubscribe()
+            .then(function (subscriptionEndpoint) {
+              toggler[0].dataset.pushEnabled = false;
+              toggler.removeClass('active');
+              userService.removeSubscriptionId(subscriptionEndpoint);
+            });
         }
       });
 

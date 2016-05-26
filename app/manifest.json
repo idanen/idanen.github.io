@@ -40,7 +40,7 @@
     }
   ],
   "start_url": "/index.html",
-  "theme-color": "#446e9b",
+  "theme_color": "#446e9b",
   "display": "standalone",
   "gcm_sender_id": "1053634869128",
   "gcm_user_visible_only": true

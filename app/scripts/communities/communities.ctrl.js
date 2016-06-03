@@ -14,6 +14,8 @@
       playersOpen: false
     };
 
+    vm.pageSize = 3;
+    vm.currentPage = 0;
     vm.fromDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
     vm.toDate = Date.now();
     vm.openPlayersControl = openPlayersControl;
@@ -112,4 +114,17 @@
       vm.communityDropdownOpen = !vm.communityDropdownOpen;
     }
   }
+
+  CommunitiesController.prototype = {
+    prevPage: function () {
+      if (this.currentPage === 0) {
+        this.currentPage = 1;
+        return;
+      }
+      this.currentPage -= 1;
+    },
+    nextPage: function () {
+      this.currentPage = (this.currentPage + 1) % this.pageSize;
+    }
+  };
 }());

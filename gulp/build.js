@@ -376,8 +376,12 @@ module.exports = function (gulp, $, config) {
       staticFileGlobs: [
         // Add/remove glob patterns to match your directory setup.
         rootDir + '/img/**/*',
-        rootDir + '/scripts/**/*.js',
+        rootDir + '/js/**/*.js',
+        rootDir + '/vendor/**/*.js',
         rootDir + '/styles/**/*.css',
+        rootDir + '/styles/fonts/*.{otf,eot,svg,ttf,woff,woff2}',
+        rootDir + '/scripts/**/*.html',
+        rootDir + '/partials/**/*.{html,json}',
         rootDir + '/*.{html,json}'
       ],
       // Translates a static file path to the relative URL that it's served from.

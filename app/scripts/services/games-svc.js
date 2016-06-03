@@ -61,8 +61,13 @@
       });
     }
 
-    function gamesOfCommunity(communityId) {
-      return service.findBy('communityId', communityId);
+    function gamesOfCommunity(communityId, limit) {
+      //return service.findBy('communityId', communityId);
+      return $firebaseArray(Ref.child('games')
+        .orderByChild('communityId')
+        .equalTo(communityId)
+        .limitToLast(limit || 100)
+      );
     }
 
     function pagedGamesOfCommunity(communityId, pageSize, lastGameId) {

@@ -5,16 +5,17 @@
     .module('pokerManager')
     .service('playerModal', PlayerModal);
 
-  PlayerModal.$inject = ['$uibModal', 'Players'];
-  function PlayerModal($modal, Players) {
+  PlayerModal.$inject = ['$uibModal', 'Players', '$rootScope'];
+  function PlayerModal($modal, Players, $rootScope) {
     this.$modal = $modal;
     this.Players = Players;
+    this.$rootScope = $rootScope;
   }
 
   PlayerModal.prototype = {
     open: function (player) {
       var isNew = !player,
-          modalInstance;
+          modalInstance, unwatch;
 
       if (isNew) {
         player = this.Players.create();
@@ -30,6 +31,8 @@
           }
         }
       });
+      unwatch = this.$rootScope.$on('$stateChangeSuccess', modalInstance.close);
+      modalInstance.closed.then(unwatch);
 
       return modalInstance.result;
     }

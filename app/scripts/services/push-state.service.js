@@ -98,6 +98,23 @@
     },
     unsubscribe: function () {
       this.subscription = false;
+      return this.workerReadyPromise.then(function (registration) {
+        return registration.pushManager.getSubscription();
+      })
+        .then(function (subscription) {
+          var subscriptionEndpoint = this._extractGCMRegistrationId(subscription);
+          return subscription.unsubscribe()
+            .then(function () {
+              this.subscription = false;
+              this.notificationPermited = false;
+              this.notificationDenied = false;
+              return subscriptionEndpoint;
+            }.bind(this));
+        }.bind(this))
+        .catch(function (err) {
+          console.warn('Error during getSubscription()', err);
+          return this.$q.reject(err);
+        }.bind(this));
     },
     getSubscriptionEndpoint: function () {
       return this._extractGCMRegistrationId(this.subscription);

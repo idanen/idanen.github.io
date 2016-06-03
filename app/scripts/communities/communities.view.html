@@ -17,8 +17,8 @@
         <div class="row">
             <div class="col-xs-12">
               <ul class="nav nav-tabs">
-                  <li class="slide" ng-repeat="(gameId, game) in vm.community.games" ui-sref-active="active">
-                      <a ui-sref="game({ gameId: gameId })" title="gameId" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
+                  <li class="slide" ng-repeat="game in vm.community.games" ui-sref-active="active">
+                      <a ui-sref="game({ gameId: game.$id })" title="{{ game.$id }}" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
                   </li>
               </ul>
             </div>

@@ -28,7 +28,6 @@
     this.loading = false;
     this.Games = Games;
     this.communityId = $stateParams.communityId;
-    this.playerId = $stateParams.playerId;
     this.$filter = $filter;
 
     this.chartData = {
@@ -43,7 +42,7 @@
     };
 
     // Re-fetch player from server
-    this.player = Players.getPlayer(this.playerId);
+    this.player = Players.getPlayer(this.player.id || this.player.$id);
 
     // Get games and calculate stats
     this.ready = this.player.$loaded()

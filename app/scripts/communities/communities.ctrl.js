@@ -97,10 +97,7 @@
     }
 
     function getCommunityGames(aCommunity) {
-      Games.gamesOfCommunity(aCommunity.$id)
-        .then(function (games) {
-          aCommunity.games = games;
-        });
+      aCommunity.games = Games.gamesOfCommunity(aCommunity.$id);
     }
 
     function isCollapsed(communityId) {

@@ -58,7 +58,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="(playerId, player) in vm.displayGames.players" ng-class="{'success': (player.buyout > player.buyin), 'danger': (player.buyout < player.buyin)}">
+					<tr ng-repeat="player in vm.displayGames.players" ng-class="{'success': (player.buyout > player.buyin), 'danger': (player.buyout < player.buyin)}">
 						<td>
 							<span>{{ player.name }}</span> <span class="badge" title="Games played">{{ player.gamesCount }}</span> <button class="btn btn-link" ng-click="vm.openPlayerDetailsDialog(player)" analytics-on analytics-event="Player Details" analytics-category="Actions" analytics-label="{{ player.name }}"><span class="fa fa-external-link"></span></button>
 						</td>

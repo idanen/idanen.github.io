@@ -84,10 +84,13 @@
               });
             }
           });
-          return players;
-        })
-        .then(function (players) {
-          vm.displayGames.players = players;
+
+          vm.displayGames.players = [];
+          _.forEach(players, function (player) {
+            vm.displayGames.players.push(player);
+          });
+
+          return vm.displayGames.players;
         });
     }
 

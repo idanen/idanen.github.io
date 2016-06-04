@@ -118,13 +118,13 @@
   CommunitiesController.prototype = {
     prevPage: function () {
       if (this.currentPage === 0) {
-        this.currentPage = 1;
+        this.currentPage = this.community.games.length - this.pageSize;
         return;
       }
-      this.currentPage -= 1;
+      this.currentPage -= this.pageSize;
     },
     nextPage: function () {
-      this.currentPage = (this.currentPage + 1) % this.pageSize;
+      this.currentPage = (this.currentPage + this.pageSize) % this.community.games.length;
     }
   };
 }());

@@ -62,34 +62,11 @@
     }
 
     function gamesOfCommunity(communityId, limit) {
-      //return service.findBy('communityId', communityId);
+      // return service.findBy('communityId', communityId);
       return $firebaseArray(Ref.child('games')
         .orderByChild('communityId')
         .equalTo(communityId)
         .limitToLast(limit || 100)
-      );
-    }
-
-    function pagedGamesOfCommunity(communityId, pageSize, lastGameId) {
-      return $firebaseArray(
-        Ref.child('games')
-          .orderByChild('communityId')
-          .equalTo(communityId)
-          .once('value', function (querySnapshot) {
-            var resultGames = [];
-            if (querySnapshot.hasChildren()) {
-              querySnapshot.forEach(function (gameSnap) {
-                var game = gameSnap.val();
-                game.$id = gameSnap.key();
-                resultGames.push(_.pick(game, ['$id', 'date', 'location']));
-                if (resultGames.length >= pageSize) {
-                  return true;
-                }
-              });
-            }
-            // resolve(_.sortByOrder(resultGames, 'date', 'desc'));
-            resolve(resultGames);
-          })
       );
     }
 

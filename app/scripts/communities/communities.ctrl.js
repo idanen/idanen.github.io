@@ -40,6 +40,11 @@
         collapseState[aCommunity.$id] = true;
         vm.getCommunityGames(aCommunity);
       });
+
+      vm.community.games.$loaded()
+        .then(function () {
+          vm.currentPage = vm.community.games.length - vm.pageSize;
+        });
     });
 
     function openPlayersControl() {
@@ -117,14 +122,19 @@
 
   CommunitiesController.prototype = {
     prevPage: function () {
-      if (this.currentPage === 0) {
-        this.currentPage = this.community.games.length - this.pageSize;
+      if (this.currentPage <= 0) {
+        //this.currentPage = this.community.games.length - this.pageSize;
+        this.currentPage = 0;
         return;
       }
       this.currentPage -= this.pageSize;
     },
     nextPage: function () {
-      this.currentPage = (this.currentPage + this.pageSize) % this.community.games.length;
+      if (this.currentPage + this.pageSize > this.community.games.length) {
+        this.currentPage = this.community.games.length - this.pageSize;
+        return;
+      }
+      this.currentPage = this.currentPage + this.pageSize;
     }
   };
 }());

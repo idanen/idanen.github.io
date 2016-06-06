@@ -46,10 +46,10 @@
           membership[community.$id] = community.name;
           if (idx !== -1) {
             savedPlayer.once('value', function (snap) {
-              service.communities[idx].members[snap.key()] = snap.child('name').val();
+              service.communities[idx].members[snap.key] = snap.child('name').val();
               service.communities.$save(idx);
             });
-            service.Ref.child('players/' + savedPlayer.key()).child('memberIn').set(membership);
+            service.Ref.child('players/' + savedPlayer.key).child('memberIn').set(membership);
           }
         });
     },
@@ -62,7 +62,7 @@
         communityIds.forEach(function (communityId) {
           baseRef.child(communityId).once('value', function (snap) {
             var community = snap.val();
-            community.$id = community.id = snap.key();
+            community.$id = community.id = snap.key;
             communities.push(community);
 
             if (communities.length === communityIds.length) {

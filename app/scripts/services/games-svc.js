@@ -31,7 +31,7 @@
 
       return games.$add(gameToSave)
         .then(function (gameRef) {
-          var gameId = gameRef.key();
+          var gameId = gameRef.key;
           return games.$getRecord(gameId);
         });
     }
@@ -51,7 +51,7 @@
             if (querySnapshot.hasChildren()) {
               querySnapshot.forEach(function (gameSnap) {
                 var game = gameSnap.val();
-                game.$id = gameSnap.key();
+                game.$id = gameSnap.key;
                 resultGames[game.$id] = game;
               });
             }
@@ -77,7 +77,7 @@
               querySnapshot.forEach(function (gameSnap) {
                 var game = gameSnap.val();
                 if (game.communityId === communityId) {
-                  game.$id = gameSnap.key();
+                  game.$id = gameSnap.key
                   game.players = gameSnap.child('players').val();
                   resultGames.push(game);
                 }

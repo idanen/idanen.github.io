@@ -101,7 +101,7 @@
 
   authRequiredResolver.$inject = ['Auth'];
   function authRequiredResolver(Auth) {
-    return Auth.$requireAuth();
+    return Auth.$requireSignIn();
   }
 
   communitiesResolver.$inject = ['communitiesSvc'];

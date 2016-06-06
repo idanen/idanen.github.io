@@ -59,15 +59,15 @@
         communityToAdd.name = vm.newCommunity;
         vm.communities.$add(communityToAdd)
           .then(function (ref) {
-            collapseState[ref.key()] = false;
+            collapseState[ref.key] = false;
             Players.findBy('userUid', user.uid).then(function (playerSnapshot) {
               var membership = {},
-                  playerUid = playerSnapshot.key(),
+                  playerUid = playerSnapshot.key,
                   player = playerSnapshot.val(),
                   admins = {};
 
-              membership[ref.key()] = vm.newCommunity;
-              playerSnapshot.ref().child('memberIn').set(membership);
+              membership[ref.key] = vm.newCommunity;
+              playerSnapshot.ref.child('memberIn').set(membership);
 
               admins[playerUid] = player.name;
               ref.child('admins').set(admins);

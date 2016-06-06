@@ -5,8 +5,8 @@
     .module('pokerManager.services')
     .service('userService', UserService);
 
-  UserService.$inject = ['$q', 'Auth', 'Ref', '$firebaseObject', 'GOOGLE_AUTH_SCOPES'];
-  function UserService($q, Auth, Ref, $firebaseObject, GOOGLE_AUTH_SCOPES) {
+  UserService.$inject = ['$q', '$window', 'Auth', 'Ref', '$firebaseObject', 'GOOGLE_AUTH_SCOPES'];
+  function UserService($q, $window, Auth, Ref, $firebaseObject, GOOGLE_AUTH_SCOPES) {
     var service = this,
         users = $firebaseObject(Ref.child('users'));
 
@@ -18,21 +18,22 @@
     service.addSubscriptionId = addSubscriptionId;
     service.removeSubscriptionId = removeSubscriptionId;
 
-    function login(provider) {
-      return Auth.$authWithOAuthPopup(provider || 'google', {
-        remember: 'default',
-        scope: GOOGLE_AUTH_SCOPES
-      })
+    function login() {
+      var provider = new $window.firebase.auth.GoogleAuthProvider();
+      GOOGLE_AUTH_SCOPES.forEach(function (scope) {
+        provider.addScope(scope);
+      });
+      return Auth.$signInWithPopup(provider)
         .then(service.waitForUser);
     }
 
     function logout() {
-      Auth.$unauth();
+      Auth.$signOut();
       delete service.user;
     }
 
     function waitForUser() {
-      return $q.when(Auth.$waitForAuth())
+      return $q.when(Auth.$waitForSignIn())
         .then(function (user) {
           service.user = user;
           if (user) {
@@ -71,7 +72,7 @@
             .equalTo(subscriptionId)
             .once('value', function (snapshot) {
               if (!snapshot.exists()) {
-                snapshot.ref().push().set(subscription);
+                snapshot.ref.push().set(subscription);
               } else {
                 console.log('this endpoint is already subscribed');
               }
@@ -90,7 +91,7 @@
             .once('value', function (snapArr) {
               if (snapArr.hasChildren()) {
                 snapArr.forEach(function (deviceSnap) {
-                  deviceSnap.ref().remove();
+                  deviceSnap.ref.remove();
                 });
               }
             });

@@ -4,9 +4,8 @@
   angular.module('firebase.ref', ['firebase', 'firebase.config'])
     .factory('Ref', RefFactory);
 
-  RefFactory.$inject = ['$window', 'FBURL'];
-
-  function RefFactory($window, FBURL) {
-    return new $window.Firebase(FBURL);
+  RefFactory.$inject = ['$window'];
+  function RefFactory($window) {
+    return $window.firebase.database().ref();
   }
 }());

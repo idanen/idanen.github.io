@@ -86,7 +86,7 @@
         promises.push($q(function (resolve, reject) {
           baseRef.child(playerId).once('value', function (snap) {
             var player = snap.val();
-            player.$id = player.id = snap.key();
+            player.$id = player.id = snap.key;
             resolve(player);
           }, reject);
         }));
@@ -130,7 +130,7 @@
         service.players.$ref().off('value');
 
         if (playerSnapshot) {
-          playerId = playerSnapshot.key();
+          playerId = playerSnapshot.key;
           idx = service.players.$indexFor(playerId);
           if (idx !== -1) {
             service.players[idx].userUid = user.uid;
@@ -151,7 +151,7 @@
       }
 
       function matchPlayerToUser(playerRef) {
-        var playerId = playerRef.key();
+        var playerId = playerRef.key;
         Ref.child('users')
           .child(user.uid)
           .child('playerId').set(playerId);

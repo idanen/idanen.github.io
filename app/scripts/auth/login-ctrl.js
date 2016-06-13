@@ -7,16 +7,17 @@
   angular.module('pokerManager')
     .controller('LoginCtrl', LoginController);
 
-  LoginController.$inject = ['userService', 'Players', '$state', '$analytics'];
+  LoginController.$inject = ['userService', 'Players', '$state', '$analytics', 'Auth'];
 
-  function LoginController(userService, Players, $state, $analytics) {
+  function LoginController(userService, Players, $state, $analytics, Auth) {
     var vm = this;
 
     vm.signIn = signIn;
     vm.signOut = signOut;
 
-    userService.waitForUser()
-      .then(obtainedUserInfo);
+    // userService.waitForUser()
+    //  .then(obtainedUserInfo);
+    Auth.$onAuthStateChanged(obtainedUserInfo);
 
     function signIn(provider) {
       userService.login(provider)
@@ -36,12 +37,14 @@
     }
 
     function obtainedUserInfo(user) {
-      var player;
+      var player,
+          providerData = user.providerData[0];
       if (user) {
+
         player = {
-          name: user[user.provider].displayName,
-          email: user[user.provider].email,
-          imageUrl: user[user.provider].profileImageURL
+          name: providerData.displayName,
+          email: providerData.email,
+          imageUrl: providerData.photoURL
         };
 
         vm.user = angular.extend({}, user, player);

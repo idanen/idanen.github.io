@@ -37,9 +37,5 @@
         "jquery": "*"
       }
     }
-  },
-  "resolutions": {
-    "angular-strap": "~2.1.0",
-    "angular-bootstrap": "~1.3.*"
   }
 }

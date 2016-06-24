@@ -37,9 +37,9 @@
     }
 
     function obtainedUserInfo(user) {
-      var player,
-          providerData = user.providerData[0];
+      var player, providerData;
       if (user) {
+        providerData = user.providerData[0];
 
         player = {
           name: providerData.displayName,

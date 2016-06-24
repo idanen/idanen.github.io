@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  angular.module('firebase.ref', ['firebase', 'firebase.config'])
+  angular.module('firebase.ref', ['firebase.config'])
     .factory('Ref', RefFactory);
 
   RefFactory.$inject = ['$window'];

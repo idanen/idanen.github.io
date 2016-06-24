@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  angular.module('firebase.auth', ['firebase', 'firebase.ref'])
+  angular.module('firebase.auth', [])
     .factory('Auth', AuthFactory);
 
   AuthFactory.$inject = ['$firebaseAuth'];

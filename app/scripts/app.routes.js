@@ -99,9 +99,9 @@
   //   return userService.save();
   // }
 
-  authRequiredResolver.$inject = ['Auth'];
-  function authRequiredResolver(Auth) {
-    return Auth.$requireSignIn();
+  authRequiredResolver.$inject = ['$firebaseAuth'];
+  function authRequiredResolver($firebaseAuth) {
+    return $firebaseAuth().$requireSignIn();
   }
 
   communitiesResolver.$inject = ['communitiesSvc'];

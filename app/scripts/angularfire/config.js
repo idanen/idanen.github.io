@@ -13,11 +13,11 @@
       storageBucket: 'fiery-heat-6939.appspot.com'
     })
     .constant('loginRedirectPath', '/login')
-    .run(firebaseConfig);
+    .config(firebaseConfig);
 
-  firebaseConfig.$inject = ['$window', 'FIREBASE_CONFIG'];
-  function firebaseConfig($window, FIREBASE_CONFIG) {
+  firebaseConfig.$inject = ['$windowProvider', 'FIREBASE_CONFIG'];
+  function firebaseConfig($windowProvider, FIREBASE_CONFIG) {
     // Initialize Firebase
-    $window.firebase.initializeApp(FIREBASE_CONFIG);
+    $windowProvider.$get().firebase.initializeApp(FIREBASE_CONFIG);
   }
 }());

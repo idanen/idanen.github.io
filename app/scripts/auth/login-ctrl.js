@@ -7,9 +7,9 @@
   angular.module('pokerManager')
     .controller('LoginCtrl', LoginController);
 
-  LoginController.$inject = ['userService', 'Players', '$state', '$analytics', 'Auth'];
+  LoginController.$inject = ['userService', 'Players', '$state', '$analytics', '$firebaseAuth'];
 
-  function LoginController(userService, Players, $state, $analytics, Auth) {
+  function LoginController(userService, Players, $state, $analytics, $firebaseAuth) {
     var vm = this;
 
     vm.signIn = signIn;
@@ -17,7 +17,7 @@
 
     // userService.waitForUser()
     //  .then(obtainedUserInfo);
-    Auth.$onAuthStateChanged(obtainedUserInfo);
+    $firebaseAuth().$onAuthStateChanged(obtainedUserInfo);
 
     function signIn(provider) {
       userService.login(provider)

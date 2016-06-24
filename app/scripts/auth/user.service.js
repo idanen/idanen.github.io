@@ -5,8 +5,8 @@
     .module('pokerManager.services')
     .service('userService', UserService);
 
-  UserService.$inject = ['$q', '$window', 'Auth', 'Ref', '$firebaseObject', 'GOOGLE_AUTH_SCOPES'];
-  function UserService($q, $window, Auth, Ref, $firebaseObject, GOOGLE_AUTH_SCOPES) {
+  UserService.$inject = ['$q', '$window', '$firebaseAuth', 'Ref', '$firebaseObject', 'GOOGLE_AUTH_SCOPES'];
+  function UserService($q, $window, $firebaseAuth, Ref, $firebaseObject, GOOGLE_AUTH_SCOPES) {
     var service = this,
         users = $firebaseObject(Ref.child('users'));
 
@@ -17,23 +17,24 @@
     service.setUserCommunities = setUserCommunities;
     service.addSubscriptionId = addSubscriptionId;
     service.removeSubscriptionId = removeSubscriptionId;
+    service.authObj = $firebaseAuth();
 
     function login() {
       var provider = new $window.firebase.auth.GoogleAuthProvider();
       GOOGLE_AUTH_SCOPES.forEach(function (scope) {
         provider.addScope(scope);
       });
-      return Auth.$signInWithPopup(provider)
+      return service.authObj.$signInWithPopup(provider)
         .then(service.waitForUser);
     }
 
     function logout() {
-      Auth.$signOut();
+      service.authObj.$signOut();
       delete service.user;
     }
 
     function waitForUser() {
-      return $q.when(Auth.$waitForSignIn())
+      return $q.when(service.authObj.$waitForSignIn())
         .then(function (user) {
           service.user = user;
           if (user) {

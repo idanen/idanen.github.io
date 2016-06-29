@@ -84,6 +84,7 @@
 
     function addMember(toCommunity) {
       playerModal.open()
+        .then(Players.save)
         .then(function (player) {
           return communitiesSvc.addMember(player, toCommunity);
         });

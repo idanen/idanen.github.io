@@ -41,15 +41,33 @@
     }
 
     function save(player) {
-      var existingPlayer = service.players.$getRecord(player.$id);
-
-      delete player.isNew;
-      if (!existingPlayer) {
-        return service.players.$add(player);
+      // var existingPlayer = service.players.$getRecord(player.$id);
+      //
+      // delete player.isNew;
+      // if (!existingPlayer) {
+      //   return service.players.$add(player);
+      // }
+      //
+      // angular.extend(existingPlayer, player);
+      // return service.players.$save(existingPlayer);
+      if (!player.$id) {
+        return service.playersRef.push(player);
       }
+      service.playersRef.child(player.$id).once(function (snap) {
+        if (snap.exists()) {
+          service.playersRef.push(player).then(function (snapshot) {
+            player.$id = snapshot.key;
+          });
+        }
+      });
+    }
 
-      angular.extend(existingPlayer, player);
-      return service.players.$save(existingPlayer);
+    function addNewPlayer(player) {
+      return $q.when(
+        service.playersRef.push(player).then(function (snapshot) {
+          player.$id = snapshot.key;
+        })
+      );
     }
 
     function saveResult(gameResult, game) {

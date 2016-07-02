@@ -5,13 +5,14 @@
     .module('pokerManager')
     .service('communitiesSvc', CommunitiesService);
 
-  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', 'Players'];
-  function CommunitiesService($q, Ref, $firebaseArray, Players) {
+  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject', 'Players'];
+  function CommunitiesService($q, Ref, $firebaseArray, $firebaseObject, Players) {
     var service = this;
 
     service.selectedCommunityIdx = 0;
     service.$q = $q;
     service.$firebaseArray = $firebaseArray;
+    service.$firebaseObject = $firebaseObject;
     service.Ref = Ref;
     service.Players = Players;
     service.communitiesRef = Ref.child('communities');
@@ -36,22 +37,21 @@
           return this.communities[this.selectedCommunityIdx];
         }.bind(this));
     },
+    addAdmin: function (admin, community) {
+      return this._addMember(admin, community, 'admins');
+    },
     addMember: function (player, community) {
-      var service = this;
-      return this.Players.save(player)
-        .then(function (savedPlayer) {
-          var idx = service.communities.$indexFor(community.$id),
-              membership = {};
-
-          membership[community.$id] = community.name;
-          if (idx !== -1) {
-            savedPlayer.once('value', function (snap) {
-              service.communities[idx].members[snap.key] = snap.child('name').val();
-              service.communities.$save(idx);
-            });
-            service.Ref.child('players/' + savedPlayer.key).child('memberIn').set(membership);
-          }
-        });
+      return this._addMember(player, community, 'members');
+    },
+    _addMember: function (player, community, membership) {
+      return this.communitiesRef
+        .child(community.$id)
+        .child(membership)
+        .child(player.$id)
+        .set(player.name);
+    },
+    getCommunity: function (communityId) {
+      return this.$firebaseObject(this.communitiesRef.child(communityId));
     },
     getCommunitiesByIds: function (communityIds) {
       var service = this,

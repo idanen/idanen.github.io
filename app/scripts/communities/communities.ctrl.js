@@ -5,8 +5,8 @@
     .module('pokerManager')
     .controller('CommunitiesCtrl', CommunitiesController);
 
-  CommunitiesController.$inject = ['communitiesSvc', 'userService', 'Players', 'playerModal', 'Games', 'Ref', '$state', '$location', 'community', 'players'];
-  function CommunitiesController(communitiesSvc, userService, Players, playerModal, Games, Ref, $state, $location, community, players) {
+  CommunitiesController.$inject = ['communitiesSvc', 'userService', 'playerModal', 'Games', '$state', 'community', 'Players', 'players', 'playersMembership'];
+  function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, Players, players, playersMembership) {
     var vm = this,
         collapseState = {};
 
@@ -17,8 +17,10 @@
     vm.fromDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
     vm.toDate = Date.now();
     vm.openPlayersControl = openPlayersControl;
+    vm.playerModal = playerModal;
     vm.community = community;
-    vm.players = players;
+    vm.players = Players.playersOfCommunity(community.$id);
+    vm.playersMembership = playersMembership;
     vm.newCommunity = '';
     vm.inputDisabled = false;
     vm.communityDropdownOpen = false;
@@ -28,7 +30,6 @@
     vm.toggleCollapsed = toggleCollapsed;
     vm.communitiesDropdownToggle = communitiesDropdownToggle;
     vm.userUid = userService.getUser() && userService.getUser().uid;
-    vm.addMember = addMember;
     vm.createGame = createGame;
     vm.getCommunityGames = getCommunityGames;
     vm.loadStats = loadStats;
@@ -55,39 +56,19 @@
     function add() {
       var communityToAdd = {},
           user = userService.getUser();
+      vm.inputDisabled = true;
       if (vm.newCommunity) {
         communityToAdd.name = vm.newCommunity;
         vm.communities.$add(communityToAdd)
           .then(function (ref) {
             collapseState[ref.key] = false;
-            Players.findBy('userUid', user.uid).then(function (playerSnapshot) {
-              var membership = {},
-                  playerUid = playerSnapshot.key,
-                  player = playerSnapshot.val(),
-                  admins = {};
-
-              membership[ref.key] = vm.newCommunity;
-              playerSnapshot.ref.child('memberIn').set(membership);
-
-              admins[playerUid] = player.name;
-              ref.child('admins').set(admins);
-              ref.child('members').set(admins);
-
-              vm.newCommunity = '';
-            });
+            communityToAdd.$id = ref.key;
+            return vm.playersMembership.setAdminOfCommunity(communityToAdd, user.uid);
           })
           .finally(function () {
             vm.inputDisabled = false;
           });
       }
-    }
-
-    function addMember(toCommunity) {
-      playerModal.open()
-        .then(Players.save)
-        .then(function (player) {
-          return communitiesSvc.addMember(player, toCommunity);
-        });
     }
 
     function createGame(communityToAddTo) {
@@ -113,4 +94,13 @@
       vm.communityDropdownOpen = !vm.communityDropdownOpen;
     }
   }
+
+  CommunitiesController.prototype = {
+    addMember: function (toCommunity) {
+      this.playerModal.open()
+        .then(function (player) {
+          this.playersMembership.addPlayer(player, toCommunity)
+        }.bind(this));
+    }
+  };
 }());

@@ -25,9 +25,7 @@
           controller: 'CommunitiesCtrl',
           controllerAs: 'vm',
           resolve: {
-            communityId: communityIdResolver,
             community: communityResolver,
-            players: communityPlayersResolver,
             user: authRequiredResolver
           }
         },
@@ -106,15 +104,12 @@
 
   communitiesResolver.$inject = ['communitiesSvc'];
   function communitiesResolver(communitiesSvc) {
-    return communitiesSvc.communities;
+    return communitiesSvc.getCommunities();
   }
 
   communityResolver.$inject = ['communitiesSvc', '$stateParams'];
   function communityResolver(communitiesSvc, $stateParams) {
-    return communitiesSvc.communities.$loaded()
-      .then(function () {
-        return communitiesSvc.communities.$getRecord($stateParams.communityId);
-      });
+    return communitiesSvc.getCommunity($stateParams.communityId);
   }
 
   communityIdResolver.$inject = ['$stateParams'];
@@ -122,20 +117,9 @@
     return $stateParams.communityId;
   }
 
-  communityPlayersResolver.$inject = ['Players', 'community'];
-  function communityPlayersResolver(Players, community) {
-    return Players.playersOfCommunity(community);
-  }
-
   gameRouteResolver.$inject = ['$stateParams', '$firebaseObject', 'Ref'];
   function gameRouteResolver($stateParams, $firebaseObject, Ref) {
     return $firebaseObject(Ref.child('games/' + $stateParams.gameId));
-  }
-
-  playersRouteResolver.$inject = ['communityId', 'Players', 'communitiesSvc'];
-  function playersRouteResolver(communityId, Players, communitiesSvc) {
-    var community = communitiesSvc.communities.$getRecord(communityId);
-    return Players.playersOfCommunity(community);
   }
 
   PlayerState.$inject = ['$stateParams', '$state', 'Players', 'playerModal'];

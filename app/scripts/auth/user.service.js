@@ -10,11 +10,14 @@
     var service = this,
         users = $firebaseObject(Ref.child('users'));
 
+    service.usersRef = Ref.child('users');
+
     service.login = login;
     service.logout = logout;
     service.waitForUser = waitForUser;
     service.getUser = getUser;
     service.setUserCommunities = setUserCommunities;
+    service.linkUserToPlayer = linkUserToPlayer;
     service.addSubscriptionId = addSubscriptionId;
     service.removeSubscriptionId = removeSubscriptionId;
     service.authObj = $firebaseAuth();
@@ -53,6 +56,16 @@
         .then(function () {
           service.user.communitiesIds = communitiesIds;
           return service.user;
+        });
+    }
+
+    function linkUserToPlayer(player) {
+      return service.usersRef
+        .child(service.user.uid)
+        .child('playerId')
+        .set(player.$id)
+        .then(function () {
+          return player;
         });
     }
 

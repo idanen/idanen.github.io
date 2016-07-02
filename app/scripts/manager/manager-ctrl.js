@@ -107,10 +107,7 @@
 
     function init() {
       // Refresh view
-      communitiesSvc.getSelectedCommunity()
-        .then(function (selectedCommunity) {
-          return Players.playersOfCommunity(selectedCommunity);
-        })
+      Players.playersOfCommunity(vm.community.$id)
         .then(function (players) {
           vm.players = players;
           return players;
@@ -149,7 +146,7 @@
     function addPlayerToGame(player) {
       var playerInGame = {};
       if (!vm.game.players) {
-        vm.game.players = {};
+        vm.game.players = [];
       }
       if (!(player.$id in vm.game.players)) {
         player.isPlaying = true;
@@ -159,8 +156,9 @@
         playerInGame.buyin = 0;
         playerInGame.buyout = 0;
         playerInGame.currentChipCount = 0;
+        playerInGame.communityId = community.$id;
         playerInGame.paidHosting = false;
-        vm.game.players[player.$id] = playerInGame;
+        vm.game.players.push(playerInGame);
       }
 
       try {

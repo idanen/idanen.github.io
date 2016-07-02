@@ -16,8 +16,9 @@
       deleteResult: deleteResult,
       getPlayer: getPlayer,
       playersOfCommunity: playersOfCommunity,
+      joinCommunity: joinCommunity,
       findBy: findBy,
-      matchUserToPlayer: matchUserToPlayer,
+      addUser: addUser,
       playersRef: Ref.child('players'),
       players: $firebaseArray(Ref.child('players'))
     };
@@ -41,57 +42,37 @@
     }
 
     function save(player) {
-      // var existingPlayer = service.players.$getRecord(player.$id);
-      //
-      // delete player.isNew;
-      // if (!existingPlayer) {
-      //   return service.players.$add(player);
-      // }
-      //
-      // angular.extend(existingPlayer, player);
-      // return service.players.$save(existingPlayer);
       if (!player.$id) {
-        return service.playersRef.push(player);
+        var newPlayerRef = service.playersRef.push(player);
+        player.$id = newPlayerRef.key;
+        return newPlayerRef.then(function () {
+          return player;
+        });
       }
-      service.playersRef.child(player.$id).once(function (snap) {
-        if (snap.exists()) {
-          service.playersRef.push(player).then(function (snapshot) {
-            player.$id = snapshot.key;
-          });
-        }
-      });
-    }
-
-    function addNewPlayer(player) {
-      return $q.when(
-        service.playersRef.push(player).then(function (snapshot) {
-          player.$id = snapshot.key;
-        })
-      );
+      return service.playersRef.child(player.$id).update(player)
+        .then(function () {
+          return player;
+        });
     }
 
     function saveResult(gameResult, game) {
-      var playerToUpdate = service.players.$getRecord(gameResult.$id || gameResult.id);
-      if (!playerToUpdate.games) {
-        playerToUpdate.games = {};
-      }
       gameResult.date = game.date;
-      playerToUpdate.games[game.$id] = gameResult;
-
-      service.players.$save(playerToUpdate);
+      return service.playersRef
+        .child(gameResult.$id || gameResult.id)
+        .child('games')
+        .child(game.$id)
+        .set(gameResult);
     }
 
     function deleteResult(gameResult, game) {
-      var playerToUpdate = service.players.$getRecord(gameResult.$id || gameResult.id);
-
-      if (game.$id in playerToUpdate.games) {
-        delete playerToUpdate.games[game.$id];
-        service.players.$save(playerToUpdate);
-      }
+      return service.playersRef
+        .child(gameResult.$id || gameResult.id)
+        .child('games')
+        .child(game.$id)
+        .remove();
     }
 
     function getPlayer(playerId) {
-      // return service.players.$getRecord(playerId);
       return $firebaseObject(service.playersRef.child(playerId));
     }
 
@@ -111,22 +92,36 @@
       });
 
       return $q.all(promises);
+      // return $firebaseArray(
+      //   service.playersRef
+      //     .orderByChild('memberIn')
+      //     .equalTo(community.$id)
+      // );
+    }
+
+    function joinCommunity(player, community) {
+      return service.playersRef
+        .child(player.$id)
+        .child('memberIn')
+        .child(community.$id)
+        .set(community.name);
     }
 
     function findBy(field, value, multi) {
       return $q(function (resolve, reject) {
-        service.players.$ref().off('value');
-        service.players.$ref()
+        service.playersRef
           .orderByChild(field)
           .equalTo(value)
-          .on('value', function (querySnapshot) {
+          .once('value', function (querySnapshot) {
             var result = multi ? [] : {};
             if (querySnapshot.hasChildren()) {
               querySnapshot.forEach(function (playerSnap) {
+                var player = playerSnap.val();
+                player.$id = playerSnap.key;
                 if (multi) {
-                  result.push(playerSnap);
+                  result.push(player);
                 } else {
-                  result = playerSnap;
+                  result = player;
                 }
               });
             }
@@ -135,45 +130,33 @@
       });
     }
 
-    function matchUserToPlayer(user) {
-      return findBy('email', user.email)
-        .then(addUser)
-        .then(matchPlayerToUser);
+    function addUser(player, user) {
+      var newPlayer;
 
-      function addUser(playerSnapshot) {
-        var idx = -1,
-            newPlayer, playerId;
-
-        // Stop listening
-        service.players.$ref().off('value');
-
-        if (playerSnapshot) {
-          playerId = playerSnapshot.key;
-          idx = service.players.$indexFor(playerId);
-          if (idx !== -1) {
-            service.players[idx].userUid = user.uid;
-            return service.players.$save(idx);
-          }
-        } else {
-          newPlayer = create();
-          newPlayer.userUid = user.uid;
-          newPlayer.name = user.name;
-          newPlayer.email = user.email;
-          newPlayer.imageUrl = user.imageUrl;
-          delete newPlayer.isNew;
-          return service.players.$add(newPlayer)
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
-      }
-
-      function matchPlayerToUser(playerRef) {
-        var playerId = playerRef.key;
-        Ref.child('users')
-          .child(user.uid)
-          .child('playerId').set(playerId);
-        return service.players.$getRecord(playerId);
+      if (player) {
+        return service.playersRef
+          .child(player.$id)
+          .child('userUid')
+          .set(user.uid)
+          .then(function () {
+            return player;
+          });
+      } else {
+        newPlayer = create();
+        newPlayer.userUid = user.uid;
+        newPlayer.name = user.name;
+        newPlayer.email = user.email;
+        newPlayer.imageUrl = user.imageUrl;
+        delete newPlayer.isNew;
+        var newPlayerRef = service.playersRef.push(player);
+        newPlayer.$id = newPlayerRef.key;
+        return newPlayerRef
+          .then(function () {
+            return newPlayer;
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     }
 

@@ -7,9 +7,9 @@
   angular.module('pokerManager')
     .controller('LoginCtrl', LoginController);
 
-  LoginController.$inject = ['userService', 'Players', '$state', '$analytics', '$firebaseAuth'];
+  LoginController.$inject = ['userService', 'playersUsers', '$state', '$analytics', '$firebaseAuth'];
 
-  function LoginController(userService, Players, $state, $analytics, $firebaseAuth) {
+  function LoginController(userService, playersUsers, $state, $analytics, $firebaseAuth) {
     var vm = this;
 
     vm.signIn = signIn;
@@ -51,7 +51,7 @@
         // console.log(vm.user);
 
         // Save user as a player
-        return Players.matchUserToPlayer(vm.user)
+        return playersUsers.matchUserToPlayer(vm.user)
           .then(function (userPlayer) {
             var communitiesIds = Object.keys(userPlayer.memberIn);
             if (communitiesIds && communitiesIds.length) {

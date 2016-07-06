@@ -46,6 +46,7 @@
      * Sets given player to be the admin and member in the given community.
      * @param {Object} community The community the player will be the admin of.
      * @param {Object} player The player to set as admin (and member).
+     * @returns {Promise} An angular promise that resolves with results of all transactions
      */
     setPlayerAsAdminOfCommunity: function (community, player) {
       var promises = [];

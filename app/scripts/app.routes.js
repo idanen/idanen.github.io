@@ -12,10 +12,7 @@
           url: '/',
           templateUrl: 'scripts/home/home.view.html',
           controller: 'HomeCtrl',
-          controllerAs: 'vm',
-          resolve: {
-            communities: communitiesResolver
-          }
+          controllerAs: 'vm'
         },
         community = {
           name: 'community',

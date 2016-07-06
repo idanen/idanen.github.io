@@ -5,8 +5,8 @@
     .module('pokerManager')
     .controller('CommunitiesCtrl', CommunitiesController);
 
-  CommunitiesController.$inject = ['communitiesSvc', 'userService', 'playerModal', 'Games', '$state', 'community', 'Players', 'players', 'playersMembership'];
-  function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, Players, players, playersMembership) {
+  CommunitiesController.$inject = ['communitiesSvc', 'userService', 'playerModal', 'Games', '$state', 'community', 'Players', 'playersMembership'];
+  function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, Players, playersMembership) {
     var vm = this,
         collapseState = {};
 
@@ -34,12 +34,7 @@
     vm.getCommunityGames = getCommunityGames;
     vm.loadStats = loadStats;
 
-    vm.communities.$loaded().then(function () {
-      vm.communities.forEach(function (aCommunity) {
-        collapseState[aCommunity.$id] = true;
-        vm.getCommunityGames(aCommunity);
-      });
-    });
+    vm.getCommunityGames(vm.community);
 
     function openPlayersControl() {
       vm.prefs.playersOpen = !vm.prefs.playersOpen;
@@ -79,7 +74,8 @@
     }
 
     function getCommunityGames(aCommunity) {
-      aCommunity.games = Games.gamesOfCommunity(aCommunity.$id);
+      // aCommunity.games = Games.gamesOfCommunity(aCommunity.$id);
+      vm.games = Games.gamesOfCommunity(aCommunity.$id);
     }
 
     function isCollapsed(communityId) {

@@ -4,8 +4,8 @@
   angular.module('pokerManager')
     .controller('HomeCtrl', HomeController);
 
-  HomeController.$inject = ['communities', 'communitiesSvc'];
-  function HomeController(communities, communitiesSvc) {
+  HomeController.$inject = ['communitiesSvc'];
+  function HomeController(communitiesSvc) {
     var vm = this;
 
     vm.communities = communitiesSvc.getCommunities();

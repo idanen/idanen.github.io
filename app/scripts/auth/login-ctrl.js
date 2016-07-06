@@ -44,25 +44,25 @@
         player = {
           name: providerData.displayName,
           email: providerData.email,
-          imageUrl: providerData.photoURL
+          photoURL: providerData.photoURL
         };
 
         vm.user = angular.extend({}, user, player);
         // console.log(vm.user);
 
         // Save user as a player
-        return playersUsers.matchUserToPlayer(vm.user)
-          .then(function (userPlayer) {
-            var communitiesIds = Object.keys(userPlayer.memberIn);
-            if (communitiesIds && communitiesIds.length) {
-              userService.setUserCommunities(communitiesIds);
-              if (!$state.includes('community')) {
-                $state.go('community', {
-                  communityId: communitiesIds[0]
-                });
-              }
-            }
-          });
+        // return playersUsers.matchUserToPlayer(vm.user)
+        //   .then(function (userPlayer) {
+        //     var communitiesIds = Object.keys(userPlayer.memberIn);
+        //     if (communitiesIds && communitiesIds.length) {
+        //       userService.setUserCommunities(communitiesIds);
+        //       if (!$state.includes('community')) {
+        //         $state.go('community', {
+        //           communityId: communitiesIds[0]
+        //         });
+        //       }
+        //     }
+        //   });
       }
     }
   }

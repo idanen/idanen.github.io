@@ -12,6 +12,7 @@
   function PokerManagerController($scope, $analytics, toaster, utils, Players, playerModal, communitiesSvc, community, game, Games) {
     var vm = this;
 
+    vm.community = community;
     vm.prefs = {
       playersOpen: false
     };
@@ -107,11 +108,7 @@
 
     function init() {
       // Refresh view
-      Players.playersOfCommunity(vm.community.$id)
-        .then(function (players) {
-          vm.players = players;
-          return players;
-        });
+      vm.players = Players.playersOfCommunity(vm.community.$id);
     }
 
     function refreshPlayersList() {

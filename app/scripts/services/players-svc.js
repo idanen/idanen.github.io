@@ -42,8 +42,9 @@
     }
 
     function save(player) {
+      var newPlayerRef;
       if (!player.$id) {
-        var newPlayerRef = service.playersRef.push(player);
+        newPlayerRef = service.playersRef.push(player);
         player.$id = newPlayerRef.key;
         return newPlayerRef.then(function () {
           return player;
@@ -76,27 +77,26 @@
       return $firebaseObject(service.playersRef.child(playerId));
     }
 
-    function playersOfCommunity(community) {
-      var playerIds = Object.keys(community.members),
-          baseRef = Ref.child('players'),
-          promises = [];
-
-      playerIds.forEach(function (playerId) {
-        promises.push($q(function (resolve, reject) {
-          baseRef.child(playerId).once('value', function (snap) {
-            var player = snap.val();
-            player.$id = player.id = snap.key;
-            resolve(player);
-          }, reject);
-        }));
-      });
-
-      return $q.all(promises);
-      // return $firebaseArray(
-      //   service.playersRef
-      //     .orderByChild('memberIn')
-      //     .equalTo(community.$id)
-      // );
+    function playersOfCommunity(communityId) {
+      // var playerIds = Object.keys(community.members),
+      //     baseRef = service.playersRef,
+      //     promises = [];
+      //
+      // playerIds.forEach(function (playerId) {
+      //   promises.push($q(function (resolve, reject) {
+      //     service.playersRef.child(playerId).once('value', function (snap) {
+      //       var player = snap.val();
+      //       player.$id = player.id = snap.key;
+      //       resolve(player);
+      //     }, reject);
+      //   }));
+      // });
+      //
+      // return $q.all(promises);
+      return $firebaseArray(
+        service.playersRef
+          .orderByChild('memberIn/' + communityId)
+      );
     }
 
     function joinCommunity(player, community) {
@@ -131,7 +131,7 @@
     }
 
     function addUser(player, user) {
-      var newPlayer;
+      var newPlayer, newPlayerRef;
 
       if (player) {
         return service.playersRef
@@ -141,23 +141,23 @@
           .then(function () {
             return player;
           });
-      } else {
-        newPlayer = create();
-        newPlayer.userUid = user.uid;
-        newPlayer.name = user.name;
-        newPlayer.email = user.email;
-        newPlayer.imageUrl = user.imageUrl;
-        delete newPlayer.isNew;
-        var newPlayerRef = service.playersRef.push(player);
-        newPlayer.$id = newPlayerRef.key;
-        return newPlayerRef
-          .then(function () {
-            return newPlayer;
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
       }
+
+      newPlayer = create();
+      newPlayer.userUid = user.uid;
+      newPlayer.name = user.name;
+      newPlayer.email = user.email;
+      newPlayer.imageUrl = user.imageUrl;
+      delete newPlayer.isNew;
+      newPlayerRef = service.playersRef.push(player);
+      newPlayer.$id = newPlayerRef.key;
+      return newPlayerRef
+        .then(function () {
+          return newPlayer;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
 
     return service;

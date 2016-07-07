@@ -4,14 +4,38 @@
   angular.module('pokerManager')
     .service('playersGames', PlayersGamesService);
 
-  PlayersGamesService.$inject = ['Ref', '$q'];
-  function PlayersGamesService(Ref) {
+  PlayersGamesService.$inject = ['Ref', '$q', '$firebaseArray'];
+  function PlayersGamesService(Ref, $q, $firebaseArray) {
     this.playersRef = Ref.child('players');
     this.gamesRef = Ref.child('games');
     this.$q = $q;
+    this.$firebaseArray = $firebaseArray;
   }
 
   PlayersGamesService.prototype = {
+    getPlayersInGame: function (gameId) {
+      return this.$firebaseArray(
+        this.gamesRef
+          .child(gameId)
+          .child('players')
+      );
+    },
+    removePlayerFromGame: function (playerId, gameId) {
+      return this.gamesRef
+        .child(gameId)
+        .child('players')
+        .child(playerId)
+        .remove()
+        .then(function () {
+          return this.getPlayersInGame(gameId);
+        }.bind(this));
+    },
+    removeAllPlayersFromGame: function (gameId) {
+      return this.gamesRef
+        .child(gameId)
+        .child('players')
+        .remove();
+    },
     addPlayerToGame: function (player, game) {
       var gameResult = {},
           promises = [];
@@ -41,10 +65,33 @@
           .set(gameResult)
       );
 
-      return this.$q.all(promises);
+      return this.$q.all(promises)
+        .then(function () {
+          return this.getPlayersInGame(game.$id);
+        }.bind(this));
     },
     updatePlayerResult: function (player, game, gameResult) {
-      // TODO: implement
+      var promises = [];
+
+      promises.push(
+        this.playersRef
+          .child(player.$id)
+          .child('games')
+          .child(game.$id)
+          .update(gameResult)
+      );
+      promises.push(
+        this.gamesRef
+          .child(game.$id)
+          .child('players')
+          .child(player.$id)
+          .update(gameResult)
+      );
+
+      return this.$q.all(promises)
+        .then(function () {
+          return this.getPlayersInGame(game.$id);
+        }.bind(this));
     }
   };
 }());

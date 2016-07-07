@@ -14,10 +14,10 @@
     };
 
     function linkFn($scope, $element) {
-      var toggler = $element.find('paper-toggle-button'),
-          subscriptionEndpoint;
+      var toggler = $element.find('paper-toggle-button');
       pushState.getInitialState()
         .then(function (subscription) {
+          var subscriptionEndpoint;
           if (!pushState.notificationDenied) {
             toggler.removeAttr('disabled');
           }
@@ -36,7 +36,7 @@
           pushState.subscribe()
             .then(pushState.getSubscriptionEndpoint.bind(pushState))
             .then(function (endpoint) {
-              subscriptionEndpoint = endpoint;
+              var subscriptionEndpoint = endpoint;
               toggler[0].dataset.pushEnabled = true;
               toggler.addClass('active');
               $scope.$emit('pushState.subscription.successful', subscriptionEndpoint);

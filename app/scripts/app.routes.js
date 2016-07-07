@@ -114,9 +114,9 @@
     return $stateParams.communityId;
   }
 
-  gameRouteResolver.$inject = ['$stateParams', '$firebaseObject', 'Ref'];
-  function gameRouteResolver($stateParams, $firebaseObject, Ref) {
-    return $firebaseObject(Ref.child('games/' + $stateParams.gameId));
+  gameRouteResolver.$inject = ['$stateParams', 'Games'];
+  function gameRouteResolver($stateParams, Games) {
+    return Games.getGame($stateParams.gameId);
   }
 
   PlayerState.$inject = ['$stateParams', '$state', 'Players', 'playerModal'];

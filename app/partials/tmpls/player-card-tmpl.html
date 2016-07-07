@@ -35,7 +35,7 @@
 				<label>Hosting: </label>
 			</div>
 			<div class="col-xs-7">
-				<button ng-model="player.paidHosting" class="btn btn-sm btn-default" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+				<button ng-model="player.paidHosting" ng-click="onUpdate({updates: player})" class="btn btn-sm btn-default" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
 					<span class="fa" ng-class="player.paidHosting && 'fa-check-square-o' || 'fa-exclamation-triangle'"></span>&nbsp;<span>{{player.paidHosting && 'Paid' || 'Owes'}}</span>
 				</button>
 			</div>

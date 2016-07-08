@@ -69,6 +69,7 @@
                   players[playerId].gamesCount += 1;
                 } else {
                   players[playerId] = player;
+                  players[playerId].$id = playerId;
                   players[playerId].gamesCount = 1;
                 }
               });

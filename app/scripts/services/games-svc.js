@@ -44,12 +44,14 @@
     },
 
     gamesOfCommunity: function (communityId, limit) {
-      // return service.findBy('communityId', communityId);
+      return this.findBy('communityId', communityId, limit);
+    },
+
+    gamesOfPlayer: function (playerId, limit) {
       return this.$firebaseArray(
         this.gamesRef
-          .orderByChild('communityId')
-          .equalTo(communityId)
-          .limitToLast(limit || 100)
+          .orderByChild('players/' + playerId)
+          .limitToLast(limit || 500)
       );
     },
 

@@ -56,42 +56,39 @@
     getPlayers: function () {
       var fromDate = this.$stateParams.fromDate || this.displayGames.fromDate,
           toDate = this.$stateParams.toDate || this.displayGames.toDate;
-      // return Games.players( { fromDate: formatDate( this.displayGames.fromDate ), toDate: formatDate ( this.displayGames.toDate ) } );
       return this.Games.findBetweenDates(fromDate, toDate, this.$stateParams.communityId)
-        .then(function (games) {
-          var players = {};
-          games.forEach(function (game) {
-            if (game.players) {
-              _.forEach(game.players, function (player, playerId) {
-                if (playerId in players) {
-                  players[playerId].buyin += player.buyin;
-                  players[playerId].buyout += player.buyout;
-                  players[playerId].gamesCount += 1;
-                } else {
-                  players[playerId] = player;
-                  players[playerId].$id = playerId;
-                  players[playerId].gamesCount = 1;
-                }
-              });
+        .then(this.gamesToPlayers.bind(this));
+    },
+
+    gamesToPlayers: function (games) {
+      var players = {},
+          gamesForCount = {};
+      games.forEach(function (game) {
+        gamesForCount[game.$id] = true;
+        if (game.players) {
+          _.forEach(game.players, function (player, playerId) {
+            if (playerId in players) {
+              players[playerId].buyin += player.buyin;
+              players[playerId].buyout += player.buyout;
+              players[playerId].gamesCount += 1;
+            } else {
+              players[playerId] = player;
+              players[playerId].$id = playerId;
+              players[playerId].gamesCount = 1;
             }
-          });
+          }.bind(this));
+        }
+      }.bind(this));
 
-          this.displayGames.players = _.values(players);
+      this.displayGames.players = _.values(players);
+      this.totalGames = Object.keys(gamesForCount).length;
 
-          return this.displayGames.players;
-        }.bind(this));
+      return this.displayGames.players;
     },
 
     init: function () {
       // Refresh view
       this.getPlayers();
-    },
-
-    toggleDateRange: function (which, $event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-
-      this.displayGames[which + 'DateOpen'] = !this.displayGames[which + 'DateOpen'];
     },
 
     loadGames: function () {
@@ -171,11 +168,6 @@
         return accumulated + ((player.buyout - player.buyin) / player.gamesCount);
       }, avg);
       return avg;
-    },
-
-    gamesCount: function () {
-      this.totalGames = this.utils.maxCalc(this.displayGames.players, 'gamesCount');
-      return this.totalGames;
     },
 
     filterPlayers: function () {

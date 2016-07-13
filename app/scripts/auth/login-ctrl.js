@@ -7,16 +7,13 @@
   angular.module('pokerManager')
     .controller('LoginCtrl', LoginController);
 
-  LoginController.$inject = ['userService', 'playersUsers', '$state', '$analytics', '$firebaseAuth'];
-
-  function LoginController(userService, playersUsers, $state, $analytics, $firebaseAuth) {
+  LoginController.$inject = ['userService', '$analytics', '$firebaseAuth'];
+  function LoginController(userService, $analytics, $firebaseAuth) {
     var vm = this;
 
     vm.signIn = signIn;
     vm.signOut = signOut;
 
-    // userService.waitForUser()
-    //  .then(obtainedUserInfo);
     $firebaseAuth().$onAuthStateChanged(obtainedUserInfo);
 
     function signIn(provider) {
@@ -48,21 +45,6 @@
         };
 
         vm.user = angular.extend({}, user, player);
-        // console.log(vm.user);
-
-        // Save user as a player
-        // return playersUsers.matchUserToPlayer(vm.user)
-        //   .then(function (userPlayer) {
-        //     var communitiesIds = Object.keys(userPlayer.memberIn);
-        //     if (communitiesIds && communitiesIds.length) {
-        //       userService.setUserCommunities(communitiesIds);
-        //       if (!$state.includes('community')) {
-        //         $state.go('community', {
-        //           communityId: communitiesIds[0]
-        //         });
-        //       }
-        //     }
-        //   });
       }
     }
   }

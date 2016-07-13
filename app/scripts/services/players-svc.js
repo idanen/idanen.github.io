@@ -77,6 +77,18 @@
       );
     },
 
+    playersCommunities: function (playerId) {
+      return this.$q.resolve(
+        this.playersRef
+          .child(playerId)
+          .child('memberIn')
+          .once('value')
+          .then(function (snapshot) {
+            return snapshot.val();
+          })
+      );
+    },
+
     joinCommunity: function (player, community) {
       return this.playersRef
         .child(player.$id)
@@ -138,11 +150,13 @@
         });
     },
 
-    getPlayerGames: function (playerId) {
+    getPlayerGames: function (playerId, limit) {
       return this.$firebaseArray(
         this.playersRef
           .child(playerId)
           .child('games')
+          .orderByChild('date')
+          .limitToLast(limit || 500)
       );
     }
   };

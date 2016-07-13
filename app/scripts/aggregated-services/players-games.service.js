@@ -49,6 +49,7 @@
       gameResult.communityId = game.communityId;
       gameResult.paidHosting = false;
       gameResult.date = game.date;
+      gameResult.location = game.location;
 
       promises.push(
         this.playersRef

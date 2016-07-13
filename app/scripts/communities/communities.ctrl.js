@@ -29,7 +29,6 @@
     vm.isCollapsed = isCollapsed;
     vm.toggleCollapsed = toggleCollapsed;
     vm.communitiesDropdownToggle = communitiesDropdownToggle;
-    vm.userUid = userService.getUser() && userService.getUser().uid;
     vm.createGame = createGame;
     vm.getCommunityGames = getCommunityGames;
     vm.loadStats = loadStats;
@@ -49,8 +48,7 @@
     }
 
     function add() {
-      var communityToAdd = {},
-          user = userService.getUser();
+      var communityToAdd = {};
       vm.inputDisabled = true;
       if (vm.newCommunity) {
         communityToAdd.name = vm.newCommunity;
@@ -58,6 +56,9 @@
           .then(function (ref) {
             collapseState[ref.key] = false;
             communityToAdd.$id = ref.key;
+            return userService.waitForUser();
+          })
+          .then(function (user) {
             return vm.playersMembership.setAdminOfCommunity(communityToAdd, user.uid);
           })
           .finally(function () {

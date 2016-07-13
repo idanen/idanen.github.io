@@ -5,82 +5,66 @@
     .module('pokerManager.services')
     .service('userService', UserService);
 
-  UserService.$inject = ['$q', '$window', '$firebaseAuth', 'Ref', '$firebaseObject', 'GOOGLE_AUTH_SCOPES'];
-  function UserService($q, $window, $firebaseAuth, Ref, $firebaseObject, GOOGLE_AUTH_SCOPES) {
-    var service = this,
-        users = $firebaseObject(Ref.child('users'));
+  UserService.$inject = ['$q', '$window', '$firebaseAuth', 'Ref', 'GOOGLE_AUTH_SCOPES'];
+  function UserService($q, $window, $firebaseAuth, Ref, GOOGLE_AUTH_SCOPES) {
+    this.$q = $q;
+    this.$window = $window;
+    this.authObj = $firebaseAuth();
+    this.usersRef = Ref.child('users');
+    this.GOOGLE_AUTH_SCOPES = GOOGLE_AUTH_SCOPES;
+  }
 
-    service.usersRef = Ref.child('users');
+  UserService.prototype = {
+    getUser: function (uid) {
+      return this.$q.resolve(
+        this.usersRef
+          .child(uid)
+          .once('value')
+          .then(function (snap) {
+            this.user = snap.val();
+            return snap.val();
+          }.bind(this))
+      );
+    },
+    waitForUser: function () {
+      return this.$q.resolve(this.authObj.$waitForSignIn())
+        .then(function (user) {
+          return this.getUser(user.uid);
+        }.bind(this));
+    },
 
-    service.login = login;
-    service.logout = logout;
-    service.waitForUser = waitForUser;
-    service.getUser = getUser;
-    service.setUserCommunities = setUserCommunities;
-    service.linkUserToPlayer = linkUserToPlayer;
-    service.addSubscriptionId = addSubscriptionId;
-    service.removeSubscriptionId = removeSubscriptionId;
-    service.authObj = $firebaseAuth();
-
-    function login() {
-      var provider = new $window.firebase.auth.GoogleAuthProvider();
-      GOOGLE_AUTH_SCOPES.forEach(function (scope) {
+    login: function () {
+      var provider = new this.$window.firebase.auth.GoogleAuthProvider();
+      this.GOOGLE_AUTH_SCOPES.forEach(function (scope) {
         provider.addScope(scope);
       });
-      return service.authObj.$signInWithPopup(provider)
-        .then(service.waitForUser);
-    }
+      return this.authObj.$signInWithPopup(provider)
+        .then(this.waitForUser.bind(this));
+    },
 
-    function logout() {
-      service.authObj.$signOut();
-      delete service.user;
-    }
+    logout: function () {
+      this.authObj.$signOut();
+      delete this.user;
+    },
 
-    function waitForUser() {
-      return $q.when(service.authObj.$waitForSignIn())
-        .then(function (user) {
-          service.user = user;
-          if (user) {
-            users[user.uid] = user;
-          }
-          return service.user;
-        });
-    }
-
-    function setUserCommunities(communitiesIds) {
-      if (service.user) {
-        service.user.communitiesIds = communitiesIds;
-        return service.user;
-      }
-      return service.waitForUser()
-        .then(function () {
-          service.user.communitiesIds = communitiesIds;
-          return service.user;
-        });
-    }
-
-    function linkUserToPlayer(player) {
-      return service.usersRef
-        .child(service.user.uid)
+    linkUserToPlayer: function (player) {
+      return this.usersRef
+        .child(this.user.uid)
         .child('playerId')
         .set(player.$id)
         .then(function () {
           return player;
         });
-    }
+    },
 
-    function getUser() {
-      return service.user;
-    }
-
-    function addSubscriptionId(subscriptionId) {
+    addSubscriptionId: function (subscriptionId) {
       var subscription = {
         subscriptionId: subscriptionId
       };
-      service.waitForUser()
+      this.waitForUser()
         .then(function () {
-          Ref.child('users')
-            .child(service.user.uid)
+          this.usersRef
+            .child(this.user.uid)
             .child('devices')
             .orderByChild('subscriptionId')
             .equalTo(subscriptionId)
@@ -91,14 +75,14 @@
                 console.log('this endpoint is already subscribed');
               }
             });
-        });
-    }
+        }.bind(this));
+    },
 
-    function removeSubscriptionId(subscriptionId) {
-      service.waitForUser()
+    removeSubscriptionId: function (subscriptionId) {
+      this.waitForUser()
         .then(function () {
-          return Ref.child('users')
-            .child(service.user.uid)
+          return this.usersRef
+            .child(this.user.uid)
             .child('devices')
             .orderByChild('subscriptionId')
             .equalTo(subscriptionId)
@@ -109,7 +93,7 @@
                 });
               }
             });
-        });
+        }.bind(this));
     }
-  }
+  };
 }());

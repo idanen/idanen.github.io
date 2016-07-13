@@ -76,9 +76,9 @@
               players[playerId].$id = playerId;
               players[playerId].gamesCount = 1;
             }
-          }.bind(this));
+          });
         }
-      }.bind(this));
+      });
 
       this.displayGames.players = _.values(players);
       this.totalGames = Object.keys(gamesForCount).length;

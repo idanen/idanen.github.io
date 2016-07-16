@@ -7,33 +7,35 @@
   angular.module('pokerManager')
     .controller('LoginCtrl', LoginController);
 
-  LoginController.$inject = ['userService', '$analytics', '$firebaseAuth'];
+  LoginController.$inject = ['userService', '$analytics', '$firebaseAuth', 'playersUsers'];
   function LoginController(userService, $analytics, $firebaseAuth) {
-    var vm = this;
+    this.userService = userService;
+    this.$analytics = $analytics;
+    this.playersUsers = playersUsers;
 
-    vm.signIn = signIn;
-    vm.signOut = signOut;
+    $firebaseAuth().$onAuthStateChanged(this.obtainedUserInfo.bind(this));
+  }
 
-    $firebaseAuth().$onAuthStateChanged(obtainedUserInfo);
-
-    function signIn(provider) {
-      userService.login(provider)
-        .then(obtainedUserInfo)
+  LoginController.prototype = {
+    signIn: function (provider) {
+      this.userService.login(provider)
+      // TODO: match user to player only if not already matched
+        .then(this.playersUsers.matchUserToPlayer.bind(this.playersUsers))
         .catch(function (error) {
           console.log(error);
         });
-    }
+    },
 
-    function signOut() {
+    signOut: function () {
       try {
-        $analytics.eventTrack('Sign out', {category: 'Actions', label: vm.user.name});
+        this.$analytics.eventTrack('Sign out', {category: 'Actions', label: this.user.name});
       } catch (err) {}
 
-      userService.logout();
-      delete vm.user;
-    }
+      this.userService.logout();
+      delete this.user;
+    },
 
-    function obtainedUserInfo(user) {
+    obtainedUserInfo: function (user) {
       var player, providerData;
       if (user) {
         providerData = user.providerData[0];
@@ -44,8 +46,10 @@
           photoURL: providerData.photoURL
         };
 
-        vm.user = angular.extend({}, user, player);
+        this.user = angular.extend({}, user, player);
+
+        return this.user;
       }
     }
-  }
+  };
 }());

@@ -7,95 +7,27 @@
 
   CommunitiesController.$inject = ['communitiesSvc', 'userService', 'playerModal', 'Games', '$state', 'community', 'Players', 'playersMembership'];
   function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, Players, playersMembership) {
-    var vm = this,
-        collapseState = {};
+    var vm = this;
 
-    vm.prefs = {
-      playersOpen: false
-    };
+    this.pageSize = 3;
+    this.currentPage = 0;
+    this.fromDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
+    this.toDate = Date.now();
+    this.userService = userService;
+    this.playerModal = playerModal;
+    this.Games = Games;
+    this.$state = $state;
+    this.community = community;
+    this.players = Players.playersOfCommunity(community.$id);
+    this.playersMembership = playersMembership;
 
-    vm.pageSize = 3;
-    vm.currentPage = 0;
-    vm.fromDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
-    vm.toDate = Date.now();
-    vm.openPlayersControl = openPlayersControl;
-    vm.playerModal = playerModal;
-    vm.community = community;
-    vm.players = Players.playersOfCommunity(community.$id);
-    vm.playersMembership = playersMembership;
-    vm.newCommunity = '';
-    vm.inputDisabled = false;
-    vm.communityDropdownOpen = false;
-    vm.communities = communitiesSvc.communities;
-    vm.add = add;
-    vm.isCollapsed = isCollapsed;
-    vm.toggleCollapsed = toggleCollapsed;
-    vm.communitiesDropdownToggle = communitiesDropdownToggle;
-    vm.createGame = createGame;
-    vm.getCommunityGames = getCommunityGames;
-    vm.loadStats = loadStats;
+    this.collapseState = {};
+    this.newCommunity = '';
+    this.inputDisabled = false;
+    this.communityDropdownOpen = false;
+    this.communities = communitiesSvc.communities;
 
-    vm.getCommunityGames(vm.community);
-
-    function openPlayersControl() {
-      vm.prefs.playersOpen = !vm.prefs.playersOpen;
-    }
-
-    function loadStats() {
-      $state.go('stats', {
-        communityId: community.$id,
-        fromDate: vm.fromDate,
-        toDate: vm.toDate
-      });
-    }
-
-    function add() {
-      var communityToAdd = {};
-      vm.inputDisabled = true;
-      if (vm.newCommunity) {
-        communityToAdd.name = vm.newCommunity;
-        vm.communities.$add(communityToAdd)
-          .then(function (ref) {
-            collapseState[ref.key] = false;
-            communityToAdd.$id = ref.key;
-            return userService.waitForUser();
-          })
-          .then(function (user) {
-            return vm.playersMembership.setAdminOfCommunity(communityToAdd, user.uid);
-          })
-          .finally(function () {
-            vm.inputDisabled = false;
-          });
-      }
-    }
-
-    function createGame(communityToAddTo) {
-      return Games.newGame(communityToAddTo.$id)
-        .then(function (game) {
-          $state.go('game', {communityId: communityToAddTo.$id, gameId: game.$id}, {reload: true});
-        });
-    }
-
-    function getCommunityGames(aCommunity) {
-      // aCommunity.games = Games.gamesOfCommunity(aCommunity.$id);
-      vm.games = Games.gamesOfCommunity(aCommunity.$id);
-      vm.games.$loaded()
-        .then(function () {
-          vm.currentPage = vm.games.length - vm.pageSize;
-        });
-    }
-
-    function isCollapsed(communityId) {
-      return collapseState[communityId];
-    }
-
-    function toggleCollapsed(communityId) {
-      collapseState[communityId] = !collapseState[communityId];
-    }
-
-    function communitiesDropdownToggle() {
-      vm.communityDropdownOpen = !vm.communityDropdownOpen;
-    }
+    this.getCommunityGames(vm.community);
   }
 
   CommunitiesController.prototype = {
@@ -118,6 +50,61 @@
         return;
       }
       this.currentPage += this.pageSize;
+    },
+
+    loadStats: function () {
+      this.$state.go('stats', {
+        communityId: this.community.$id,
+        fromDate: this.fromDate,
+        toDate: this.toDate
+      });
+    },
+
+    add: function () {
+      var communityToAdd = {};
+      this.inputDisabled = true;
+      if (this.newCommunity) {
+        communityToAdd.name = this.newCommunity;
+        this.communities.$add(communityToAdd)
+          .then(function (ref) {
+            this.collapseState[ref.key] = false;
+            communityToAdd.$id = ref.key;
+            return this.userService.waitForUser();
+          }.bind(this))
+          .then(function (user) {
+            return this.playersMembership.setAdminOfCommunity(communityToAdd, user.uid);
+          }.bind(this))
+          .finally(function () {
+            this.inputDisabled = false;
+          }.bind(this));
+      }
+    },
+
+    createGame: function (communityToAddTo) {
+      return this.Games.newGame(communityToAddTo.$id)
+        .then(function (game) {
+          this.$state.go('game', {communityId: communityToAddTo.$id, gameId: game.$id}, {reload: true});
+        }.bind(this));
+    },
+
+    getCommunityGames: function (aCommunity) {
+      this.games = this.Games.gamesOfCommunity(aCommunity.$id);
+      this.games.$loaded()
+        .then(function () {
+          this.currentPage = this.games.length - this.pageSize;
+        }.bind(this));
+    },
+
+    isCollapsed: function (communityId) {
+      return this.collapseState[communityId];
+    },
+
+    toggleCollapsed: function (communityId) {
+      this.collapseState[communityId] = !this.collapseState[communityId];
+    },
+
+    communitiesDropdownToggle: function () {
+      this.communityDropdownOpen = !this.communityDropdownOpen;
     }
   };
 }());

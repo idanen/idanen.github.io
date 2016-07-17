@@ -14,6 +14,8 @@
       playersOpen: false
     };
 
+    vm.pageSize = 3;
+    vm.currentPage = 0;
     vm.fromDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
     vm.toDate = Date.now();
     vm.openPlayersControl = openPlayersControl;
@@ -77,6 +79,10 @@
     function getCommunityGames(aCommunity) {
       // aCommunity.games = Games.gamesOfCommunity(aCommunity.$id);
       vm.games = Games.gamesOfCommunity(aCommunity.$id);
+      vm.games.$loaded()
+        .then(function () {
+          vm.currentPage = vm.games.length - vm.pageSize;
+        });
     }
 
     function isCollapsed(communityId) {
@@ -98,6 +104,21 @@
         .then(function (player) {
           this.playersMembership.addPlayer(player, toCommunity)
         }.bind(this));
+    },
+    prevPage: function () {
+      if (this.currentPage <= 0) {
+        //this.currentPage = this.community.games.length - this.pageSize;
+        this.currentPage = 0;
+        return;
+      }
+      this.currentPage -= this.pageSize;
+    },
+    nextPage: function () {
+      if (this.currentPage + this.pageSize > this.community.games.length) {
+        this.currentPage = this.community.games.length - this.pageSize;
+        return;
+      }
+      this.currentPage = this.currentPage + this.pageSize;
     }
   };
 }());

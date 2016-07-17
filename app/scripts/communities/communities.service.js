@@ -7,35 +7,17 @@
 
   CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject', 'Players'];
   function CommunitiesService($q, Ref, $firebaseArray, $firebaseObject, Players) {
-    var service = this;
-
-    service.selectedCommunityIdx = 0;
-    service.$q = $q;
-    service.$firebaseArray = $firebaseArray;
-    service.$firebaseObject = $firebaseObject;
-    service.Ref = Ref;
-    service.Players = Players;
-    service.communitiesRef = Ref.child('communities');
-    service.communities = $firebaseArray(service.communitiesRef);
-
-    service.communities.$loaded()
-      .then(function () {
-        service.setSelectedCommunity(service.selectedCommunityIdx);
-      });
+    this.$q = $q;
+    this.$firebaseArray = $firebaseArray;
+    this.$firebaseObject = $firebaseObject;
+    this.Ref = Ref;
+    this.Players = Players;
+    this.communitiesRef = Ref.child('communities');
   }
 
   CommunitiesService.prototype = {
     getCommunities: function () {
       return this.$firebaseArray(this.communitiesRef);
-    },
-    setSelectedCommunity: function (idx) {
-      this.selectedCommunityIdx = idx;
-    },
-    getSelectedCommunity: function () {
-      return this.communities.$loaded()
-        .then(function () {
-          return this.communities[this.selectedCommunityIdx];
-        }.bind(this));
     },
     addAdmin: function (admin, community) {
       return this._addMember(admin, community, 'admins');

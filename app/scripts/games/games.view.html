@@ -1,16 +1,16 @@
-<button class="btn btn-default players-drawer-btn visible-xs" ng-class="{ 'players-drawer-open': vm.prefs.playersOpen }" ng-click="vm.openPlayersControl()"><span class="icon-user-plus"></span></button>
+<button class="btn btn-default players-drawer-btn visible-xs" ng-class="{ 'players-drawer-open': vm.prefs.playersOpen }" ng-click="vm.openPlayersControl()"><span class="icon icon-user-plus"></span></button>
 
 <div id="players-control" class="col-sm-4" ng-class="{'nav-visible': vm.prefs.playersOpen}">
-    <h3 class="hidden-xs"><i class="icon-user"></i> Players</h3>
+    <h3 class="hidden-xs"><i class="icon icon-user"></i> Players</h3>
     <div class="row">
         <div class="col-xs-8">
             <div class="btn-group">
-                <button title="Close" class="btn btn-danger visible-xs" id="close-players-panel" ng-click="vm.closePlayersControl()"><i class="icon-remove"></i></button>
-                <button class="btn btn-success" ng-click="vm.openPlayerDetailsDialog()"><i class="icon-plus"></i> New Player</button>
+                <button title="Close" class="btn btn-danger visible-xs" id="close-players-panel" ng-click="vm.closePlayersControl()"><i class="icon icon-remove"></i></button>
+                <button class="btn btn-success" ng-click="vm.openPlayerDetailsDialog()"><i class="icon icon-plus"></i> New Player</button>
             </div>
         </div>
         <div class="col-xs-4">
-            <button class="btn btn-primary pull-right" ng-click="vm.refreshPlayersList()"><i class="icon-refresh"></i> <span class="hidden-xs">Refresh</span></button>
+            <button class="btn btn-primary pull-right" ng-click="vm.refreshPlayersList()"><i class="icon icon-refresh"></i> <span class="hidden-xs">Refresh</span></button>
         </div>
     </div>
     <div class="row">
@@ -20,8 +20,8 @@
                 <tbody>
                 <tr ng-repeat="player in vm.players | filter:playersFilter | orderBy:'name'">
                     <td>
-                      <!--<button class="btn btn-sm btn-default" ng-click="vm.openPlayerDetailsDialog(player)" ng-disabled="player.isPlaying"><i class="icon-pencil"></i></button>-->
-                      <a class="btn btn-sm btn-default" ui-sref="player({playerId: player.$id})"><i class="icon-pencil"></i></a>
+                      <!--<button class="btn btn-sm btn-default" ng-click="vm.openPlayerDetailsDialog(player)" ng-disabled="player.isPlaying"><i class="icon icon-pencil"></i></button>-->
+                      <a class="btn btn-sm btn-default" ui-sref="player({playerId: player.$id})"><i class="icon icon-pencil"></i></a>
                     </td>
                     <td>
                         <a href="mailto:{{ player.email }}" title="{{ player.email }}" target="_blank">{{ player.name }}</a>
@@ -32,7 +32,7 @@
                         <span class="label" ng-class="{'label-success': (player.balance > 0), 'label-danger': (player.balance < 0), 'label-default': (player.balance == 0)}">{{ player.balance }}</span>
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-default" ng-click="vm.addPlayerToGame(player)" title="Join game"><i class="icon-chevron-right"></i>
+                        <button class="btn btn-sm btn-default" ng-click="vm.addPlayerToGame(player)" title="Join game"><i class="icon icon-chevron-right"></i>
                         </button>
                     </td>
                 </tr>

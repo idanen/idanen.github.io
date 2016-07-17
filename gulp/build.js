@@ -28,7 +28,6 @@ module.exports = function (gulp, $, config) {
   // compile styles and copy into build directory
   gulp.task('styles', ['clean'], function () {
     return gulp.src([
-      path.join(config.appDir, '**/icons.css'),
       config.appStyleFiles,
       '!' + config.appComponents,
       '!' + config.appStyleComponents

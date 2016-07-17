@@ -7,8 +7,6 @@
 
   CommunitiesController.$inject = ['communitiesSvc', 'userService', 'playerModal', 'Games', '$state', 'community', 'Players', 'playersMembership'];
   function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, Players, playersMembership) {
-    var vm = this;
-
     this.pageSize = 3;
     this.currentPage = 0;
     this.fromDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
@@ -25,9 +23,9 @@
     this.newCommunity = '';
     this.inputDisabled = false;
     this.communityDropdownOpen = false;
-    this.communities = communitiesSvc.communities;
+    this.communities = communitiesSvc.getCommunities();
 
-    this.getCommunityGames(vm.community);
+    this.getCommunityGames(this.community);
   }
 
   CommunitiesController.prototype = {

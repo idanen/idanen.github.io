@@ -4,7 +4,7 @@
 	<uib-accordion class="settings-menu">
 		<uib-accordion-group>
 			<uib-accordion-heading>
-				<i class="fa fa-cogs"></i> Game Preferences: Chip value {{ vm.game.chipValue }}, Default buyin {{ vm.game.defaultBuyin }}, Hosting {{ vm.game.hostingCosts }}
+				<i class="icon icon-cogs"></i> Game Preferences: Chip value {{ vm.game.chipValue }}, Default buyin {{ vm.game.defaultBuyin }}, Hosting {{ vm.game.hostingCosts }}
 			</uib-accordion-heading>
 			<form class="form-inline row">
 				<div class="form-group col-md-4">
@@ -30,19 +30,19 @@
 		</div>
 		<div class="form-group">
 			<label>on</label>
-			<input class="form-control input-sm" type="text" ng-model="vm.game.date" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="fa fa-arrow-left" data-icon-right="fa fa-arrow-right" name="date" bs-datepicker>
+			<input class="form-control input-sm" type="text" ng-model="vm.game.date" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="date" bs-datepicker>
 		</div>
 		<div class="form-group">
 			<label># of hands:</label>
 			<div class="btn-group">
-				<button class="btn btn-sm btn-success" ng-click="vm.game.numberOfHands = vm.game.numberOfHands + 1"><i class="glyphicon glyphicon-plus"></i></button>
+				<button class="btn btn-sm btn-success" ng-click="vm.game.numberOfHands = vm.game.numberOfHands + 1"><i class="icon icon-plus"></i></button>
 				<button class="btn btn-sm btn-default" style="width: 80px;">{{ vm.game.numberOfHands }}</button>
-				<button class="btn btn-sm btn-danger" ng-click="vm.game.numberOfHands = vm.game.numberOfHands - 1" ng-disabled="vm.game.numberOfHands <= 0"><i class="glyphicon glyphicon-minus"></i></button>
+				<button class="btn btn-sm btn-danger" ng-click="vm.game.numberOfHands = vm.game.numberOfHands - 1" ng-disabled="vm.game.numberOfHands <= 0"><i class="icon icon-minus"></i></button>
 			</div>
 		</div>
 	</form>
 
-	<!-- <button class="btn btn-default players-drawer-btn visible-xs" ng-click="vm.openPlayersControl()"><span class="glyphicon glyphicon-arrow-right"></span></button> -->
+	<!-- <button class="btn btn-default players-drawer-btn visible-xs" ng-click="vm.openPlayersControl()"><span class="icon icon-arrow-right"></span></button> -->
 
 	<button class="btn btn-default" ng-click="vm.startGame()" ng-disabled="!vm.playersInGame.length">Start game</button>
 
@@ -59,14 +59,14 @@
 	</ul>
 	<div class="row bg-info end-game-wrap">
 		<div class="col-md-12">
-			<button ng-click="vm.saveGame()" class="btn btn-block btn-primary" ng-disabled="(vm.playersInGame.length <= 0) || vm.isGameInProgress()" analytics-on analytics-event="Save Game" analytics-category="Actions" analytics-label="{{ vm.game.location }}"><i class="fa fa-download"></i>&nbsp;End Game</button>
+			<button ng-click="vm.saveGame()" class="btn btn-block btn-primary" ng-disabled="(vm.playersInGame.length <= 0) || vm.isGameInProgress()" analytics-on analytics-event="Save Game" analytics-category="Actions" analytics-label="{{ vm.game.location }}"><i class="icon icon-download"></i>&nbsp;End Game</button>
 		</div>
 	</div>
 
 	<uib-accordion>
 		<uib-accordion-group>
 			<uib-accordion-heading>
-				<i class="fa fa-trash"></i> Clear game
+				<i class="icon icon-trash"></i> Clear game
 			</uib-accordion-heading>
 			<hr/>
 			<div class="row">

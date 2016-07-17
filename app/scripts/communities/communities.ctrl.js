@@ -107,18 +107,17 @@
     },
     prevPage: function () {
       if (this.currentPage <= 0) {
-        //this.currentPage = this.community.games.length - this.pageSize;
         this.currentPage = 0;
         return;
       }
       this.currentPage -= this.pageSize;
     },
     nextPage: function () {
-      if (this.currentPage + this.pageSize > this.community.games.length) {
-        this.currentPage = this.community.games.length - this.pageSize;
+      if (this.currentPage + this.pageSize >= this.games.length) {
+        this.currentPage = this.games.length - this.pageSize;
         return;
       }
-      this.currentPage = this.currentPage + this.pageSize;
+      this.currentPage += this.pageSize;
     }
   };
 }());

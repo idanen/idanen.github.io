@@ -36,7 +36,7 @@
     },
 
     matchUserToPlayer: function (user) {
-      if (!!user.playerId) {
+      if (user.playerId) {
         return this.playersSvc.getPlayer(user.playerId);
       }
 

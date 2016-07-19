@@ -30,10 +30,6 @@
     // Games.getGame(game.$id).$bindTo($scope, 'vm.game');
 
     vm.init();
-
-    $scope.$watch(function () {
-      return vm.game.chipValue;
-    }, this.chipsValueChanged.bind(this));
   }
 
   PokerManagerController.prototype = {
@@ -102,16 +98,16 @@
         }.bind(this))
         .then(this.init.bind(this));
     },
-    chipsValueChanged: function (current, previous) {
+    chipsValueChanged: function (current) {
       if (!current) {
         current = this.game.chipValue = 1;
       }
       if (this.playersInGame) {
         _.forEach(this.playersInGame, function updateChipsAndValue(player) {
-          if (player.currentChipCount) {
-            player.currentChipCount = player.currentChipCount * current / (previous || 1);
+          if (player.buyout) {
+            player.currentChipCount = player.buyout * current;
           } else {
-            player.currentChipCount = player.buyin * current * current / (previous || 1);
+            player.currentChipCount = 0;
           }
           this.playersInGame.$save(player);
         }.bind(this));

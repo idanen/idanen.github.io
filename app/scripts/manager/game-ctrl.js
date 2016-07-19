@@ -13,7 +13,6 @@
     this.$analytics = $analytics;
     this.playersGames = playersGames;
     this.game = gamesSvc.getGame(this.gameId);
-    this.game.$bindTo($scope, 'vm.game');
     this.playersInGame = playersGames.getPlayersInGame(this.gameId);
   }
 
@@ -136,9 +135,13 @@
     },
 
     chipsValueUpdated: function (val) {
-      this.$scope.$applyAsync(function () {
-        this.game.chipValue = val;
-      }.bind(this));
+      if (val === this.game.chipValue) {
+        return;
+      }
+      var prev = this.game.chipValue || 1;
+      this.game.chipValue = val || 1;
+      this.game.$save();
+      this.onChipValueUpdate({prev: prev, curr: this.game.chipValue});
     },
 
     playerUpdated: function (player) {

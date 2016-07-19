@@ -12,8 +12,7 @@
       restrict: 'EA',
       scope: {
         gameId: '<',
-        saveSuccessCallback: '=?',
-        saveFailCallback: '=?'
+        onChipValueUpdate: '&'
       },
       controller: 'GameCtrl',
       controllerAs: 'vm',

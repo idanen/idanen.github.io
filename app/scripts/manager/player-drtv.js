@@ -11,7 +11,8 @@
     return {
       restrict: 'E',
       scope: {
-        player: '='
+        player: '<',
+        onUpdate: '&'
       },
       templateUrl: 'partials/tmpls/player-card-tmpl.html',
       require: '^onGoingGame',

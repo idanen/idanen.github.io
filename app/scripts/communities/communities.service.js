@@ -5,53 +5,35 @@
     .module('pokerManager')
     .service('communitiesSvc', CommunitiesService);
 
-  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', 'Players'];
-  function CommunitiesService($q, Ref, $firebaseArray, Players) {
-    var service = this;
-
-    service.selectedCommunityIdx = 0;
-    service.$q = $q;
-    service.$firebaseArray = $firebaseArray;
-    service.Ref = Ref;
-    service.Players = Players;
-    service.communitiesRef = Ref.child('communities');
-    service.communities = $firebaseArray(service.communitiesRef);
-
-    service.communities.$loaded()
-      .then(function () {
-        service.setSelectedCommunity(service.selectedCommunityIdx);
-      });
+  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject', 'Players'];
+  function CommunitiesService($q, Ref, $firebaseArray, $firebaseObject, Players) {
+    this.$q = $q;
+    this.$firebaseArray = $firebaseArray;
+    this.$firebaseObject = $firebaseObject;
+    this.Ref = Ref;
+    this.Players = Players;
+    this.communitiesRef = Ref.child('communities');
   }
 
   CommunitiesService.prototype = {
     getCommunities: function () {
       return this.$firebaseArray(this.communitiesRef);
     },
-    setSelectedCommunity: function (idx) {
-      this.selectedCommunityIdx = idx;
-    },
-    getSelectedCommunity: function () {
-      return this.communities.$loaded()
-        .then(function () {
-          return this.communities[this.selectedCommunityIdx];
-        }.bind(this));
+    addAdmin: function (admin, community) {
+      return this._addMember(admin, community, 'admins');
     },
     addMember: function (player, community) {
-      var service = this;
-      return this.Players.save(player)
-        .then(function (savedPlayer) {
-          var idx = service.communities.$indexFor(community.$id),
-              membership = {};
-
-          membership[community.$id] = community.name;
-          if (idx !== -1) {
-            savedPlayer.once('value', function (snap) {
-              service.communities[idx].members[snap.key] = snap.child('name').val();
-              service.communities.$save(idx);
-            });
-            service.Ref.child('players/' + savedPlayer.key).child('memberIn').set(membership);
-          }
-        });
+      return this._addMember(player, community, 'members');
+    },
+    _addMember: function (player, community, membership) {
+      return this.communitiesRef
+        .child(community.$id)
+        .child(membership)
+        .child(player.$id)
+        .set(player.name);
+    },
+    getCommunity: function (communityId) {
+      return this.$firebaseObject(this.communitiesRef.child(communityId));
     },
     getCommunitiesByIds: function (communityIds) {
       var service = this,

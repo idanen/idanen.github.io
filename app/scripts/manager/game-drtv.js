@@ -11,7 +11,7 @@
     return {
       restrict: 'EA',
       scope: {
-        game: '=',
+        gameId: '<',
         saveSuccessCallback: '=?',
         saveFailCallback: '=?'
       },

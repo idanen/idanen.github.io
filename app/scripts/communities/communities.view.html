@@ -4,24 +4,34 @@
     </div>
     <div class="panel-body">
         <div class="row">
-          <div class="col-xs-4">
-              <input type="text" class="form-control" ng-model="vm.fromDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" name="fromDate" bs-datepicker>
+          <div class="col-sm-4">
+              <input type="text" class="form-control" ng-model="vm.fromDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="fromDate" bs-datepicker>
           </div>
-          <div class="col-xs-4">
-              <input type="text" class="form-control" ng-model="vm.toDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" name="toDate" bs-datepicker>
+          <div class="col-sm-4">
+              <input type="text" class="form-control" ng-model="vm.toDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="toDate" bs-datepicker>
           </div>
-          <div class="col-xs-4">
+          <div class="col-sm-4">
             <a class="btn btn-link" ui-sref="stats({ fromDate: vm.fromDate, toDate: vm.toDate })">Stats</a>
           </div>
         </div>
         <div class="row">
-            <div class="col-xs-12">
-              <ul class="nav nav-tabs">
-                  <li class="slide" ng-repeat="game in vm.community.games" ui-sref-active="active">
-                      <a ui-sref="game({ gameId: game.$id })" title="{{ game.$id }}" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
-                  </li>
-              </ul>
-            </div>
+          <div class="col-sm-1">
+            <button class="btn btn-default" ng-click="vm.prevPage()">
+              <span class="icon icon-arrow-left"></span>
+            </button>
+          </div>
+          <div class="col-sm-10">
+            <ul class="nav nav-tabs">
+                <li class="slide" ng-repeat="game in vm.games | limitTo:vm.pageSize:vm.currentPage" ui-sref-active="active">
+                    <a ui-sref="game({ gameId: game.$id })" title="{{ game.$id }}" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
+                </li>
+            </ul>
+          </div>
+          <div class="col-sm-1">
+            <button class="btn btn-default" ng-click="vm.nextPage()">
+              <span class="icon icon-arrow-right"></span>
+            </button>
+          </div>
         </div>
         <div class="row" ui-view></div>
         <div class="row">

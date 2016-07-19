@@ -23,10 +23,12 @@
     };
   }
 
-  PlayerDetailsController.$inject = ['$stateParams', '$filter', 'Players', 'Games'];
-  function PlayerDetailsController($stateParams, $filter, Players, Games) {
+  PlayerDetailsController.$inject = ['$q', '$stateParams', '$filter', 'Players', 'Games'];
+  function PlayerDetailsController($q, $stateParams, $filter, Players, Games) {
     this.loading = false;
+    this.$q = $q;
     this.Games = Games;
+    this.Players = Players;
     this.communityId = $stateParams.communityId;
     this.$filter = $filter;
 
@@ -42,52 +44,25 @@
     };
 
     // Re-fetch player from server
-    this.player = Players.getPlayer(this.player.id || this.player.$id);
+    if (this.playerId) {
+      this.player = this.Players.getPlayer(this.playerId);
+      this.playerGames = this.Players.getPlayerGames(this.playerId);
 
-    // Get games and calculate stats
-    this.ready = this.player.$loaded()
-      .then(this.getStats.bind(this));
-
-    /*
-     $scope.isAdmin = function() {
-     return $scope.admin;
-     };
-     */
+      // Get games and calculate stats
+      this.ready = this.$q.all([this.player.$loaded(), this.playerGames.$loaded()])
+          .then(this.dataForChart.bind(this))
+          .finally(this.stopLoadingIndication.bind(this));
+    } else {
+      this.player = this.Players.createPlayer();
+      this.ready = this.$q.resolve();
+    }
   }
 
   PlayerDetailsController.prototype = {
-    getStats: function () {
-      this.loading = true;
-      return this.Games.gamesOfCommunity(this.communityId)
-        .then(this.filterByPlayer.bind(this))
-        .then(this.dataForChart.bind(this))
-        .finally(function () {
-          this.loading = false;
-        }.bind(this));
-    },
-    filterByPlayer: function (allCommunityGames) {
-      var games = _.chain(allCommunityGames)
-        .filter(function (game) {
-          return game.players && this.player.$id in game.players;
-        }.bind(this))
-        .map(function (game) {
-          var gameResult = game.players[this.player.$id];
-          gameResult.$id = game.$id || game.id;
-          return gameResult;
-        }.bind(this))
-        .orderBy(['date'], ['asc'])
-        .value();
-      _.reduce(games, function (sum, gameResult) {
-        gameResult.balance = gameResult.buyout - gameResult.buyin + sum;
-        return gameResult.balance;
-      }, 0);
-      _.orderBy(games, ['date'], ['desc']);
-      this.player.games = games;
-      this.player.gamesCount = games.length;
-    },
     dataForChart: function () {
       var iterations = 0;
-      _.reduce(this.player.games, function (sum, gameResult) {
+      this.playerGamesCount = this.playerGames.length;
+      _.reduce(this.playerGames, function (sum, gameResult) {
         var profit;
         iterations += 1;
         if (!isNaN(gameResult.date)) {
@@ -97,6 +72,7 @@
         }
         profit = gameResult.buyout - gameResult.buyin;
         sum += profit;
+        gameResult.balance = sum;
         this.chartData.profits.push(profit);
         this.chartData.balances.push(sum);
 
@@ -107,8 +83,8 @@
       }.bind(this), 0);
     },
     winningSessions: function () {
-      if (this.player.games) {
-        return _.reduce(this.player.games, function (count, game) {
+      if (this.playerGames) {
+        return _.reduce(this.playerGames, function (count, game) {
           if (game.buyout >= game.buyin) {
             return count + 1;
           }
@@ -128,10 +104,13 @@
       }
       return sum / (gamesCount || 1);
     },
+    stopLoadingIndication: function () {
+      this.loading = false;
+    },
     refreshData: function () {
       // Calculate extra data
-      this.player.winningSessions = this.winningSessions(this.player);
-      this.player.avgWinning = this.avgWinning(this.player, true);
+      this.playerWinningSessions = this.winningSessions(this.player);
+      this.playerAvgWinning = this.avgWinning(this.player, true);
     }
   };
 }());

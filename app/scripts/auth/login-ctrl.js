@@ -7,36 +7,43 @@
   angular.module('pokerManager')
     .controller('LoginCtrl', LoginController);
 
-  LoginController.$inject = ['userService', 'Players', '$state', '$analytics', '$firebaseAuth'];
+  LoginController.$inject = ['userService', '$analytics', '$firebaseAuth', 'playersUsers', 'Players'];
+  function LoginController(userService, $analytics, $firebaseAuth, playersUsers, playersSvc) {
+    this.userService = userService;
+    this.$analytics = $analytics;
+    this.playersUsers = playersUsers;
+    this.playersSvc = playersSvc;
 
-  function LoginController(userService, Players, $state, $analytics, $firebaseAuth) {
-    var vm = this;
+    $firebaseAuth().$onAuthStateChanged(this.obtainedUserInfo.bind(this));
+  }
 
-    vm.signIn = signIn;
-    vm.signOut = signOut;
-
-    // userService.waitForUser()
-    //  .then(obtainedUserInfo);
-    $firebaseAuth().$onAuthStateChanged(obtainedUserInfo);
-
-    function signIn(provider) {
-      userService.login(provider)
-        .then(obtainedUserInfo)
+  LoginController.prototype = {
+    signIn: function (provider) {
+      this.userService.login(provider)
+        .then(this.matchUserToPlayer.bind(this))
         .catch(function (error) {
           console.log(error);
         });
-    }
+    },
 
-    function signOut() {
+    signOut: function () {
       try {
-        $analytics.eventTrack('Sign out', {category: 'Actions', label: vm.user.name});
+        this.$analytics.eventTrack('Sign out', {category: 'Actions', label: this.user.name});
       } catch (err) {}
 
-      userService.logout();
-      delete vm.user;
-    }
+      this.userService.logout();
+      delete this.user;
+    },
 
-    function obtainedUserInfo(user) {
+    matchUserToPlayer: function (user) {
+      if (user.playerId) {
+        return this.playersSvc.getPlayer(user.playerId);
+      }
+
+      return this.playersUsers.matchUserToPlayer.bind(this.playersUsers);
+    },
+
+    obtainedUserInfo: function (user) {
       var player, providerData;
       if (user) {
         providerData = user.providerData[0];
@@ -44,26 +51,13 @@
         player = {
           name: providerData.displayName,
           email: providerData.email,
-          imageUrl: providerData.photoURL
+          photoURL: providerData.photoURL
         };
 
-        vm.user = angular.extend({}, user, player);
-        // console.log(vm.user);
+        this.user = angular.extend({}, user, player);
 
-        // Save user as a player
-        return Players.matchUserToPlayer(vm.user)
-          .then(function (userPlayer) {
-            var communitiesIds = Object.keys(userPlayer.memberIn);
-            if (communitiesIds && communitiesIds.length) {
-              userService.setUserCommunities(communitiesIds);
-              if (!$state.includes('community')) {
-                $state.go('community', {
-                  communityId: communitiesIds[0]
-                });
-              }
-            }
-          });
+        return this.user;
       }
     }
-  }
+  };
 }());

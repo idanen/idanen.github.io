@@ -4,102 +4,46 @@
   angular.module('pokerManager.controllers', ['pokerManager.services'])
     .controller('MainCtrl', MainController);
 
-  MainController.$inject = ['$scope', '$location', '$state', 'userService', 'communitiesSvc'];
-  function MainController($scope, $location, $state, userService, communitiesSvc) {
-    var vm = this,
-        DAY = 1000 * 60 * 60 * 24,
-        adminTab = {
-          title: 'Current Game',
-          href: '#/game/0',
-          icon: 'icon-spades',
-          actions: [{
-            title: 'New game'
-          }]
-        },
-        communitiesTab = {
-          title: 'communities',
-          icon: 'fa-users',
-          children: [],
-          actions: [{
-            title: 'Add or join'
-            // ,
-            // action: $state.go('addCommunity')
-          }]
-        },
-        statsTab = {
-          title: 'Stats',
-          href: $state.href('stats', {fromDate: Date.now() - DAY * 30, toDate: Date.now()}),
-          icon: 'fa-bar-chart'
-        };
+  MainController.$inject = ['$scope', '$state', '$filter', 'userService', 'Players'];
+  function MainController($scope, $state, $filter, userService, playersSvc) {
+    var DAY = 1000 * 60 * 60 * 24;
 
-    vm.tabs = [];
+    this.$state = $state;
+    this.$filter = $filter;
+    this.userService = userService;
+    this.playersSvc = playersSvc;
 
-    vm.hasChildren = hasChildren;
-    vm.hasActions = hasActions;
-    vm.signOut = signOut;
-
-    vm.getLocation = function () {
-      return $location.path();
+    this.tabs = [];
+    this.communitiesTab = {
+      title: 'communities',
+      icon: 'fa-users',
+      children: [],
+      actions: [{
+        title: 'Add or join'
+        // ,
+        // action: $state.go('addCommunity')
+      }]
     };
-    vm.setLocation = function (location) {
-      $location.path(location);
+    this.statsTab = {
+      title: 'Stats',
+      href: $state.href('stats', {fromDate: Date.now() - DAY * 30, toDate: Date.now()}),
+      icon: 'fa-bar-chart'
+    };
+    this.gamesTab = {
+      title: 'Select Game',
+      icon: 'icon-spades',
+      actions: [{
+        title: 'New game'
+      }]
     };
 
-    vm.isTabSelected = function (tabHref) {
-      var pathRoot, tabHrefRoot;
-
-      if (!tabHref) {
-        return false;
-      }
-
-      pathRoot = $location.path().split('/')[1];
-      tabHrefRoot = tabHref.split('/')[1];
-      return pathRoot === tabHrefRoot;
-    };
-
-    vm.isAdmin = function () {
-      return !!userService.getUser();
-    };
-
-    $scope.$watch(function () {
-      return vm.isAdmin();
-    }, function (newVal) {
-      var adminTabIdx;
-
-      if (newVal && vm.tabs.indexOf(adminTab) === -1) {
-        vm.tabs.push(adminTab);
-      } else {
-        adminTabIdx = vm.tabs.indexOf(adminTab);
-        if (adminTabIdx > -1) {
-          vm.tabs.splice(adminTabIdx, 1);
-        }
-      }
-    });
-
-    $scope.$watch(function () {
-      return userService.getUser();
-    }, function (currentUser) {
-      if (!currentUser) {
-        return;
-      }
-      vm.currentUser = currentUser;
-      if (vm.currentUser.communitiesIds && vm.currentUser.communitiesIds.length) {
-        communitiesTab.children = [];
-        communitiesSvc.getCommunitiesByIds(vm.currentUser.communitiesIds)
-          .then(function (communities) {
-            _.forEach(communities, function (community) {
-              communitiesTab.children.push({
-                title: community.name,
-                href: $state.href('community', {communityId: community.$id})
-              });
-            });
-          });
-      }
-    }, true);
+    this.userService.waitForUser()
+      .then(this.userFeched.bind(this))
+      .then(this.obtainUserData.bind(this));
 
     $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
       if (toParams.communityId) {
-        statsTab.href = $state.href('stats', {
+        this.statsTab.href = $state.href('stats', {
           communityId: toParams.communityId,
           fromDate: Date.now() - DAY * 30,
           toDate: Date.now()
@@ -113,27 +57,55 @@
       //   fromDate: Date.now() - DAY * 30,
       //   toDate: Date.now()
       // });
-    });
+    }.bind(this));
+  }
 
-    vm.init = function () {
-      vm.tabs.push(communitiesTab);
-      vm.tabs.push(statsTab);
-      if (vm.isAdmin()) {
-        vm.tabs.push(adminTab);
+  MainController.prototype = {
+    init: function () {
+      this.tabs.push(this.communitiesTab);
+      this.tabs.push(this.statsTab);
+      this.tabs.push(this.gamesTab);
+    },
+    userFeched: function (currentUser) {
+      if (!currentUser) {
+        return;
       }
-    };
 
-    function hasChildren(tab) {
+      this.currentUser = currentUser;
+      return this.currentUser;
+    },
+    obtainUserData: function () {
+      this.playersSvc.playersCommunities(this.currentUser.playerId)
+        .then(function (communities) {
+          this.communitiesTab.children = _.map(communities, function (communityName, communityId) {
+            return {
+              title: communityName,
+              href: this.$state.href('community', {communityId: communityId})
+            };
+          }.bind(this));
+        }.bind(this));
+      this.gamesOfPlayer = this.playersSvc.getPlayerGames(this.currentUser.playerId, 50);
+      this.gamesOfPlayer.$loaded()
+        .then(function () {
+          this.gamesTab.children = this.gamesOfPlayer.map(function (game) {
+            return {
+              title: this.$filter('date')(game.date, 'yyyy-MM-dd') + ' @ ' + game.location,
+              href: this.$state.href('game', {communityId: this.$state.params.communityId, gameId: game.$id})
+            };
+          }.bind(this));
+        }.bind(this));
+    },
+    signOut: function () {
+      this.userService.logout();
+      this.currentUser = null;
+    },
+
+    hasChildren: function (tab) {
       return tab.children && tab.children.length;
-    }
+    },
 
-    function hasActions(tab) {
+    hasActions: function (tab) {
       return tab.actions && tab.actions.length;
     }
-
-    function signOut() {
-      userService.logout();
-      delete vm.currentUser;
-    }
-  }
+  };
 }());

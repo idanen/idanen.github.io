@@ -25,6 +25,7 @@
     "no-extra-parens": 0,
     "no-underscore-dangle": 0,
     "no-param-reassign": 0,
+    "max-params": 0,
     "semi": 0,
     "max-len": 0
   },
@@ -32,6 +33,7 @@
     "_": false,
     "Highcharts": false,
     "angular": false,
+    "firebase": false,
     "self": false
   }
 }

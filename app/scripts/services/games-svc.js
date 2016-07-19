@@ -5,20 +5,18 @@
    * Games services
    */
   angular.module('pokerManager.services')
-    .factory('Games', GamesFactory);
+    .service('Games', GamesService);
 
-  GamesFactory.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
-  function GamesFactory($q, Ref, $firebaseArray, $firebaseObject) {
-    var service = {
-          newGame: newGame,
-          findBy: findBy,
-          findBetweenDates: findBetweenDates,
-          getGame: getGame,
-          gamesOfCommunity: gamesOfCommunity
-        },
-        games = $firebaseArray(Ref.child('games'));
+  GamesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
+  function GamesService($q, Ref, $firebaseArray, $firebaseObject) {
+    this.gamesRef = Ref.child('games');
+    this.$q = $q;
+    this.$firebaseArray = $firebaseArray;
+    this.$firebaseObject = $firebaseObject;
+  }
 
-    function newGame(communityId) {
+  GamesService.prototype = {
+    newGame: function (communityId) {
       var gameToSave = {
         location: '',
         date: Date.now(),
@@ -26,53 +24,40 @@
         chipValue: 4,
         defaultBuyin: 50,
         communityId: communityId,
-        players: {}
+        hostingCosts: 20
       };
 
-      return games.$add(gameToSave)
-        .then(function (gameRef) {
-          var gameId = gameRef.key;
-          return games.$getRecord(gameId);
-        });
-    }
+      return this.gamesRef
+        .push(gameToSave);
+    },
+    getGame: function (gameId) {
+      return this.$firebaseObject(this.gamesRef.child(gameId));
+    },
 
-    function getGame(gameId) {
-      return $firebaseObject(Ref.child('games').child(gameId));
-    }
-
-    function findBy(field, value, limit) {
-      return $q(function (resolve) {
-        games.$ref()
+    findBy: function (field, value, limit) {
+      return this.$firebaseArray(
+        this.gamesRef
           .orderByChild(field)
           .equalTo(value)
           .limitToLast(limit || 100)
-          .once('value', function (querySnapshot) {
-            var resultGames = {};
-            if (querySnapshot.hasChildren()) {
-              querySnapshot.forEach(function (gameSnap) {
-                var game = gameSnap.val();
-                game.$id = gameSnap.key;
-                resultGames[game.$id] = game;
-              });
-            }
-            // resolve(_.sortByOrder(resultGames, 'date', 'desc'));
-            resolve(resultGames);
-          });
-      });
-    }
-
-    function gamesOfCommunity(communityId, limit) {
-      //return service.findBy('communityId', communityId);
-      return $firebaseArray(Ref.child('games')
-        .orderByChild('communityId')
-        .equalTo(communityId)
-        .limitToLast(limit || 100)
       );
-    }
+    },
 
-    function findBetweenDates(from, to, communityId) {
-      return $q(function (resolve) {
-        games.$ref()
+    gamesOfCommunity: function (communityId, limit) {
+      return this.findBy('communityId', communityId, limit);
+    },
+
+    gamesOfPlayer: function (playerId, limit) {
+      return this.$firebaseArray(
+        this.gamesRef
+          .orderByChild('players/' + playerId)
+          .limitToLast(limit || 500)
+      );
+    },
+
+    findBetweenDates: function (from, to, communityId) {
+      return this.$q(function (resolve) {
+        this.gamesRef
           .orderByChild('date')
           .startAt(from)
           .endAt(to)
@@ -82,7 +67,7 @@
               querySnapshot.forEach(function (gameSnap) {
                 var game = gameSnap.val();
                 if (game.communityId === communityId) {
-                  game.$id = gameSnap.key
+                  game.$id = gameSnap.key;
                   game.players = gameSnap.child('players').val();
                   resultGames.push(game);
                 }
@@ -92,9 +77,7 @@
               resolve([]);
             }
           });
-      });
+      }.bind(this));
     }
-
-    return service;
-  }
+  };
 }());

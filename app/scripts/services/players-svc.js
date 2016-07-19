@@ -5,28 +5,18 @@
    * Players services
    */
   angular.module('pokerManager')
-    .factory('Players', PlayersFactory);
+    .service('Players', PlayersService);
 
-  PlayersFactory.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
-  function PlayersFactory($q, Ref, $firebaseArray, $firebaseObject) {
-    var service = {
-      create: create,
-      save: save,
-      saveResult: saveResult,
-      deleteResult: deleteResult,
-      getPlayer: getPlayer,
-      playersOfCommunity: playersOfCommunity,
-      findBy: findBy,
-      matchUserToPlayer: matchUserToPlayer,
-      playersRef: Ref.child('players'),
-      players: $firebaseArray(Ref.child('players'))
-    };
+  PlayersService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
+  function PlayersService($q, Ref, $firebaseArray, $firebaseObject) {
+    this.$q = $q;
+    this.playersRef = Ref.child('players');
+    this.$firebaseArray = $firebaseArray;
+    this.$firebaseObject = $firebaseObject;
+  }
 
-    service.fetchedPlayers = function () {
-      return $firebaseArray(service.playersRef);
-    };
-
-    function create() {
+  PlayersService.prototype = {
+    createPlayer: function () {
       return {
         name: '',
         balance: 0,
@@ -38,145 +28,136 @@
         createDate: Date.now(),
         isNew: true
       };
-    }
+    },
 
-    function save(player) {
-      // var existingPlayer = service.players.$getRecord(player.$id);
-      //
-      // delete player.isNew;
-      // if (!existingPlayer) {
-      //   return service.players.$add(player);
-      // }
-      //
-      // angular.extend(existingPlayer, player);
-      // return service.players.$save(existingPlayer);
+    allPlayers: function () {
+      return this.$firebaseArray(this.playersRef);
+    },
+
+    save: function (player) {
+      var newPlayerRef;
       if (!player.$id) {
-        return service.playersRef.push(player);
+        newPlayerRef = this.playersRef.push(player);
+        player.$id = newPlayerRef.key;
+        return newPlayerRef.then(function () {
+          return player;
+        });
       }
-      service.playersRef.child(player.$id).once(function (snap) {
-        if (snap.exists()) {
-          service.playersRef.push(player).then(function (snapshot) {
-            player.$id = snapshot.key;
-          });
-        }
-      });
-    }
+      return this.playersRef.child(player.$id).update(player)
+        .then(function () {
+          return player;
+        });
+    },
 
-    function addNewPlayer(player) {
-      return $q.when(
-        service.playersRef.push(player).then(function (snapshot) {
-          player.$id = snapshot.key;
-        })
-      );
-    }
-
-    function saveResult(gameResult, game) {
-      var playerToUpdate = service.players.$getRecord(gameResult.$id || gameResult.id);
-      if (!playerToUpdate.games) {
-        playerToUpdate.games = {};
-      }
+    saveResult: function (gameResult, game) {
       gameResult.date = game.date;
-      playerToUpdate.games[game.$id] = gameResult;
+      return this.playersRef
+        .child(gameResult.$id || gameResult.id)
+        .child('games')
+        .child(game.$id)
+        .set(gameResult);
+    },
 
-      service.players.$save(playerToUpdate);
-    }
+    deleteResult: function (gameResult, game) {
+      return this.playersRef
+        .child(gameResult.$id || gameResult.id)
+        .child('games')
+        .child(game.$id)
+        .remove();
+    },
 
-    function deleteResult(gameResult, game) {
-      var playerToUpdate = service.players.$getRecord(gameResult.$id || gameResult.id);
+    getPlayer: function (playerId) {
+      return this.$firebaseObject(this.playersRef.child(playerId));
+    },
 
-      if (game.$id in playerToUpdate.games) {
-        delete playerToUpdate.games[game.$id];
-        service.players.$save(playerToUpdate);
-      }
-    }
+    playersOfCommunity: function (communityId) {
+      return this.$firebaseArray(
+        this.playersRef
+          .orderByChild('memberIn/' + communityId)
+      );
+    },
 
-    function getPlayer(playerId) {
-      // return service.players.$getRecord(playerId);
-      return $firebaseObject(service.playersRef.child(playerId));
-    }
+    playersCommunities: function (playerId) {
+      return this.$q.resolve(
+        this.playersRef
+          .child(playerId)
+          .child('memberIn')
+          .once('value')
+          .then(function (snapshot) {
+            return snapshot.val();
+          })
+      );
+    },
 
-    function playersOfCommunity(community) {
-      var playerIds = Object.keys(community.members),
-          baseRef = Ref.child('players'),
-          promises = [];
+    joinCommunity: function (player, community) {
+      return this.playersRef
+        .child(player.$id)
+        .child('memberIn')
+        .child(community.$id)
+        .set(community.name);
+    },
 
-      playerIds.forEach(function (playerId) {
-        promises.push($q(function (resolve, reject) {
-          baseRef.child(playerId).once('value', function (snap) {
-            var player = snap.val();
-            player.$id = player.id = snap.key;
-            resolve(player);
-          }, reject);
-        }));
-      });
-
-      return $q.all(promises);
-    }
-
-    function findBy(field, value, multi) {
-      return $q(function (resolve, reject) {
-        service.players.$ref().off('value');
-        service.players.$ref()
+    findBy: function (field, value, multi) {
+      return this.$q(function (resolve, reject) {
+        this.playersRef
           .orderByChild(field)
           .equalTo(value)
-          .on('value', function (querySnapshot) {
+          .once('value', function (querySnapshot) {
             var result = multi ? [] : {};
             if (querySnapshot.hasChildren()) {
               querySnapshot.forEach(function (playerSnap) {
+                var player = playerSnap.val();
+                player.$id = playerSnap.key;
                 if (multi) {
-                  result.push(playerSnap);
+                  result.push(player);
                 } else {
-                  result = playerSnap;
+                  result = player;
                 }
               });
             }
             resolve(result);
           }, reject);
-      });
-    }
+      }.bind(this));
+    },
 
-    function matchUserToPlayer(user) {
-      return findBy('email', user.email)
-        .then(addUser)
-        .then(matchPlayerToUser);
+    addUser: function (player, user) {
+      var newPlayer, newPlayerRef;
 
-      function addUser(playerSnapshot) {
-        var idx = -1,
-            newPlayer, playerId;
-
-        // Stop listening
-        service.players.$ref().off('value');
-
-        if (playerSnapshot) {
-          playerId = playerSnapshot.key;
-          idx = service.players.$indexFor(playerId);
-          if (idx !== -1) {
-            service.players[idx].userUid = user.uid;
-            return service.players.$save(idx);
-          }
-        } else {
-          newPlayer = create();
-          newPlayer.userUid = user.uid;
-          newPlayer.name = user.name;
-          newPlayer.email = user.email;
-          newPlayer.imageUrl = user.imageUrl;
-          delete newPlayer.isNew;
-          return service.players.$add(newPlayer)
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
+      if (player) {
+        return this.playersRef
+          .child(player.$id)
+          .child('userUid')
+          .set(user.uid)
+          .then(function () {
+            return this.getPlayer(player.$id);
+          }.bind(this));
       }
 
-      function matchPlayerToUser(playerRef) {
-        var playerId = playerRef.key;
-        Ref.child('users')
-          .child(user.uid)
-          .child('playerId').set(playerId);
-        return service.players.$getRecord(playerId);
-      }
-    }
+      newPlayer = this.createPlayer();
+      newPlayer.userUid = user.uid;
+      newPlayer.name = user.name;
+      newPlayer.email = user.email;
+      newPlayer.imageUrl = user.imageUrl;
+      delete newPlayer.isNew;
+      newPlayerRef = this.playersRef.push(player);
+      newPlayer.$id = newPlayerRef.key;
+      return newPlayerRef
+        .then(function () {
+          return newPlayer;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
 
-    return service;
-  }
+    getPlayerGames: function (playerId, limit) {
+      return this.$firebaseArray(
+        this.playersRef
+          .child(playerId)
+          .child('games')
+          .orderByChild('date')
+          .limitToLast(limit || 500)
+      );
+    }
+  };
 }());

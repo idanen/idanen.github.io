@@ -18,7 +18,7 @@
           modalInstance, unwatch;
 
       if (isNew) {
-        player = this.Players.create();
+        player = this.Players.createPlayer();
       }
       modalInstance = this.$modal.open({
         templateUrl: './partials/modals/addNewPlayer.html',

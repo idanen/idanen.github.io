@@ -13,7 +13,7 @@
     return {
       restrict: 'AE',
       scope: {
-        player: '='
+        playerId: '<'
       },
       controller: 'PlayerDetailsCtrl',
       controllerAs: 'pCtrl',
@@ -52,8 +52,10 @@
       // Construct chart once the controller finished getting and processing the data
       ctrl.ready.then(function () {
         chartData = ctrl.chartData;
-        chartObj = createChartObject(ctrl.player.name, chartData);
-        chartHolder.highcharts(chartObj);
+        if (chartData) {
+          chartObj = createChartObject(ctrl.player.name, chartData);
+          chartHolder.highcharts(chartObj);
+        }
       });
 
       refreshBtn.on('click', refreshData);

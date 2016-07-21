@@ -58,7 +58,8 @@
             installingWorker = registration.installing;
 
             installingWorker.onstatechange = function () {
-              var swInstalledToast = '<paper-toast duration="10000">New updates available, please refresh</paper-toast>';
+              var swInstalledToast = document.createElement('paper-toast'),
+                  duration = 10000;
               switch (installingWorker.state) {
                 case 'installed':
                   // At this point, the old content will have been purged and the
@@ -67,6 +68,13 @@
                   // available; please refresh." message in the page's interface.
 
                   document.querySelector('body').appendChild(swInstalledToast);
+                  swInstalledToast.show({
+                    text: 'New updates available, please refresh',
+                    duration: duration
+                  });
+                  window.setTimeout(function () {
+                    swInstalledToast.parentNode.removeChild(swInstalledToast);
+                  }, duration + 50);
                   break;
 
                 case 'redundant':

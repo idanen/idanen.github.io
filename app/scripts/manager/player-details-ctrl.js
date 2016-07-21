@@ -60,11 +60,9 @@
 
   PlayerDetailsController.prototype = {
     dataForChart: function () {
-      var iterations = 0;
       this.playerGamesCount = this.playerGames.length;
       _.reduce(this.playerGames, function (sum, gameResult) {
         var profit;
-        iterations += 1;
         if (!isNaN(gameResult.date)) {
           this.chartData.dates.push(this.$filter('date')(gameResult.date, 'y-MM-dd'));
         } else {
@@ -76,9 +74,6 @@
         this.chartData.profits.push(profit);
         this.chartData.balances.push(sum);
 
-        if (iterations > 20) {
-          return false;
-        }
         return sum;
       }.bind(this), 0);
     },

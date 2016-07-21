@@ -111,9 +111,12 @@
     }
 
     function updateChartData(chartObj, newData) {
-      chartObj.xAxis.categories = newData.dates;
-      chartObj.series[0].data = newData.profits;
-      chartObj.series[1].data = newData.balances;
+      var dates = newData.dates.slice(0, Math.min(20, newData.dates.length)),
+          profits = newData.profits.slice(0, Math.min(20, newData.profits.length)),
+          balances = newData.balances.slice(0, Math.min(20, newData.balances.length));
+      chartObj.xAxis.categories = dates;
+      chartObj.series[0].data = profits;
+      chartObj.series[1].data = balances;
     }
   }
 }());

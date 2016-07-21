@@ -36,6 +36,11 @@
     },
 
     matchUserToPlayer: function (user) {
+      if (!user) {
+        console.warn('Trying to match user to player but user is undefined');
+        return;
+      }
+
       if (user.playerId) {
         return this.playersSvc.getPlayer(user.playerId);
       }

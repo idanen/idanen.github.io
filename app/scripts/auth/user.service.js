@@ -29,7 +29,11 @@
     waitForUser: function () {
       return this.$q.resolve(this.authObj.$waitForSignIn())
         .then(function (user) {
-          return this.getUser(user.uid);
+          if (user) {
+            return this.getUser(user.uid);
+          }
+
+          return null;
         }.bind(this));
     },
 
@@ -63,7 +67,10 @@
       };
       this.waitForUser()
         .then(function () {
-          this.usersRef
+          if (!this.user) {
+            return;
+          }
+          return this.usersRef
             .child(this.user.uid)
             .child('devices')
             .orderByChild('subscriptionId')
@@ -81,6 +88,9 @@
     removeSubscriptionId: function (subscriptionId) {
       this.waitForUser()
         .then(function () {
+          if (!this.user) {
+            return;
+          }
           return this.usersRef
             .child(this.user.uid)
             .child('devices')

@@ -75,6 +75,9 @@
       return this.currentUser;
     },
     obtainUserData: function () {
+      if (!this.currentUser) {
+        return;
+      }
       this.playersSvc.playersCommunities(this.currentUser.playerId)
         .then(function (communities) {
           this.communitiesTab.children = _.map(communities, function (communityName, communityId) {

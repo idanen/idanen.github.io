@@ -32,7 +32,7 @@
     addMember: function (toCommunity) {
       this.playerModal.open()
         .then(function (player) {
-          this.playersMembership.addPlayer(player, toCommunity)
+          this.playersMembership.addPlayer(player, toCommunity);
         }.bind(this));
     },
     prevPage: function () {
@@ -72,6 +72,9 @@
           .then(function (user) {
             return this.playersMembership.setAdminOfCommunity(communityToAdd, user.uid);
           }.bind(this))
+          .catch(function (err) {
+            console.error('Couldn\'t add community: ', err);
+          })
           .finally(function () {
             this.inputDisabled = false;
           }.bind(this));

@@ -114,6 +114,7 @@ module.exports = function (gulp, $, config) {
       .pipe($.inject(gulp.src([
           config.buildCss + '**/*',
           config.buildJs + '**/*',
+          '!' + config.buildJs + 'scripts/sw/*.js',
           '!**/webcomponents.js'
         ])
         .pipe(jsFilter)

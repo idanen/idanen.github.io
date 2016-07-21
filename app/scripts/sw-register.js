@@ -17,7 +17,7 @@
  *
  */
 /* eslint-env browser */
-/* eslint "angular/ng_window_service":0, "angular/ng_typecheck_function":0, "angular/ng_document_service":0, "angular/document-service": 0 */
+/* eslint "angular/ng_window_service":0, "angular/ng_typecheck_function":0, "angular/ng_document_service":0, "angular/document-service": 0, "angular/timeout-service": 0 */
 (function (window, navigator, pushRegistration) {
   'use strict';
 

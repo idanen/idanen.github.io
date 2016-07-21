@@ -133,6 +133,7 @@
      * This prevents triggering the subscription-changed event twice on page
      * load.
      * @param {PushSubscription} subscription The new subscription object
+     * @return {PushSubscription} The save subscription, `false` if not subscribed
      */
     _updateSubscription: function (subscription) {
       if (JSON.stringify(subscription) !== JSON.stringify(this.subscription)) {

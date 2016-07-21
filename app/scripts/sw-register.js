@@ -58,12 +58,14 @@
             installingWorker = registration.installing;
 
             installingWorker.onstatechange = function () {
+              var swInstalledToast = '<paper-toast duration="10000">New updates available, please refresh</paper-toast>';
               switch (installingWorker.state) {
                 case 'installed':
                   // At this point, the old content will have been purged and the
                   // fresh content will have been added to the cache.
                   // It's the perfect time to display a "New content is
                   // available; please refresh." message in the page's interface.
+                  document.querySelector('body').appendChild(swInstalledToast);
                   break;
 
                 case 'redundant':

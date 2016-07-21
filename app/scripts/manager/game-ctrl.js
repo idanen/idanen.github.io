@@ -135,10 +135,11 @@
     },
 
     chipsValueUpdated: function (val) {
+      var prev;
       if (val === this.game.chipValue) {
         return;
       }
-      var prev = this.game.chipValue || 1;
+      prev = this.game.chipValue || 1;
       this.game.chipValue = val || 1;
       this.game.$save();
       this.onChipValueUpdate({prev: prev, curr: this.game.chipValue});

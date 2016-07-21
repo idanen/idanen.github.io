@@ -63,21 +63,9 @@
           userVisibleOnly: true
         }));
       }.bind(this))
-        .then(function (subscription) {
-          // The subscription was successful
-          this._updateSubscription(subscription);
-          return this.subscription;
-        }.bind(this))
-        .then(function () {
-          return this.$window.Notification.requestPermission(angular.noop);
-        }.bind(this))
-        .then(function () {
-          if (this.$window.Notification.permission === 'granted') {
-            this.notificationPermited = true;
-          }
-
-          return this.subscription;
-        }.bind(this))
+        .then(this._updateSubscription.bind(this))
+        .then(this._requestNotificationsPermissions.bind(this))
+        .then(this._updateNotificationsPermission.bind(this))
         .catch(function (e) {
           if (this.$window.Notification.permission === 'denied') {
             // The user denied the notification permission which
@@ -132,6 +120,14 @@
     isEnabled: function () {
       return !!this.subscription;
     },
+    _requestNotificationsPermissions: function () {
+      return this.$window.Notification.requestPermission(angular.noop);
+    },
+    _updateNotificationsPermission: function () {
+      this.notificationPermited = (this.$window.Notification.permission === 'granted');
+
+      return this.subscription;
+    },
     /**
      * Update the subscription property, but only if the value has changed.
      * This prevents triggering the subscription-changed event twice on page
@@ -142,6 +138,7 @@
       if (JSON.stringify(subscription) !== JSON.stringify(this.subscription)) {
         this.subscription = subscription;
       }
+      return this.subscription;
     }
   };
 

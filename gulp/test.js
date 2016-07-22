@@ -34,7 +34,7 @@ module.exports = function (gulp, $, config) {
     stream.queue(gulp.src([
       config.buildJsFiles,
       '!**/webcomponents.js',
-      '!**/*_test.*'
+      '!**/*.test.*'
     ])
       .pipe($.angularFilesort()));
 

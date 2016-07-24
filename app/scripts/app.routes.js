@@ -54,7 +54,10 @@
           url: '/stats?{fromDate:int}&{toDate:int}',
           templateUrl: 'partials/poker-stats.html',
           controller: 'PokerStatsCtrl',
-          controllerAs: 'vm'
+          controllerAs: 'vm',
+          resolve: {
+            user: authRequiredResolver
+          }
         },
         player = {
           name: 'player',
@@ -74,19 +77,17 @@
     $urlRouterProvider.otherwise('/');
   }
 
-  run.$inject = ['$rootScope', 'PolymerToaster'];
-  function run($rootScope, PolymerToaster) {
+  run.$inject = ['$rootScope', 'polymerToaster'];
+  function run($rootScope, polymerToaster) {
     var unwatch = $rootScope.$on('$stateChangeError',
       function (event, toState, toParams, fromState, fromParams, error) {
         console.log('error %s trying to change state from $o to %o', error, fromState, toState);
         if (error === 'AUTH_REQUIRED') {
-          PolymerToaster.showToast();
+          polymerToaster.loginRequiredToast();
         }
       });
 
-    $rootScope.$on('$destroy', function () {
-      unwatch();
-    });
+    $rootScope.$on('$destroy', unwatch);
   }
 
   // waitForAuthResolver.$inject = ['userService'];

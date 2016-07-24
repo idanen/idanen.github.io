@@ -21,12 +21,12 @@
     "highcharts": "highcharts-release#~4.2.1",
     "firebase": "~3.x.x",
     "angularfire": "~2.x.x",
-    "paper-toast": "PolymerElements/paper-toast#~1.1.1",
+    "paper-toast": "PolymerElements/paper-toast#~1.x.x",
     "sw-toolbox": "~3.0.0",
-    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.0.0",
-    "platinum-push-messaging": "PolymerElements/platinum-push-messaging#^1.0.0",
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.x.x",
+    "platinum-push-messaging": "PolymerElements/platinum-push-messaging#^1.x.x",
     "platinum-sw": "PolymerElements/platinum-sw#^1.2.0",
-    "paper-slider": "PolymerElements/paper-slider#^1.0.0"
+    "paper-slider": "PolymerElements/paper-slider#^1.x.x"
   },
   "devDependencies": {
     "angular-mocks": "~1.5.*"

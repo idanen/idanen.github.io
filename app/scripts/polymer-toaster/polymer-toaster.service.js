@@ -2,11 +2,11 @@
   'use strict';
 
   angular.module('pokerManager')
-    .service('PolymerToaster', PolymerToaster);
+    .service('polymerToaster', PolymerToaster);
 
   PolymerToaster.$inject = ['$document'];
   function PolymerToaster($document) {
-    this.toastTmpl = '<paper-toast duration="5000">You need to log in to proceed <login-state></login-state></paper-toast>';
+    this.toastTmpl = '<paper-toast></paper-toast>';
     $document.find('body').append(this.toastTmpl);
     this.toastElement = $document.find('paper-toast')[0];
   }
@@ -15,6 +15,13 @@
     showToast: function () {
       this.toastElement.hide();
       this.toastElement.show();
+    },
+    loginRequiredToast: function () {
+      this.toastElement.hide();
+      this.toastElement.show({
+        duration: 5000,
+        text: 'You need to log in to proceed'
+      });
     }
   };
 }());

@@ -4,14 +4,15 @@
   angular.module('pokerManager.controllers', ['pokerManager.services'])
     .controller('MainCtrl', MainController);
 
-  MainController.$inject = ['$scope', '$state', '$filter', 'userService', 'Players'];
-  function MainController($scope, $state, $filter, userService, playersSvc) {
+  MainController.$inject = ['$scope', '$state', '$filter', 'userService', 'Players', 'communitiesSvc'];
+  function MainController($scope, $state, $filter, userService, playersSvc, communitiesSvc) {
     var DAY = 1000 * 60 * 60 * 24;
 
     this.$state = $state;
     this.$filter = $filter;
     this.userService = userService;
     this.playersSvc = playersSvc;
+    this.communitiesSvc = communitiesSvc;
 
     this.tabs = [];
     this.communitiesTab = {
@@ -65,6 +66,7 @@
       this.tabs.push(this.communitiesTab);
       this.tabs.push(this.statsTab);
       this.tabs.push(this.gamesTab);
+      this.fetchPublicCommunities();
     },
     userFeched: function (currentUser) {
       if (!currentUser) {
@@ -80,12 +82,12 @@
       }
       this.playersSvc.playersCommunities(this.currentUser.playerId)
         .then(function (communities) {
-          this.communitiesTab.children = _.map(communities, function (communityName, communityId) {
+          this.communitiesTab.children = this.communitiesTab.children.concat(_.map(communities, function (communityName, communityId) {
             return {
               title: communityName,
               href: this.$state.href('community', {communityId: communityId})
             };
-          }.bind(this));
+          }.bind(this)));
         }.bind(this));
       this.gamesOfPlayer = this.playersSvc.getPlayerGames(this.currentUser.playerId, 50);
       this.gamesOfPlayer.$loaded()
@@ -101,6 +103,23 @@
     signOut: function () {
       this.userService.logout();
       this.currentUser = null;
+    },
+
+    addPublicCommunities: function (publicCommunities) {
+      if (!this.communitiesTab.children) {
+        this.communitiesTab.children = [];
+      }
+      this.communitiesTab.children = this.communitiesTab.children.concat(_.map(publicCommunities, function (communityName, communityId) {
+        return {
+          title: communityName,
+          href: this.$state.href('community', {communityId: communityId})
+        };
+      }.bind(this)))
+    },
+
+    fetchPublicCommunities: function () {
+      return this.communitiesSvc.getPublicCommunities()
+        .then(this.addPublicCommunities.bind(this));
     },
 
     hasChildren: function (tab) {

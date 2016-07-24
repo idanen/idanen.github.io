@@ -2,7 +2,8 @@
   "parser": "babel-eslint",
   "extends": [
     "angular",
-    "dustinspecker"
+    "dustinspecker",
+    "es2015"
   ],
   "env": {
     "browser": true,

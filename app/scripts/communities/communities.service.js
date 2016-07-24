@@ -13,11 +13,21 @@
     this.Ref = Ref;
     this.Players = Players;
     this.communitiesRef = Ref.child('communities');
+    this.publicCommunitiesRef = Ref.child('public_communities');
   }
 
   CommunitiesService.prototype = {
     getCommunities: function () {
       return this.$firebaseArray(this.communitiesRef);
+    },
+    getPublicCommunities: function () {
+      return this.$q.when(
+        this.publicCommunitiesRef
+          .once('value')
+          .then(function (snap) {
+            return snap.val();
+          })
+      );
     },
     addAdmin: function (admin, community) {
       return this._addMember(admin, community, 'admins');

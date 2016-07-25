@@ -95,6 +95,9 @@ module.exports = function (gulp, $, config) {
       })))
       .pipe($.if(isProd, htmlFilter.restore))
       .pipe(jsFilter)
+      .pipe($.babel({
+        presets: ['es2015']
+      }))
       .pipe($.if(isProd, $.angularFilesort()))
       .pipe($.if(isProd, $.concat('app.js')))
       .pipe($.if(isProd, $.ngAnnotate()))

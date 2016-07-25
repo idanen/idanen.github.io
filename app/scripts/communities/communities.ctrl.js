@@ -31,9 +31,7 @@
   CommunitiesController.prototype = {
     addMember: function (toCommunity) {
       this.playerModal.open()
-        .then(function (player) {
-          this.playersMembership.addPlayer(player, toCommunity);
-        }.bind(this));
+        .then(player => this.playersMembership.addPlayer(player, toCommunity));
     },
     prevPage: function () {
       if (this.currentPage <= 0) {
@@ -64,36 +62,34 @@
       if (this.newCommunity) {
         communityToAdd.name = this.newCommunity;
         this.communities.$add(communityToAdd)
-          .then(function (ref) {
+          .then(ref => {
             this.collapseState[ref.key] = false;
             communityToAdd.$id = ref.key;
             return this.userService.waitForUser();
-          }.bind(this))
-          .then(function (user) {
+          })
+          .then(user => {
             return this.playersMembership.setAdminOfCommunity(communityToAdd, user.uid);
-          }.bind(this))
-          .catch(function (err) {
+          })
+          .catch(err => {
             console.error('Couldn\'t add community: ', err);
           })
-          .finally(function () {
+          .finally(() => {
             this.inputDisabled = false;
-          }.bind(this));
+          });
       }
     },
 
     createGame: function (communityToAddTo) {
       return this.Games.newGame(communityToAddTo.$id)
-        .then(function (game) {
-          this.$state.go('game', {communityId: communityToAddTo.$id, gameId: game.$id}, {reload: true});
-        }.bind(this));
+        .then(game => this.$state.go('game', {communityId: communityToAddTo.$id, gameId: game.$id}, {reload: true}));
     },
 
     getCommunityGames: function (aCommunity) {
       this.games = this.Games.gamesOfCommunity(aCommunity.$id);
       this.games.$loaded()
-        .then(function () {
+        .then(() => {
           this.currentPage = this.games.length - this.pageSize;
-        }.bind(this));
+        });
     },
 
     isCollapsed: function (communityId) {

@@ -21,9 +21,7 @@
     signIn: function (provider) {
       this.userService.login(provider)
         .then(this.matchUserToPlayer.bind(this))
-        .catch(function (error) {
-          console.log(error);
-        });
+        .catch(error => console.log(error));
     },
 
     signOut: function () {

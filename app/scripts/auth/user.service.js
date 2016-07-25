@@ -20,28 +20,26 @@
         this.usersRef
           .child(uid)
           .once('value')
-          .then(function (snap) {
+          .then(snap => {
             this.user = snap.val();
             return snap.val();
-          }.bind(this))
+          })
       );
     },
     waitForUser: function () {
       return this.$q.resolve(this.authObj.$waitForSignIn())
-        .then(function (user) {
+        .then(user => {
           if (user) {
             return this.getUser(user.uid);
           }
 
           return null;
-        }.bind(this));
+        });
     },
 
     login: function () {
       var provider = new this.$window.firebase.auth.GoogleAuthProvider();
-      this.GOOGLE_AUTH_SCOPES.forEach(function (scope) {
-        provider.addScope(scope);
-      });
+      this.GOOGLE_AUTH_SCOPES.forEach(scope => provider.addScope(scope));
       return this.authObj.$signInWithPopup(provider)
         .then(this.waitForUser.bind(this));
     },
@@ -56,9 +54,7 @@
         .child(this.user.uid)
         .child('playerId')
         .set(player.$id)
-        .then(function () {
-          return player;
-        });
+        .then(() => player);
     },
 
     addSubscriptionId: function (subscriptionId) {
@@ -66,7 +62,7 @@
         subscriptionId: subscriptionId
       };
       this.waitForUser()
-        .then(function () {
+        .then(() => {
           if (!this.user) {
             return;
           }
@@ -75,19 +71,20 @@
             .child('devices')
             .orderByChild('subscriptionId')
             .equalTo(subscriptionId)
-            .once('value', function (snapshot) {
+            .once('value')
+            .then(snapshot => {
               if (!snapshot.exists()) {
                 snapshot.ref.push().set(subscription);
               } else {
                 console.log('this endpoint is already subscribed');
               }
             });
-        }.bind(this));
+        });
     },
 
     removeSubscriptionId: function (subscriptionId) {
       this.waitForUser()
-        .then(function () {
+        .then(() => {
           if (!this.user) {
             return;
           }
@@ -96,14 +93,13 @@
             .child('devices')
             .orderByChild('subscriptionId')
             .equalTo(subscriptionId)
-            .once('value', function (snapArr) {
+            .once('value')
+            .then(snapArr => {
               if (snapArr.hasChildren()) {
-                snapArr.forEach(function (deviceSnap) {
-                  deviceSnap.ref.remove();
-                });
+                snapArr.forEach(deviceSnap => deviceSnap.ref.remove());
               }
             });
-        }.bind(this));
+        });
     }
   };
 }());

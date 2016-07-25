@@ -26,9 +26,7 @@
         .child('players')
         .child(playerId)
         .remove()
-        .then(function () {
-          return this.getPlayersInGame(gameId);
-        }.bind(this));
+        .then(() => this.getPlayersInGame(gameId));
     },
     removeAllPlayersFromGame: function (gameId) {
       return this.gamesRef
@@ -67,9 +65,7 @@
       );
 
       return this.$q.all(promises)
-        .then(function () {
-          return this.getPlayersInGame(game.$id);
-        }.bind(this));
+        .then(() => this.getPlayersInGame(game.$id));
     },
     updatePlayerResult: function (player, game, gameResult) {
       var promises = [];
@@ -90,9 +86,7 @@
       );
 
       return this.$q.all(promises)
-        .then(function () {
-          return this.getPlayersInGame(game.$id);
-        }.bind(this));
+        .then(() => this.getPlayersInGame(game.$id));
     }
   };
 }());

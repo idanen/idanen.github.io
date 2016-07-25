@@ -16,11 +16,11 @@
 
   PaperSliderCtrl.prototype = {
     $postLink: function () {
-      this.$element[0].addEventListener('value-change', function () {
+      this.$element[0].addEventListener('value-change', () => {
         this.onUpdate({
           value: this.$element[0].value
         });
-      }.bind(this));
+      });
     },
     $onChanges: function (changes) {
       if (changes && changes.bindFrom && (/\d+/).test(changes.bindFrom.currentValue)) {

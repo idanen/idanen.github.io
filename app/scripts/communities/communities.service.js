@@ -24,9 +24,7 @@
       return this.$q.when(
         this.publicCommunitiesRef
           .once('value')
-          .then(function (snap) {
-            return snap.val();
-          })
+          .then(snap => snap.val())
       );
     },
     addAdmin: function (admin, community) {
@@ -46,21 +44,19 @@
       return this.$firebaseObject(this.communitiesRef.child(communityId));
     },
     getCommunitiesByIds: function (communityIds) {
-      var service = this,
-          baseRef = service.Ref.child('communities'),
-          communities = [];
+      return this.$q(resolve => {
+        let communities = [];
+        communityIds.forEach(communityId => {
+          this.communitiesRef.child(communityId).once('value')
+            .then(snap => {
+              var community = snap.val();
+              community.$id = community.id = snap.key;
+              communities.push(community);
 
-      return service.$q(function (resolve) {
-        communityIds.forEach(function (communityId) {
-          baseRef.child(communityId).once('value', function (snap) {
-            var community = snap.val();
-            community.$id = community.id = snap.key;
-            communities.push(community);
-
-            if (communities.length === communityIds.length) {
-              resolve(communities);
-            }
-          });
+              if (communities.length === communityIds.length) {
+                resolve(communities);
+              }
+            });
         });
       });
     },

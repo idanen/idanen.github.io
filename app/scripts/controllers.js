@@ -81,24 +81,24 @@
         return;
       }
       this.playersSvc.playersCommunities(this.currentUser.playerId)
-        .then(function (communities) {
-          this.communitiesTab.children = this.communitiesTab.children.concat(_.map(communities, function (communityName, communityId) {
+        .then(communities => {
+          this.communitiesTab.children = this.communitiesTab.children.concat(_.map(communities, (communityName, communityId) => {
             return {
               title: communityName,
               href: this.$state.href('community', {communityId: communityId})
             };
-          }.bind(this)));
-        }.bind(this));
+          }));
+        });
       this.gamesOfPlayer = this.playersSvc.getPlayerGames(this.currentUser.playerId, 50);
       this.gamesOfPlayer.$loaded()
-        .then(function () {
-          this.gamesTab.children = this.gamesOfPlayer.map(function (game) {
+        .then(() => {
+          this.gamesTab.children = this.gamesOfPlayer.map(game => {
             return {
               title: this.$filter('date')(game.date, 'yyyy-MM-dd') + ' @ ' + game.location,
               href: this.$state.href('game', {communityId: this.$state.params.communityId, gameId: game.$id})
             };
-          }.bind(this));
-        }.bind(this));
+          });
+        });
     },
     signOut: function () {
       this.userService.logout();
@@ -109,12 +109,12 @@
       if (!this.communitiesTab.children) {
         this.communitiesTab.children = [];
       }
-      this.communitiesTab.children = this.communitiesTab.children.concat(_.map(publicCommunities, function (communityName, communityId) {
+      this.communitiesTab.children = this.communitiesTab.children.concat(_.map(publicCommunities, (communityName, communityId) => {
         return {
           title: communityName,
           href: this.$state.href('community', {communityId: communityId})
         };
-      }.bind(this)))
+      }));
     },
 
     fetchPublicCommunities: function () {

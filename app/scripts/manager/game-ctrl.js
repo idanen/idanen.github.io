@@ -43,9 +43,7 @@
       } catch (err) {}
     },
     startGame: function () {
-      _.forEach(this.playersInGame, function (player) {
-        this.buyin(player, 1);
-      }.bind(this));
+      _.forEach(this.playersInGame, player => this.buyin(player, 1));
     },
     cancelBuyin: function (player, rationalBuyin) {
       var actualBuyin = rationalBuyin * this.game.defaultBuyin;
@@ -117,9 +115,9 @@
         return 0;
       }
 
-      _.forEach(this.playersInGame, function (player) {
+      _.forEach(this.playersInGame, player => {
         sum += player.paidHosting ? this.game.hostingCosts : 0;
-      }.bind(this));
+      });
       return sum;
     },
 

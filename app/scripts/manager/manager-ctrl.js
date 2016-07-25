@@ -38,15 +38,15 @@
         this.playersInGame.$destroy();
       }
       this.playersInGame = updated;
+
+      return this.playersInGame;
     },
     addPlayerToGame: function (player) {
       if (player.$id in this.playersInGame) {
         return;
       }
       this.playersGames.addPlayerToGame(player, this.game)
-        .then(function (playersInGame) {
-          this.updatePlayersInGame(playersInGame);
-        }.bind(this));
+        .then(playersInGame => this.updatePlayersInGame(playersInGame));
 
       try {
         this.$analytics.eventTrack('Join Game', {category: 'Actions', label: player.name});
@@ -85,7 +85,7 @@
       this.closePlayersControl();
 
       this.playerModal.open(player)
-        .then(function (savedPlayer) {
+        .then(savedPlayer => {
           // If new -> update default values
           if (savedPlayer.isNew) {
             savedPlayer.buyin = 0;
@@ -95,7 +95,7 @@
           player = savedPlayer;
 
           return this.communitiesSvc.addMember(player, this.community);
-        }.bind(this))
+        })
         .then(this.init.bind(this));
     },
     chipsValueChanged: function (current) {
@@ -103,14 +103,14 @@
         current = this.game.chipValue = 1;
       }
       if (this.playersInGame) {
-        _.forEach(this.playersInGame, function updateChipsAndValue(player) {
+        _.forEach(this.playersInGame, player => {
           if (player.buyout) {
             player.currentChipCount = player.buyout * current;
           } else {
             player.currentChipCount = 0;
           }
           this.playersInGame.$save(player);
-        }.bind(this));
+        });
       }
     }
   };

@@ -22,8 +22,7 @@
           controller: 'CommunitiesCtrl',
           controllerAs: 'vm',
           resolve: {
-            community: communityResolver,
-            user: authRequiredResolver
+            community: communityResolver
           }
         },
         // TODO (idan): build the add/join community state with modals by
@@ -54,10 +53,7 @@
           url: '/stats?{fromDate:int}&{toDate:int}',
           templateUrl: 'partials/poker-stats.html',
           controller: 'PokerStatsCtrl',
-          controllerAs: 'vm',
-          resolve: {
-            user: authRequiredResolver
-          }
+          controllerAs: 'vm'
         },
         player = {
           name: 'player',

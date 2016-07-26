@@ -5,13 +5,11 @@
     .module('pokerManager')
     .service('communitiesSvc', CommunitiesService);
 
-  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject', 'Players'];
-  function CommunitiesService($q, Ref, $firebaseArray, $firebaseObject, Players) {
+  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
+  function CommunitiesService($q, Ref, $firebaseArray, $firebaseObject) {
     this.$q = $q;
     this.$firebaseArray = $firebaseArray;
     this.$firebaseObject = $firebaseObject;
-    this.Ref = Ref;
-    this.Players = Players;
     this.communitiesRef = Ref.child('communities');
     this.publicCommunitiesRef = Ref.child('public_communities');
   }

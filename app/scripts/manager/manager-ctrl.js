@@ -61,7 +61,10 @@
 
     init: function () {
       // Refresh view
-      this.players = this.Players.playersOfCommunity(this.community.$id);
+      this.community.$loaded()
+        .then(() => {
+          this.players = this.Players.playersOfCommunity(this.community.$id, this.community.name);
+        });
     },
 
     refreshPlayersList: function () {

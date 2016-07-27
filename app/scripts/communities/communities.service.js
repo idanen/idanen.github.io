@@ -19,10 +19,15 @@
       return this.$firebaseArray(this.communitiesRef);
     },
     getPublicCommunities: function () {
-      return this.$q.when(
+      return this.$q.resolve(
         this.publicCommunitiesRef
           .once('value')
           .then(snap => snap.val())
+      );
+    },
+    addNewCommunity: function (communityName) {
+      return this.$q.resolve(
+        this.communitiesRef.push({name: communityName})
       );
     },
     addAdmin: function (admin, community) {

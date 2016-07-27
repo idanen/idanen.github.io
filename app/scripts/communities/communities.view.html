@@ -14,7 +14,7 @@
             <a class="btn btn-link" ui-sref="stats({ fromDate: vm.fromDate, toDate: vm.toDate })">Stats</a>
           </div>
         </div>
-        <div class="row">
+        <div class="row" ng-if="!!vm.games">
           <div class="col-sm-1">
             <button class="btn btn-default" ng-click="vm.prevPage()">
               <span class="icon icon-arrow-left"></span>

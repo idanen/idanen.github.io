@@ -34,6 +34,12 @@
       return this.$firebaseObject(this.gamesRef.child(gameId));
     },
 
+    deleteGame: function (gameId) {
+      return this.gamesRef
+        .child(gameId)
+        .remove();
+    },
+
     findBy: function (field, value, limit) {
       return this.$firebaseArray(
         this.gamesRef
@@ -56,28 +62,28 @@
     },
 
     findBetweenDates: function (from, to, communityId) {
-      return this.$q(function (resolve) {
+      return this.$q.resolve(
         this.gamesRef
           .orderByChild('date')
           .startAt(from)
           .endAt(to)
-          .once('value', function (querySnapshot) {
-            var resultGames = [];
+          .once('value')
+          .then(querySnapshot => {
+            let resultGames = [];
             if (querySnapshot.hasChildren()) {
               querySnapshot.forEach(function (gameSnap) {
-                var game = gameSnap.val();
+                let game = gameSnap.val();
                 if (game.communityId === communityId) {
                   game.$id = gameSnap.key;
                   game.players = gameSnap.child('players').val();
                   resultGames.push(game);
                 }
               });
-              resolve(resultGames);
-            } else {
-              resolve([]);
             }
-          });
-      }.bind(this));
+
+            return resultGames;
+          })
+      );
     }
   };
 }());

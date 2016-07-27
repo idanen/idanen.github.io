@@ -7,13 +7,15 @@
   angular.module('pokerManager')
     .controller('GameCtrl', GameController);
 
-  GameController.$inject = ['$scope', '$analytics', 'Games', 'playersGames'];
-  function GameController($scope, $analytics, gamesSvc, playersGames) {
+  GameController.$inject = ['$scope', '$analytics', 'Games', 'playersGames', '$state'];
+  function GameController($scope, $analytics, gamesSvc, playersGames, $state) {
     this.$scope = $scope;
     this.$analytics = $analytics;
     this.playersGames = playersGames;
-    this.game = gamesSvc.getGame(this.gameId);
+    this.gamesSvc = gamesSvc;
+    this.game = this.gamesSvc.getGame(this.gameId);
     this.playersInGame = playersGames.getPlayersInGame(this.gameId);
+    this.$state = $state;
   }
 
   GameController.prototype = {
@@ -29,6 +31,10 @@
     },
     clearGame: function () {
       this.initGame();
+    },
+    deleteGame: function () {
+      this.gamesSvc.deleteGame(this.gameId)
+        .then(() => this.$state.go('^', {}, {location: 'replace'}));
     },
     buyin: function (player, rationalBuyin) {
       var calculatedBuyin = rationalBuyin * this.game.defaultBuyin;

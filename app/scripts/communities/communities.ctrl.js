@@ -5,8 +5,8 @@
     .module('pokerManager')
     .controller('CommunitiesCtrl', CommunitiesController);
 
-  CommunitiesController.$inject = ['communitiesSvc', 'userService', 'playerModal', 'Games', '$state', 'community', 'Players', 'playersMembership'];
-  function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, Players, playersMembership) {
+  CommunitiesController.$inject = ['communitiesSvc', 'userService', 'playerModal', 'Games', '$state', 'community', 'playersMembership'];
+  function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, playersMembership) {
     this.pageSize = 3;
     this.currentPage = 0;
     this.fromDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
@@ -16,7 +16,6 @@
     this.Games = Games;
     this.$state = $state;
     this.community = community;
-    this.players = Players.playersOfCommunity(community.$id);
     this.playersMembership = playersMembership;
 
     this.collapseState = {};
@@ -56,32 +55,9 @@
       });
     },
 
-    add: function () {
-      var communityToAdd = {};
-      this.inputDisabled = true;
-      if (this.newCommunity) {
-        communityToAdd.name = this.newCommunity;
-        this.communities.$add(communityToAdd)
-          .then(ref => {
-            this.collapseState[ref.key] = false;
-            communityToAdd.$id = ref.key;
-            return this.userService.waitForUser();
-          })
-          .then(user => {
-            return this.playersMembership.setAdminOfCommunity(communityToAdd, user.uid);
-          })
-          .catch(err => {
-            console.error('Couldn\'t add community: ', err);
-          })
-          .finally(() => {
-            this.inputDisabled = false;
-          });
-      }
-    },
-
     createGame: function (communityToAddTo) {
       return this.Games.newGame(communityToAddTo.$id)
-        .then(game => this.$state.go('game', {communityId: communityToAddTo.$id, gameId: game.$id}, {reload: true}));
+        .then(gameRef => this.$state.go('game', {communityId: communityToAddTo.$id, gameId: gameRef.key}, {reload: true}));
     },
 
     getCommunityGames: function (aCommunity) {

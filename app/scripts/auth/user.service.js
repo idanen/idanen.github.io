@@ -12,6 +12,8 @@
     this.authObj = $firebaseAuth();
     this.usersRef = Ref.child('users');
     this.GOOGLE_AUTH_SCOPES = GOOGLE_AUTH_SCOPES;
+
+    this.authObj.$onAuthStateChanged(this.saveCurrentUser.bind(this));
   }
 
   UserService.prototype = {
@@ -35,6 +37,27 @@
 
           return null;
         });
+    },
+
+    saveCurrentUser: function (authState) {
+      let promise;
+
+      if (!authState) {
+        this.currentUser = null;
+        promise = this.$q.resolve(null);
+      } else {
+        promise = this.getUser(authState.uid)
+          .then(user => {
+            this.currentUser = user;
+            return this.currentUser;
+          });
+      }
+
+      return promise;
+    },
+
+    getCurrentUser: function () {
+      return this.currentUser;
     },
 
     login: function () {

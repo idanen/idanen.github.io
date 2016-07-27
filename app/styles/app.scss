@@ -82,8 +82,25 @@ ul {
   list-style: none;
 }
 
+.new-community {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 250ms ease-out;
+  &.new-community__active {
+    max-height: 10vh;
+  }
+}
+
 .chip-count {
   width: 3em;
+}
+
+.buy-amount {
+  .buy-amount__small {
+    .icon {
+      font-size: .7em;
+    }
+  }
 }
 
 .accordion-inner {

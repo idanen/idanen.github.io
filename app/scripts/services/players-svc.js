@@ -70,10 +70,11 @@
       return this.$firebaseObject(this.playersRef.child(playerId));
     },
 
-    playersOfCommunity: function (communityId) {
+    playersOfCommunity: function (communityId, communityName) {
       return this.$firebaseArray(
         this.playersRef
           .orderByChild('memberIn/' + communityId)
+          .equalTo(communityName)
       );
     },
 

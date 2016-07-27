@@ -89,9 +89,9 @@
 
     addOrSubtractChips: function (player, howMany, toAdd) {
       if (toAdd) {
-        player.currentChipCount += howMany * this.game.defaultBuyin;
+        player.currentChipCount += howMany * this.game.defaultBuyin * this.game.chipValue;
       } else {
-        player.currentChipCount -= howMany * this.game.defaultBuyin;
+        player.currentChipCount -= howMany * this.game.defaultBuyin * this.game.chipValue;
       }
       this.chipCountUpdate(player);
     },

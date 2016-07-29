@@ -38,9 +38,7 @@
       }]
     };
 
-    this.userService.waitForUser()
-      .then(this.userFeched.bind(this))
-      .then(this.obtainUserData.bind(this));
+    this.userService.onUserChange(this.userChanged.bind(this));
 
     $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
       if (toParams.communityId) {
@@ -50,14 +48,6 @@
           toDate: Date.now()
         });
       }
-
-      // TODO (idan): When entering a new game's state set the game's id to the current game state
-      // adminTab.href = $state.href('game', {
-      //   communityId: toParams.communityId,
-      //   gameId: toParams.gameId,
-      //   fromDate: Date.now() - DAY * 30,
-      //   toDate: Date.now()
-      // });
     }.bind(this));
   }
 
@@ -68,12 +58,13 @@
       this.tabs.push(this.gamesTab);
       this.fetchPublicCommunities();
     },
-    userFeched: function (currentUser) {
+    userChanged: function (currentUser) {
       if (!currentUser) {
         return;
       }
 
       this.currentUser = currentUser;
+      this.obtainUserData();
       return this.currentUser;
     },
     obtainUserData: function () {

@@ -13,7 +13,9 @@
     this.usersRef = Ref.child('users');
     this.GOOGLE_AUTH_SCOPES = GOOGLE_AUTH_SCOPES;
 
-    this.authObj.$onAuthStateChanged(this.saveCurrentUser.bind(this));
+    this.authObj.$onAuthStateChanged(this.authStateChanged.bind(this));
+
+    this._userChangedListeners = [];
   }
 
   UserService.prototype = {
@@ -39,7 +41,7 @@
         });
     },
 
-    saveCurrentUser: function (authState) {
+    authStateChanged: function (authState) {
       let promise;
 
       if (!authState) {
@@ -53,11 +55,30 @@
           });
       }
 
-      return promise;
+      return promise
+        .then(() => this.notifyUserListeners());
     },
 
     getCurrentUser: function () {
       return this.currentUser;
+    },
+
+    onUserChange: function (listener) {
+      this._userChangedListeners.push(listener);
+      listener(this.currentUser);
+
+      return () => {
+        let idx = this._userChangedListeners.indexOf(listener);
+        if (idx > -1) {
+          this._userChangedListeners.splice(idx, 1);
+          return true;
+        }
+        return false;
+      };
+    },
+
+    notifyUserListeners: function () {
+      this._userChangedListeners.forEach(listener => listener(this.currentUser));
     },
 
     login: function () {

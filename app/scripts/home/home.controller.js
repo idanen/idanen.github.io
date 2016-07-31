@@ -11,6 +11,12 @@
     this.userService = userService;
     this.playersMembership = playersMembership;
 
+    this.newCommunity = '';
+    this.defaultSettings = {
+      chipValue: 1,
+      defaultBuyin: 50,
+      hostingCosts: 10
+    };
     this.addingComunity = true;
     this.editingCommunity = false;
   }
@@ -46,11 +52,16 @@
       }
     },
 
+    settingsUpdated(newSettings) {
+      _.extend(this.defaultSettings, newSettings);
+    },
+
     saveAddingCommunity() {
       let communityToAdd = {};
       if (this.newCommunity) {
         this.communityInputDisabled = true;
         communityToAdd.name = this.newCommunity;
+        communityToAdd.defaultSettings = this.defaultSettings;
         this.communities.$add(communityToAdd)
             .then(ref => {
               communityToAdd.$id = ref.key;
@@ -65,6 +76,11 @@
             .finally(() => {
               this.communityInputDisabled = false;
               this.newCommunity = '';
+              this.defaultSettings = {
+                chipValue: 1,
+                defaultBuyin: 50,
+                hostingCosts: 10
+              };
               this.closeCommunityEdit();
             });
       }

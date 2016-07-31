@@ -19,18 +19,27 @@
     </div>
     <div class="row new-community" ng-class="{'new-community__active': vm.editingCommunity}">
       <div class="col-xs-12">
-        <div class="input-group">
-          <input class="form-control" type="text" ng-model="vm.newCommunity" ng-disabled="vm.communityInputDisabled"
-                 placeholder="{{vm.addingCommunity ? 'Community name' : 'Joining code (ask admin)'}}">
-          <div class="input-group-btn">
-            <button class="btn btn-default new-community-btn" ng-click="vm.saveCommunity()">
-              <span class="icon icon-cloud-done"></span>
-              <span class="new-community-btn-text"> Save</span>
-            </button>
-            <button class="btn btn-default" ng-click="vm.closeCommunityEdit()">
-              <span class="icon icon-delete"></span>
-              <span class="new-community-btn-text"> Cancel</span>
-            </button>
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="input-group">
+              <input class="form-control" type="text" ng-model="vm.newCommunity" ng-disabled="vm.communityInputDisabled"
+                     placeholder="{{vm.addingCommunity ? 'Community name' : 'Joining code (ask admin)'}}">
+              <div class="input-group-btn">
+                <button class="btn btn-default new-community-btn" ng-click="vm.saveCommunity()">
+                  <span class="icon icon-cloud-done"></span>
+                  <span class="new-community-btn-text"> Save</span>
+                </button>
+                <button class="btn btn-default" ng-click="vm.closeCommunityEdit()">
+                  <span class="icon icon-delete"></span>
+                  <span class="new-community-btn-text"> Cancel</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <game-settings game="vm.defaultSettings" on-update="vm.settingsUpdated(settings)"></game-settings>
           </div>
         </div>
       </div>

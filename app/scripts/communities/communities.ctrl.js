@@ -21,10 +21,12 @@
     this.collapseState = {};
     this.newCommunity = '';
     this.inputDisabled = false;
-    this.communityDropdownOpen = false;
-    this.communities = communitiesSvc.getCommunities();
+    this.communitiesSvc = communitiesSvc;
+    this.communities = this.communitiesSvc.getCommunities();
 
     this.getCommunityGames(this.community);
+
+    this.userService.onUserChange(currentUser => this.userChanged(currentUser));
   }
 
   CommunitiesController.prototype = {
@@ -45,6 +47,22 @@
         return;
       }
       this.currentPage += this.pageSize;
+    },
+
+    userChanged: function (currentUser) {
+      this.currentUser = currentUser;
+      this.updateIsMember();
+    },
+
+    updateIsMember: function () {
+      if (this.currentUser) {
+        this.communitiesSvc.isMember(this.currentUser.playerId, this.community.$id)
+          .then(isMember => {
+            this.isMember = isMember;
+          });
+      } else {
+        this.isMember = false;
+      }
     },
 
     loadStats: function () {
@@ -74,10 +92,6 @@
 
     toggleCollapsed: function (communityId) {
       this.collapseState[communityId] = !this.collapseState[communityId];
-    },
-
-    communitiesDropdownToggle: function () {
-      this.communityDropdownOpen = !this.communityDropdownOpen;
     }
   };
 }());

@@ -12,13 +12,12 @@
   }
 
   PolymerToaster.prototype = {
-    showToast: function () {
+    showToast: function (options) {
       this.toastElement.hide();
-      this.toastElement.show();
+      this.toastElement.show(options);
     },
     loginRequiredToast: function () {
-      this.toastElement.hide();
-      this.toastElement.show({
+      this.showToast({
         duration: 5000,
         text: 'You need to log in to proceed'
       });

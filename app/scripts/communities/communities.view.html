@@ -2,7 +2,15 @@
     <div class="panel-heading">
         <h3 class="panel-title">{{ vm.community.name }}</h3>
     </div>
-    <div class="panel-body">
+    <div class="panel-body" ng-if="!vm.currentUser || !vm.isMember">
+      <div class="row">
+        <div class="col-xs-12">
+          <h3>Not a member</h3>
+          <login-state></login-state>
+        </div>
+      </div>
+    </div>
+    <div class="panel-body" ng-if="!!vm.currentUser">
         <div class="row">
           <div class="col-sm-4">
               <input type="text" class="form-control" ng-model="vm.fromDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="fromDate" bs-datepicker>

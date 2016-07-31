@@ -43,6 +43,14 @@
         .child(player.$id)
         .set(player.name);
     },
+    isMember: function (playerId, communityId) {
+      return this.communitiesRef
+        .child(communityId)
+        .child('members')
+        .child(playerId)
+        .once('value')
+        .then(snap => snap.exists());
+    },
     getCommunity: function (communityId) {
       return this.$firebaseObject(this.communitiesRef.child(communityId));
     },

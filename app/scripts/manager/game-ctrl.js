@@ -154,6 +154,11 @@
       this.onChipValueUpdate({prev: prev, curr: this.game.chipValue});
     },
 
+    numberOfHandsUpdated: function (counter) {
+      this.game.numberOfHands = counter;
+      this.game.$save();
+    },
+
     playerUpdated: function (player) {
       this.playersInGame.$save(player);
     }

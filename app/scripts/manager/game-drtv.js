@@ -12,7 +12,8 @@
       restrict: 'EA',
       scope: {
         gameId: '<',
-        onChipValueUpdate: '&'
+        onChipValueUpdate: '&',
+        onGameUpdate: '&'
       },
       controller: 'GameCtrl',
       controllerAs: 'vm',

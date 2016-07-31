@@ -16,8 +16,8 @@
   }
 
   GamesService.prototype = {
-    newGame: function (communityId) {
-      var gameToSave = {
+    newGame: function (communityId, gameDefaults) {
+      var gameToSave = _.extend({
         location: '',
         date: Date.now(),
         numberOfHands: 0,
@@ -25,7 +25,7 @@
         defaultBuyin: 50,
         communityId: communityId,
         hostingCosts: 20
-      };
+      }, gameDefaults || {});
 
       return this.gamesRef
         .push(gameToSave);

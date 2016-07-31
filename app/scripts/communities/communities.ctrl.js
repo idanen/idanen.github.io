@@ -56,7 +56,7 @@
     },
 
     createGame: function (communityToAddTo) {
-      return this.Games.newGame(communityToAddTo.$id)
+      return this.Games.newGame(communityToAddTo.$id, this.community.defaultGameSettings)
         .then(gameRef => this.$state.go('game', {communityId: communityToAddTo.$id, gameId: gameRef.key}, {reload: true}));
     },
 

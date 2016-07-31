@@ -20,6 +20,7 @@
 
     this.collapseState = {};
     this.newCommunity = '';
+    this.defaultGameSettings = {};
     this.inputDisabled = false;
     this.communitiesSvc = communitiesSvc;
     this.communities = this.communitiesSvc.getCommunities();

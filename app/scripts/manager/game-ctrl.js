@@ -67,6 +67,11 @@
       this.playersInGame = updated;
     },
 
+    gameSettingsChanged: function (newSettings) {
+      _.extend(this.game, newSettings);
+      this.game.$save();
+    },
+
     cancelAddPlayer: function (player) {
       this.playersGames.removePlayerFromGame(player.$id, this.gameId);
     },

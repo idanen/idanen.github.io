@@ -11,6 +11,7 @@
       }
     });
 
+  GameSettingsController.$inject = ['$element'];
   function GameSettingsController($element) {
     this.$element = $element;
   }
@@ -26,6 +27,11 @@
         });
       });
     },
+
+    $onDestroy: function () {
+      this.$element.off();
+    },
+
     chipsValueUpdated: function (newChipValue) {
       this.settings.chipValue = newChipValue;
       this.onUpdate({

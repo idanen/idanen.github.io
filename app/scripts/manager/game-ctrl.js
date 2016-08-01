@@ -72,6 +72,11 @@
       this.game.$save();
     },
 
+    gameDetailsChanged: function (newDetails) {
+      _.extend(this.game, newDetails);
+      this.game.$save();
+    },
+
     cancelAddPlayer: function (player) {
       this.playersGames.removePlayerFromGame(player.$id, this.gameId);
     },

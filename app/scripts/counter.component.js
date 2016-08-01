@@ -17,19 +17,20 @@
       `
     });
 
-  function CounterController() {
-
+  CounterController.$inject = ['$element'];
+  function CounterController($element) {
+    this.$element = $element;
   }
 
   CounterController.prototype = {
     increment: function () {
       this.counter += 1;
-      this.onUpdate({ counter: this.counter });
+      this.onUpdate({counter: this.counter});
     },
     decrement: function () {
       if (this.counter > 0) {
         this.counter -= 1;
-        this.onUpdate({ counter: this.counter })
+        this.onUpdate({counter: this.counter});
       }
     }
   };

@@ -39,7 +39,6 @@
     };
 
     this.isAdmin = function () {
-      // return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
       return true;
     };
 

@@ -33,7 +33,7 @@
     event.waitUntil(
       sw.registration.showNotification('Push success!!!', {
         body: 'This is the notification\'s body',
-        //icon: '',
+        //icon: '/img/android-icon-192x192.png',
         tag: 'push-notification-test'
       })
     );

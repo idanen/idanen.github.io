@@ -120,7 +120,7 @@
               if (!snapshot.exists()) {
                 snapshot.ref.push().set(subscription);
               } else {
-                console.log('this endpoint is already subscribed');
+                console.log(`the endpoint "${subscriptionId}" is already subscribed`);
               }
             });
         });

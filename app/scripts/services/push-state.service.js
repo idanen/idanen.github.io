@@ -3,15 +3,15 @@
 
   angular
     .module('pushState', [])
-    .service('pushState', PushState)
-    .run(init);
+    .service('pushState', PushState);
+    // .run(init);
 
   PushState.$inject = ['$q', '$window'];
   function PushState($q, $window) {
     this.subscription = false;
     this.notificationPermited = false;
     this.notificationDenied = false;
-    this.workerReadyPromise = $q.when($window.navigator.serviceWorker.ready);
+    this.workerReadyPromise = ('serviceWorker' in $window.navigator) ? $q.resolve($window.navigator.serviceWorker.ready) : $q.reject('ServiceWorker is not supported');
     this.$q = $q;
     this.$window = $window;
   }
@@ -19,6 +19,11 @@
   PushState.prototype = {
     // Once the service worker is registered set the initial state
     getInitialState: function () {
+      // If we have a subscription than `getInitialState` has already been called
+      if (this.subscription) {
+        return this.$q.resolve(this.subscription);
+      }
+
       // Are Notifications supported in the service worker?
       if (!('showNotification' in this.$window.ServiceWorkerRegistration.prototype)) {
         console.warn('Notifications aren\'t supported.');
@@ -143,11 +148,11 @@
     }
   };
 
-  init.$inject = ['$window', 'pushState'];
-  function init($window, pushState) {
-    $window.navigator.serviceWorker.ready
-      .then(function () {
-        pushState.getInitialState();
-      });
-  }
+  // init.$inject = ['$window', 'pushState'];
+  // function init($window, pushState) {
+  //   $window.navigator.serviceWorker.ready
+  //     .then(function () {
+  //       pushState.getInitialState();
+  //     });
+  // }
 }());

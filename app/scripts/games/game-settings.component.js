@@ -18,7 +18,7 @@
 
   GameSettingsController.prototype = {
     $onInit: function () {
-      this.settings = _.pick(this.game, ['chipValue', 'defaultBuyin', 'hostingCosts'])
+      this.settings = _.pick(this.game, ['chipValue', 'defaultBuyin', 'hostingCosts']);
     },
     $postLink: function () {
       this.$element.on('input', '.form-control', () => {

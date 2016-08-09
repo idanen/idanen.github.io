@@ -82,12 +82,17 @@ ul {
   list-style: none;
 }
 
+.community-wrap {
+  width: 100%;
+  margin: 5px 0;
+}
+
 .new-community {
   max-height: 0;
   overflow: hidden;
   transition: all 250ms ease-out;
   &.new-community__active {
-    max-height: 10vh;
+    max-height: 50vh;
   }
 }
 

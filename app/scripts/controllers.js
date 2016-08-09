@@ -70,6 +70,13 @@
       if (!this.currentUser) {
         return;
       }
+      this.communitiesForHrefs();
+      this.gamesForHrefs();
+    },
+    communitiesForHrefs: function () {
+      if (!this.currentUser) {
+        return;
+      }
       this.playersSvc.playersCommunities(this.currentUser.playerId)
         .then(communities => {
           this.communitiesTab.children = this.communitiesTab.children.concat(_.map(communities, (communityName, communityId) => {
@@ -79,13 +86,21 @@
             };
           }));
         });
+    },
+    gamesForHrefs: function () {
+      if (!this.currentUser) {
+        return;
+      }
+      if (this.gamesOfPlayer && _.isFunction(this.gamesOfPlayer.$destroy)) {
+        this.gamesOfPlayer.$destroy();
+      }
       this.gamesOfPlayer = this.playersSvc.getPlayerGames(this.currentUser.playerId, 50);
       this.gamesOfPlayer.$loaded()
         .then(() => {
           this.gamesTab.children = this.gamesOfPlayer.map(game => {
             return {
               title: this.$filter('date')(game.date, 'yyyy-MM-dd') + ' @ ' + game.location,
-              href: this.$state.href('game', {communityId: this.$state.params.communityId, gameId: game.$id})
+              href: this.$state.href('game', {communityId: game.communityId, gameId: game.$id})
             };
           });
         });

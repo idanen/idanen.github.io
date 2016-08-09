@@ -344,6 +344,7 @@ module.exports = function (gulp, $, config) {
           '!' + config.buildImages,
           '!' + config.buildJs,
           '!' + config.extDir,
+          '!' + config.buildDir + 'partials/**/*.html',
           '!' + config.buildDir + 'service-worker.js',
           '!' + config.buildDir + 'manifest.json',
           '!' + config.buildDir + 'index.html'

@@ -33,7 +33,7 @@
     event.waitUntil(
       sw.registration.showNotification('Push success!!!', {
         body: 'This is the notification\'s body',
-        //icon: '/img/android-icon-192x192.png',
+        icon: '/img/android-icon-192x192.png',
         tag: 'push-notification-test'
       })
     );
@@ -44,12 +44,13 @@
 
     event.waitUntil(
       sw.clients.matchAll({
+        includeUncontrolled: true,
         type: 'window'
       })
         .then(function (clientList) {
           for (let i = 0, length = clientList.length; i < length; i++) {
             let client = clientList[i];
-            if (client.url === '/' && 'focus' in client) {
+            if ('focus' in client) {
               return client.focus();
             }
           }

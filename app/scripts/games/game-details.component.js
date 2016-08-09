@@ -11,8 +11,11 @@
     }
 
     $onChanges(changes) {
-      if (changes.game) {
-        _.forEach(changes.games, (detail, key) => {
+      if (!this.details) {
+        this.details = {};
+      }
+      if (changes.game && changes.game.currentValue) {
+        _.forEach(changes.game.currentValue, (detail, key) => {
           if (detail !== this.details[key]) {
             this.details[key] = detail;
           }

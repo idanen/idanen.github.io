@@ -56,7 +56,6 @@
       this.tabs.push(this.communitiesTab);
       this.tabs.push(this.statsTab);
       this.tabs.push(this.gamesTab);
-      this.fetchPublicCommunities();
     },
     userChanged: function (currentUser) {
       if (!currentUser) {
@@ -94,23 +93,6 @@
     signOut: function () {
       this.userService.logout();
       this.currentUser = null;
-    },
-
-    addPublicCommunities: function (publicCommunities) {
-      if (!this.communitiesTab.children) {
-        this.communitiesTab.children = [];
-      }
-      this.communitiesTab.children = this.communitiesTab.children.concat(_.map(publicCommunities, (communityName, communityId) => {
-        return {
-          title: communityName,
-          href: this.$state.href('community', {communityId: communityId})
-        };
-      }));
-    },
-
-    fetchPublicCommunities: function () {
-      return this.communitiesSvc.getPublicCommunities()
-        .then(this.addPublicCommunities.bind(this));
     },
 
     hasChildren: function (tab) {

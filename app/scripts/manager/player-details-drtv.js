@@ -38,11 +38,6 @@
         }
 
         updateChartData(chartObj, chartData);
-
-        // Defer the chart build so that it could take the parent's width (the parent is hidden until $digest will be done to update the ng-show)
-        $timeout(function () {
-          chartHolder.highcharts(chartObj);
-        }, 0, false);
       }
 
       // Create a placeholder for the chart
@@ -54,7 +49,10 @@
         chartData = ctrl.chartData;
         if (chartData) {
           chartObj = createChartObject(ctrl.player.name, chartData);
-          chartHolder.highcharts(chartObj);
+          // Defer the chart build so that it could take the parent's width (the parent is hidden until $digest will be done to update the ng-show)
+          $timeout(function () {
+            chartHolder.highcharts(chartObj);
+          }, 0, false);
         }
       });
 

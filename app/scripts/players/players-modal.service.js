@@ -21,7 +21,7 @@
         player = this.Players.createPlayer();
       }
       modalInstance = this.$modal.open({
-        templateUrl: './partials/modals/addNewPlayer.html',
+        templateUrl: 'partials/modals/addNewPlayer.html',
         controller: 'ModalPlayerDetailsCtrl',
         controllerAs: 'modalCtrl',
         bindToController: true,

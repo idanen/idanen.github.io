@@ -81,7 +81,7 @@ module.exports = function (gulp, $, config) {
       config.appScriptFiles,
       config.buildDir + '**/*.html',
       '!' + config.appComponents,
-      '!**/*_test.*',
+      '!**/*.test.*',
       '!**/index.html',
       '!**/service-worker.js'
     ])

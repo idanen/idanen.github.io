@@ -5,8 +5,8 @@
     .config(config)
     .run(run);
 
-  config.$inject = ['$stateProvider', '$urlRouterProvider'];
-  function config($stateProvider, $urlRouterProvider) {
+  config.$inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider'];
+  function config($locationProvider, $stateProvider, $urlRouterProvider) {
     var home = {
           name: 'home',
           url: '/',
@@ -60,6 +60,8 @@
           url: '/player/:playerId',
           onEnter: PlayerState
         };
+
+    $locationProvider.html5Mode(true);
 
     $stateProvider.state(home);
     $stateProvider.state(community);

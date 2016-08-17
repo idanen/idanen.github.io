@@ -1,4 +1,5 @@
 'use strict';
+var historyApiFallback = require('connect-history-api-fallback');
 
 module.exports = function (gulp, $, config) {
   gulp.task('browserSync', function () {
@@ -7,7 +8,8 @@ module.exports = function (gulp, $, config) {
       open: 'external',
       port: config.port,
       server: {
-        baseDir: config.buildDir
+        baseDir: config.buildDir,
+        middleware: [historyApiFallback()]
       }
     });
   });

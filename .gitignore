@@ -6,7 +6,6 @@ tmp/
 *.sublime*
 app/google-login-sample.html
 npm-debug.log
-firebase.json
 firebase-debug.log
 report/
 bower_components/

@@ -35,15 +35,17 @@
     },
 
     save: function (player) {
-      var newPlayerRef;
+      let newPlayerRef;
       if (!player.$id) {
-        newPlayerRef = this.playersRef.push(player);
-        player.$id = newPlayerRef.key;
-        return newPlayerRef.then(function () {
-          return player;
-        });
+        delete player.isNew;
+        newPlayerRef = this.playersRef.push();
+        return newPlayerRef.set(player)
+          .then(() => {
+            player.$id = newPlayerRef.key;
+            return player;
+          });
       }
-      return this.playersRef.child(player.$id).update(player)
+      return player.$save()
         .then(function () {
           return player;
         });

@@ -8,20 +8,35 @@
     .controller('ModalPlayerDetailsCtrl', ModalPlayerDetailsController)
     .controller('PlayerDetailsCtrl', PlayerDetailsController);
 
-  ModalPlayerDetailsController.$inject = ['$uibModalInstance', 'player'];
+  ModalPlayerDetailsController.$inject = ['$uibModalInstance', '$stateParams', 'player', 'playersMembership', 'communitiesSvc'];
 
-  function ModalPlayerDetailsController($uibModalInstance, player) {
+  function ModalPlayerDetailsController($uibModalInstance, $stateParams, player, playersMembership, communitiesSvc) {
     var vm = this;
     vm.player = player;
 
-    vm.ok = function () {
-      $uibModalInstance.close(vm.player);
-    };
-
-    vm.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
-    };
+    this.$uibModalInstance = $uibModalInstance;
+    this.community = communitiesSvc.getCommunity($stateParams.communityId);
+    this.playersMembership = playersMembership;
   }
+
+  ModalPlayerDetailsController.prototype = {
+    ok: function () {
+      return this.playersMembership.addPlayer(this.player, this.community)
+        .then(() => this.closeDialog());
+    },
+
+    closeDialog: function () {
+      this.$uibModalInstance.close(this.player);
+    },
+
+    cancel: function () {
+      this.$uibModalInstance.dismiss('cancel');
+    },
+
+    playerChanged: function (changedPlayer) {
+      this.player = changedPlayer;
+    }
+  };
 
   PlayerDetailsController.$inject = ['$q', '$stateParams', '$filter', 'Players', 'Games'];
   function PlayerDetailsController($q, $stateParams, $filter, Players, Games) {
@@ -55,12 +70,14 @@
       this.player = this.Players.createPlayer();
       this.ready = this.$q.resolve();
     }
+
+    this.onChanges({player: this.player});
   }
 
   PlayerDetailsController.prototype = {
     dataForChart: function () {
       this.playerGamesCount = this.playerGames.length;
-      _.reduce(this.playerGames, function (sum, gameResult) {
+      _.reduce(this.playerGames, (sum, gameResult) => {
         var profit;
         if (!isNaN(gameResult.date)) {
           this.chartData.dates.push(this.$filter('date')(gameResult.date, 'y-MM-dd'));
@@ -74,7 +91,7 @@
         this.chartData.balances.push(sum);
 
         return sum;
-      }.bind(this), 0);
+      }, 0);
     },
     winningSessions: function () {
       if (this.playerGames) {
@@ -101,6 +118,58 @@
     stopLoadingIndication: function () {
       this.loading = false;
     },
+
+    createChartObject: function () {
+      if (!this.chartData) {
+        return;
+      }
+      return {
+        chart: {},
+        title: {
+          text: this.player.name + '\'s performance'
+        },
+        xAxis: {
+          categories: this.chartData.dates
+        },
+        tooltip: {
+          formatter: function () {
+            var s;
+            // the pie chart
+            if (this.point.name) {
+              s = String(this.point.name) + ': ' + this.y + ' fruits';
+            } else {
+              s = String(this.x) + ': ' + this.y;
+            }
+            return s;
+          }
+        },
+        series: [
+          {
+            type: 'column',
+            name: this.player.name,
+            data: this.chartData.profits
+          },
+          {
+            type: 'spline',
+            name: 'Balance',
+            data: this.chartData.balances,
+            marker: {
+              lineWidth: 2,
+              lineColor: '#90ed7d',
+              fillColor: 'white'
+            }
+          }
+        ]
+      };
+    },
+
+    onUserChanges: function () {
+      if (_.isFunction(this.player.$save)) {
+        this.player.$save();
+      }
+      this.onChanges({player: this.player});
+    },
+
     refreshData: function () {
       // Calculate extra data
       this.playerWinningSessions = this.winningSessions(this.player);

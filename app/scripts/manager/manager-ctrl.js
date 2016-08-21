@@ -96,10 +96,11 @@
           }
 
           player = savedPlayer;
-
-          return this.communitiesSvc.addMember(player, this.community);
         })
         .then(this.init.bind(this));
+    },
+    updateMembership: function (player) {
+      return this.communitiesSvc.addMember(player, this.community);
     },
     chipsValueChanged: function (current) {
       if (!current) {

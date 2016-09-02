@@ -11,7 +11,7 @@
 
 	<div class="row game-container">
 		<div class="col-md-4 col-xs-6 fader" ng-repeat="player in vm.playersInGame | orderBy:'name'">
-			<player-card player="player" on-update="vm.playerUpdated(updates)"/>
+			<player-card player="player" on-update="vm.playerResultUpdated(updates)"></player-card>
 		</div>
 	</div>
 	<ul class="nav nav-pills" role="tablist">

@@ -4,12 +4,13 @@
   angular.module('pokerManager')
     .service('playersGames', PlayersGamesService);
 
-  PlayersGamesService.$inject = ['Ref', '$q', '$firebaseArray'];
-  function PlayersGamesService(Ref, $q, $firebaseArray) {
+  PlayersGamesService.$inject = ['Ref', '$q', '$firebaseArray', '$firebaseUtils'];
+  function PlayersGamesService(Ref, $q, $firebaseArray, $firebaseUtils) {
     this.playersRef = Ref.child('players');
     this.gamesRef = Ref.child('games');
     this.$q = $q;
     this.$firebaseArray = $firebaseArray;
+    this.$firebaseUtils = $firebaseUtils;
   }
 
   PlayersGamesService.prototype = {
@@ -20,19 +21,51 @@
           .child('players')
       );
     },
+    getGamesOfPlayer: function (playerId) {
+      return this.$firebaseArray(
+        this.playersRef
+          .child(playerId)
+          .child('games')
+      );
+    },
     removePlayerFromGame: function (playerId, gameId) {
-      return this.gamesRef
-        .child(gameId)
-        .child('players')
-        .child(playerId)
-        .remove()
+      var promises = [];
+
+      promises.push(
+        this.gamesRef
+          .child(gameId)
+          .child('players')
+          .child(playerId)
+          .remove()
+      );
+      promises.push(
+        this.playersRef
+          .child(playerId)
+          .child('games')
+          .child(gameId)
+          .remove()
+      );
+
+      return this.$q.all(promises)
         .then(() => this.getPlayersInGame(gameId));
     },
     removeAllPlayersFromGame: function (gameId) {
       return this.gamesRef
-        .child(gameId)
-        .child('players')
-        .remove();
+          .child(gameId)
+          .child('players')
+          .once('value')
+            .then(snap => {
+              return Object.keys(snap.val());
+            })
+            .then(playersIds => {
+              let promises = [];
+              playersIds.forEach(playerId => {
+                promises.push(
+                  this.removePlayerFromGame(playerId, gameId)
+                );
+              });
+              return this.$q.all(promises);
+            });
     },
     addPlayerToGame: function (player, game) {
       var gameResult = {},
@@ -75,14 +108,14 @@
           .child(player.$id)
           .child('games')
           .child(game.$id)
-          .update(gameResult)
+          .update(this.$firebaseUtils.toJSON(gameResult))
       );
       promises.push(
         this.gamesRef
           .child(game.$id)
           .child('players')
           .child(player.$id)
-          .update(gameResult)
+          .update(this.$firebaseUtils.toJSON(gameResult))
       );
 
       return this.$q.all(promises)

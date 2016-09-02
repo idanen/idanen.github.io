@@ -88,7 +88,7 @@
 
       // Add payout to player's balance
       player.buyout = player.currentChipCount / this.game.chipValue;
-      this.playersInGame.$save(player);
+      this.playerResultUpdated(player);
     },
 
     bust: function (player) {
@@ -99,7 +99,7 @@
     comeBack: function (player) {
       if (!player.isPlaying) {
         player.isPlaying = true;
-        this.playersInGame.$save(player);
+        this.playerResultUpdated(player);
       }
     },
 
@@ -114,7 +114,7 @@
 
     chipCountUpdate: function (player) {
       player.buyout = player.currentChipCount / this.game.chipValue;
-      this.playersInGame.$save(player);
+      this.playerResultUpdated(player);
     },
 
     totalBuyin: function () {
@@ -164,8 +164,9 @@
       this.game.$save();
     },
 
-    playerUpdated: function (player) {
-      this.playersInGame.$save(player);
+    playerResultUpdated: function (player) {
+      // this.playersInGame.$save(player);
+      this.playersGames.updatePlayerResult(player, this.game, player);
     }
   };
 }());

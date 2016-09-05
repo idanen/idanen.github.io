@@ -81,11 +81,25 @@
       this._userChangedListeners.forEach(listener => listener(this.currentUser));
     },
 
-    login: function () {
-      var provider = new this.$window.firebase.auth.GoogleAuthProvider();
-      this.GOOGLE_AUTH_SCOPES.forEach(scope => provider.addScope(scope));
-      return this.authObj.$signInWithPopup(provider)
-        .then(this.waitForUser.bind(this));
+    login: function (method, email, pass) {
+      let provider, loginPromise;
+
+      switch (method) {
+        case 'google':
+          provider = new this.$window.firebase.auth.GoogleAuthProvider();
+          this.GOOGLE_AUTH_SCOPES.forEach(scope => provider.addScope(scope));
+          loginPromise = this.authObj.$signInWithPopup(provider);
+          break;
+        case 'email':
+          loginPromise = this.authObj.$signInWithEmailAndPassword(email, pass);
+          break;
+        default:
+          loginPromise = this.$q.reject('No login method was provided');
+          break;
+      }
+
+      return loginPromise
+        .then(() => this.waitForUser());
     },
 
     logout: function () {

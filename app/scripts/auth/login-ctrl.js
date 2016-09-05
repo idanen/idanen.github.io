@@ -43,7 +43,7 @@
         return this.playersSvc.getPlayer(user.playerId);
       }
 
-      return this.playersUsers.matchUserToPlayer.bind(this.playersUsers);
+      return this.playersUsers.matchUserToPlayer(user);
     },
 
     obtainedUserInfo: function (user) {

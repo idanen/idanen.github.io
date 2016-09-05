@@ -1,0 +1,43 @@
+<paper-card class="container-fluid" heading="{{ $ctrl.currentUser.name || 'Please Login' }}" image="{{ $ctrl.currentUser.imageUrl }}" alt="User's profile image">
+  <div class="card-content">
+    <form ng-if="!$ctrl.currentUser">
+      <fieldset>
+        <legend>Social login</legend>
+        <paper-button>
+          <span class="icon icon-google-plus"></span>
+          <span>Login</span>
+        </paper-button>
+      </fieldset>
+      <fieldset>
+        <legend>Email login</legend>
+        <label>
+          <input type="checkbox" ng-model="$ctrl.signingUp">
+          <span>Sign up</span>
+        </label>
+        <paper-input-container ng-show="$ctrl.signingUp">
+          <label>Name</label>
+          <input is="iron-input" ng-model="$ctrl.signup.name">
+        </paper-input-container>
+        <paper-input-container>
+          <label>Email</label>
+          <input is="iron-input" ng-model="$ctrl.signup.email">
+        </paper-input-container>
+        <paper-input-container>
+          <label>Password</label>
+          <input is="iron-input" ng-model="$ctrl.signup.pass">
+        </paper-input-container>
+        <paper-button ng-click="$ctrl.signup()" ng-show="$ctrl.signingUp">
+          <iron-icon icon="send"></iron-icon>
+          <span>Signup</span>
+        </paper-button>
+        <paper-button ng-click="$ctrl.login('email')" ng-hide="$ctrl.signingUp">
+          <iron-icon icon="send"></iron-icon>
+          <span>Login</span>
+        </paper-button>
+      </fieldset>
+    </form>
+  </div>
+  <div class="card-actions" ng-if="!$ctrl.currentUser">
+    <paper-button>Login</paper-button>
+  </div>
+</paper-card>

@@ -25,6 +25,14 @@
             community: communityResolver
           }
         },
+        userprofile = {
+          name: 'userprofile',
+          parent: 'home',
+          url: '^/user/:uid',
+          templateUrl: 'scripts/user-profile/user-profile.view.html',
+          controller: 'UserProfileCtrl',
+          controllerAs: '$ctrl'
+        },
         // http://www.sitepoint.com/creating-stateful-modals-angularjs-angular-ui-router/
         addCommunity = {
           name: 'addCommunity',
@@ -65,6 +73,7 @@
 
     $stateProvider.state(home);
     $stateProvider.state(community);
+    $stateProvider.state(userprofile);
     $stateProvider.state(addCommunity);
     $stateProvider.state(gameManager);
     $stateProvider.state(stats);

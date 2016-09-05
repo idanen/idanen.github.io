@@ -123,10 +123,10 @@
       }.bind(this));
     },
 
-    addUser: function (player, user) {
+    addUser: function (user, player) {
       var newPlayer, newPlayerRef;
 
-      if (player) {
+      if (player && player.$id) {
         return this.playersRef
           .child(player.$id)
           .child('userUid')
@@ -138,9 +138,9 @@
 
       newPlayer = this.createPlayer();
       newPlayer.userUid = user.uid;
-      newPlayer.name = user.name;
+      newPlayer.name = user.name || user.displayName;
       newPlayer.email = user.email;
-      newPlayer.imageUrl = user.imageUrl;
+      newPlayer.imageUrl = user.imageUrl || user.photoURL;
       delete newPlayer.isNew;
       newPlayerRef = this.playersRef.push(player);
       newPlayer.$id = newPlayerRef.key;

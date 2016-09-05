@@ -58,11 +58,11 @@
       this.tabs.push(this.gamesTab);
     },
     userChanged: function (currentUser) {
+      this.currentUser = currentUser;
       if (!currentUser) {
         return;
       }
 
-      this.currentUser = currentUser;
       this.obtainUserData();
       return this.currentUser;
     },

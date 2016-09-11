@@ -81,6 +81,32 @@
       this._userChangedListeners.forEach(listener => listener(this.currentUser));
     },
 
+    createUser: function (name, email, pass) {
+      return this.authObj.$createUserWithEmailAndPassword(email, pass)
+        .then(newUser => this.saveUser(newUser, name));
+    },
+
+    getImageUrl: function (identifier) {
+      return `https://robohash.org/${identifier}?gravatar=yes&set=set2&bgset=bg1`;
+    },
+
+    saveUser: function (toSave, displayName) {
+      if (!toSave || !toSave.uid) {
+        return this.$q.reject(new Error('Did not receive valid user'));
+      }
+      return this.$q.resolve(
+        this.usersRef
+          .child(toSave.uid)
+          .set({
+            uid: toSave.uid,
+            displayName: displayName,
+            email: toSave.email,
+            photoURL: this.getImageUrl(toSave.email)
+          })
+          .then(() => toSave)
+      );
+    },
+
     login: function (method, email, pass) {
       let provider, loginPromise;
 

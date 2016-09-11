@@ -12,6 +12,11 @@
   }
 
   PlayersUsersService.prototype = {
+    createUser: function (name, email, pass) {
+      return this.userSvc.createUser(name, email, pass)
+        .then(savedUser => this.matchUserToPlayer(savedUser));
+    },
+
     matchUserToPlayer: function (user) {
       return this.playersSvc.findBy('email', user.email)
         .then(this.playersSvc.addUser.bind(this.playersSvc, user))

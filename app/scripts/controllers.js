@@ -74,7 +74,7 @@
       this.gamesForHrefs();
     },
     communitiesForHrefs: function () {
-      if (!this.currentUser) {
+      if (!this.currentUser || !this.currentUser.playerId) {
         return;
       }
       this.playersSvc.playersCommunities(this.currentUser.playerId)
@@ -88,7 +88,7 @@
         });
     },
     gamesForHrefs: function () {
-      if (!this.currentUser) {
+      if (!this.currentUser || !this.currentUser.playerId) {
         return;
       }
       if (this.gamesOfPlayer && _.isFunction(this.gamesOfPlayer.$destroy)) {

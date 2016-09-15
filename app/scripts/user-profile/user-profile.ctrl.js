@@ -47,7 +47,7 @@
     },
 
     login: function (method) {
-      this.userService.login(method);
+      this.userService.login(method, this.userInputs.email, this.userInputs.pass);
     },
 
     markErrors: function () {

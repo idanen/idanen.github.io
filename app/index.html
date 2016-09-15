@@ -61,8 +61,8 @@
 					</ul>
 					<ul class="navbar-text navbar-right">
             <li ng-hide="main.currentUser">
-              <a ui-sref="userprofile({uid: ''})">
-                Login <span class="icon icon-google-plus" ng-click="authCtrl.signIn('google')"></span> <span class="icon icon-at" ng-click="authCtrl.signIn('email')"></span>
+              <a class="btn btn-link btn-sm navbar-btn" ui-sref="userprofile({uid: ''})">
+                Login <span class="icon icon-google-plus"></span> <span class="icon icon-at"></span>
               </a>
             </li>
 						<li ng-show="main.currentUser">

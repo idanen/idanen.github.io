@@ -3,13 +3,18 @@
 
   angular
     .module('pokerManager')
-    .service('communitiesSvc', CommunitiesService);
+    .service('communitiesSvc', CommunitiesService)
+    .constant('Memberships', Object.freeze({
+      ADMINS: 'admins',
+      MEMBERS: 'members'
+    }));
 
-  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
-  function CommunitiesService($q, Ref, $firebaseArray, $firebaseObject) {
+  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject', 'Memberships'];
+  function CommunitiesService($q, Ref, $firebaseArray, $firebaseObject, Memberships) {
     this.$q = $q;
     this.$firebaseArray = $firebaseArray;
     this.$firebaseObject = $firebaseObject;
+    this.Memberships = Memberships;
     this.communitiesRef = Ref.child('communities');
     this.publicCommunitiesRef = Ref.child('public_communities');
   }
@@ -31,10 +36,10 @@
       );
     },
     addAdmin: function (admin, community) {
-      return this._addMember(admin, community, 'admins');
+      return this._addMember(admin, community, this.Memberships.ADMINS);
     },
     addMember: function (player, community) {
-      return this._addMember(player, community, 'members');
+      return this._addMember(player, community, this.Memberships.MEMBERS);
     },
     _addMember: function (player, community, membership) {
       return this.communitiesRef
@@ -43,10 +48,16 @@
         .child(player.$id)
         .set(player.name);
     },
+    isAdmin: function (playerId, communityId) {
+      return this._isMemberOrAdmin(playerId, communityId, this.Memberships.ADMINS);
+    },
     isMember: function (playerId, communityId) {
+      return this._isMemberOrAdmin(playerId, communityId, this.Memberships.MEMBERS);
+    },
+    _isMemberOrAdmin: function (playerId, communityId, membership) {
       return this.communitiesRef
         .child(communityId)
-        .child('members')
+        .child(membership)
         .child(playerId)
         .once('value')
         .then(snap => snap.exists());
@@ -54,6 +65,35 @@
     getCommunity: function (communityId) {
       return this.$firebaseObject(this.communitiesRef.child(communityId));
     },
+
+    askToJoin: function (joiner) {
+      return this.$q.resolve(
+        this.communitiesRef
+          .child(joiner.communityId)
+          .child('joiners')
+          .child(joiner.uid)
+          .set(joiner)
+      );
+    },
+
+    getJoiners: function (communityId) {
+      return this.$firebaseArray(
+        this.communitiesRef
+          .child(communityId)
+          .child('joiners')
+      );
+    },
+
+    removeJoiner: function (communityId, uid) {
+      return this.$q.resolve(
+        this.communitiesRef
+          .child(communityId)
+          .child('joiners')
+          .child(uid)
+          .remove()
+      );
+    },
+
     getCommunitiesByIds: function (communityIds) {
       return this.$q(resolve => {
         let communities = [];

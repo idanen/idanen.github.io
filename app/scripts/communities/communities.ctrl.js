@@ -5,8 +5,8 @@
     .module('pokerManager')
     .controller('CommunitiesCtrl', CommunitiesController);
 
-  CommunitiesController.$inject = ['communitiesSvc', 'userService', 'playerModal', 'Games', '$state', 'community', 'playersMembership'];
-  function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, playersMembership) {
+  CommunitiesController.$inject = ['communitiesSvc', 'userService', 'playerModal', 'Games', '$state', 'community', 'playersMembership', 'playersUsers'];
+  function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, playersMembership, playersUsers) {
     this.pageSize = 3;
     this.currentPage = 0;
     this.fromDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
@@ -17,6 +17,7 @@
     this.$state = $state;
     this.community = community;
     this.playersMembership = playersMembership;
+    this.playersUsers = playersUsers;
 
     this.collapseState = {};
     this.newCommunity = '';
@@ -26,6 +27,7 @@
     this.communities = this.communitiesSvc.getCommunities();
 
     this.getCommunityGames(this.community);
+    this.getCommunityJoiners(this.community);
 
     this.userService.onUserChange(currentUser => this.userChanged(currentUser));
   }
@@ -61,8 +63,13 @@
           .then(isMember => {
             this.isMember = isMember;
           });
+        this.communitiesSvc.isAdmin(this.currentUser.playerId, this.community.$id)
+          .then(isAdmin => {
+            this.isAdmin = isAdmin;
+          });
       } else {
         this.isMember = false;
+        this.isAdmin = false;
       }
     },
 
@@ -85,6 +92,16 @@
         .then(() => {
           this.currentPage = this.games.length - this.pageSize;
         });
+    },
+
+    confirmPlayer: function (joiner) {
+      return this.userService.getUser(joiner.uid)
+        .then(user => this.playersUsers.matchUserToPlayer(user))
+        .then(() => this.communitiesSvc.removeJoiner(this.community.$id, joiner.uid));
+    },
+
+    getCommunityJoiners: function (aCommunity) {
+      this.joiners = this.communitiesSvc.getJoiners(aCommunity.$id);
     },
 
     isCollapsed: function (communityId) {

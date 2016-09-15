@@ -12,6 +12,9 @@ body {
 .login-state-logged-in {
   display: inline-block;
   /*padding: 10px 0;*/
+  .img-circle {
+    max-width: 25px;
+  }
 }
 
 .game-container {

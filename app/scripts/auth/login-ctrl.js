@@ -15,15 +15,10 @@
     this.playersSvc = playersSvc;
 
     $firebaseAuth().$onAuthStateChanged(this.obtainedUserInfo.bind(this));
+    this.userService.onUserChange(this.obtainedUserInfo.bind(this));
   }
 
   LoginController.prototype = {
-    signIn: function (provider) {
-      this.userService.login(provider)
-        .then(this.matchUserToPlayer.bind(this))
-        .catch(error => console.log(error));
-    },
-
     signOut: function () {
       try {
         this.$analytics.eventTrack('Sign out', {category: 'Actions', label: this.user.name});
@@ -47,20 +42,8 @@
     },
 
     obtainedUserInfo: function (user) {
-      var player, providerData;
-      if (user) {
-        providerData = user.providerData[0];
-
-        player = {
-          name: providerData.displayName,
-          email: providerData.email,
-          photoURL: providerData.photoURL
-        };
-
-        this.user = angular.extend({}, user, player);
-
-        return this.user;
-      }
+      this.user = user;
+      return this.user;
     }
   };
 }());

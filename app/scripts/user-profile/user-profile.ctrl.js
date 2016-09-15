@@ -4,10 +4,12 @@
   angular.module('pokerManager')
     .controller('UserProfileCtrl', UserProfileController);
 
-  UserProfileController.$inject = ['userService', 'playersUsers'];
-  function UserProfileController(userService, playersUsers) {
+  UserProfileController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc'];
+  function UserProfileController($element, userService, playersUsers, communitiesSvc) {
+    this.$element = $element;
     this.userService = userService;
     this.playersUsers = playersUsers;
+    this.communitiesSvc = communitiesSvc;
 
     this.userInputs = {
       name: '',
@@ -19,18 +21,37 @@
   }
 
   UserProfileController.prototype = {
+    $postLink: function () {
+      this.cardElement = this.$element.find('paper-card');
+    },
+
     userChanged: function (currentUser) {
       this.currentUser = currentUser;
+      if (this.cardElement) {
+        if (this.currentUser) {
+          this.cardElement.heading = this.currentUser.name;
+        } else {
+          this.cardElement.heading = 'Login / Signup';
+        }
+      }
     },
 
     signup: function () {
-      return this.playersUsers.createUser(this.userInputs.name, this.userInputs.email, this.userInputs.pass)
+      if (!this.userProfileForm.$valid) {
+        this.markErrors();
+        return;
+      }
+      return this.userService.createUser(this.userInputs.name, this.userInputs.email, this.userInputs.pass)
         .then(saved => console.log('sign up success', saved))
         .catch(err => console.error(err));
     },
 
     login: function (method) {
       this.userService.login(method);
+    },
+
+    markErrors: function () {
+      console.log('marking errors');
     },
 
     logout: function () {

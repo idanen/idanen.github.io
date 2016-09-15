@@ -26,7 +26,7 @@
           .once('value')
           .then(snap => {
             this.user = snap.val();
-            return snap.val();
+            return this.user;
           })
       );
     },
@@ -101,7 +101,8 @@
             uid: toSave.uid,
             displayName: displayName,
             email: toSave.email,
-            photoURL: this.getImageUrl(toSave.email)
+            photoURL: this.getImageUrl(toSave.email),
+            provider: 'email'
           })
           .then(() => toSave)
       );

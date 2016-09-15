@@ -7,6 +7,25 @@
       </div>
     </div>
     <div ng-if="!!vm.currentUser">
+      <div class="row" ng-if="vm.isAdmin">
+        <div class="col-xs-12">
+          <h3>Joining users</h3>
+          <ul>
+            <li ng-repeat="joiner in vm.joiners">
+              <span>{{ joiner.email }}</span>
+              <paper-button raised ng-click="vm.confirmPlayer(joiner)">Confirm</paper-button>
+            </li>
+          </ul>
+          <!--<paper-card ng-repeat="joiner in vm.joiners">-->
+            <!--<div class="card-content">-->
+              <!--{{ joiner.email }}-->
+            <!--</div>-->
+            <!--<div class="card-actions">-->
+              <!--<paper-button ng-click="vm.confirmPlayer(joiner)">Confirm</paper-button>-->
+            <!--</div>-->
+          <!--</paper-card>-->
+        </div>
+      </div>
       <div class="row">
         <div class="col-sm-4">
           <input type="text" class="form-control" ng-model="vm.fromDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="fromDate" bs-datepicker>

@@ -1,6 +1,6 @@
-<paper-card class="container-fluid" heading="{{ $ctrl.currentUser.displayName || 'Please Login' }}" image="{{ $ctrl.currentUser.photoURL }}?sz=150" alt="User's profile image">
+<paper-card class="container-fluid" heading="{{ $ctrl.currentUser.displayName || 'Please Login' }}" image="{{ $ctrl.currentUser.provider === 'google' ? $ctrl.currentUser.photoURL + '?sz=150' : $ctrl.currentUser.photoURL }}" alt="User's profile image">
   <div class="card-content">
-    <form ng-show="!$ctrl.currentUser" name="userProfile">
+    <form ng-show="!$ctrl.currentUser" name="$ctrl.userProfileForm">
       <fieldset>
         <!--<legend>Social login</legend>-->
         <paper-button raised ng-click="$ctrl.login('google')">
@@ -14,17 +14,19 @@
           <input type="checkbox" ng-model="$ctrl.signingUp">
           <span>Sign up</span>
         </label>
-        <paper-input-container ng-show="$ctrl.signingUp">
+        <paper-input-container auto-validate ng-show="$ctrl.signingUp">
           <label>Name</label>
-          <input is="iron-input" ng-model="$ctrl.userInputs.name">
+          <input is="iron-input" name="name" ng-model="$ctrl.userInputs.name" ng-required="$ctrl.signingUp">
+          <paper-input-error>Name is mandatory</paper-input-error>
         </paper-input-container>
-        <paper-input-container>
+        <paper-input-container auto-validate>
           <label>Email</label>
-          <input is="iron-input" ng-model="$ctrl.userInputs.email">
+          <input is="iron-input" name="email" ng-model="$ctrl.userInputs.email" required>
         </paper-input-container>
-        <paper-input-container>
+        <paper-input-container auto-validate>
           <label>Password</label>
-          <input is="iron-input" type="password" ng-model="$ctrl.userInputs.pass">
+          <input is="iron-input" name="password" type="password" ng-model="$ctrl.userInputs.pass" pattern="[\w]{6,}" required>
+          <paper-input-error>Password should be at least 6 characters long</paper-input-error>
         </paper-input-container>
         <paper-button raised ng-click="$ctrl.signup()" ng-show="$ctrl.signingUp">
           <iron-icon icon="send"></iron-icon>

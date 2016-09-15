@@ -4,12 +4,13 @@
   angular.module('pokerManager')
     .controller('HomeCtrl', HomeController);
 
-  HomeController.$inject = ['communitiesSvc', 'userService', 'playersMembership'];
-  function HomeController(communitiesSvc, userService, playersMembership) {
+  HomeController.$inject = ['communitiesSvc', 'userService', 'playersMembership', 'polymerToaster'];
+  function HomeController(communitiesSvc, userService, playersMembership, polymerToaster) {
     this.communities = communitiesSvc.getCommunities();
     this.communitiesSvc = communitiesSvc;
     this.userService = userService;
     this.playersMembership = playersMembership;
+    this.polymerToaster = polymerToaster;
 
     this.newCommunity = '';
     this.defaultSettings = {
@@ -19,14 +20,17 @@
     };
     this.addingComunity = true;
     this.editingCommunity = false;
+
+    this.userService.onUserChange(user => this.userChanged(user));
   }
 
   HomeController.prototype = {
     prepareJoinCommunity: function () {
       this.joinFormVisible = true;
     },
-    joinCommunity: function (communityInvitationKey) {
-      this.communitiesSvc.joinCommunity(communityInvitationKey);
+
+    userChanged: function (user) {
+      this.currentUser = user;
     },
 
     communitiesDropdownToggle() {
@@ -88,6 +92,26 @@
 
     saveJoiningCommunity() {
       console.warn('Joining community not implemented yet');
+      if (this.currentUser) {
+        this.communityInputDisabled = true;
+        this.communitiesSvc.askToJoin({
+          communityId: this.joiningTo,
+          uid: this.currentUser.uid,
+          email: this.currentUser.email,
+          joinCode: this.newCommunity
+        })
+          .then(() => {
+            this.newCommunity = '';
+            this.closeCommunityEdit();
+            this.polymerToaster.showToast({
+              duration: 5000,
+              text: 'Join request send.'
+            });
+          })
+          .finally(() => {
+            this.communityInputDisabled = false;
+          });
+      }
     },
 
     openCommunityEdit() {

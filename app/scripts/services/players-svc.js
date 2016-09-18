@@ -80,6 +80,14 @@
       );
     },
 
+    guestsOfCommunity: function (communityId) {
+      return this.$firebaseArray(
+        this.playersRef
+          .orderByChild('guestOf')
+          .equalTo(communityId)
+      );
+    },
+
     playersCommunities: function (playerId) {
       return this.$q.resolve(
         this.playersRef
@@ -92,12 +100,27 @@
       );
     },
 
-    joinCommunity: function (player, community) {
+    joinCommunity: function (player, community, isGuest) {
+      if (isGuest) {
+        return this.playersRef
+          .child(player.$id)
+          .set({
+            guestOf: community.$id
+          });
+      }
       return this.playersRef
         .child(player.$id)
         .child('memberIn')
         .child(community.$id)
-        .set(community.name);
+        .set(community.name)
+        .then(() => this.removeGuest(player));
+    },
+
+    removeGuest: function (player) {
+      return this.playersRef
+        .child(player.$id)
+        .child('guestOf')
+        .remove();
     },
 
     findBy: function (field, value, multi) {

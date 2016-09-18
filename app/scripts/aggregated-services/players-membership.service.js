@@ -25,8 +25,8 @@
      */
     addPlayer: function (player, community) {
       return this.playersSvc.save(player)
-        .then(this.playersSvc.joinCommunity.bind(this.playersSvc, player, community))
-        .then(this.communitiesSvc.addMember.bind(this.communitiesSvc, player, community));
+        .then(() => this.playersSvc.joinCommunity(player, community, true))
+        .then(() => this.communitiesSvc.addMember(player, community));
     },
     /**
      * @name setAdminOfCommunity

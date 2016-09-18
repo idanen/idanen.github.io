@@ -25,6 +25,14 @@
             community: communityResolver
           }
         },
+        joinCommunity = {
+          name: 'joinCommunity',
+          parent: 'home',
+          url: '^/join-community/:communityId?:joinCode',
+          templateUrl: 'scripts/join-community/join-community.view.html',
+          controller: 'JoinCommunityCtrl',
+          controllerAs: '$ctrl'
+        },
         userprofile = {
           name: 'userprofile',
           parent: 'home',
@@ -73,6 +81,7 @@
 
     $stateProvider.state(home);
     $stateProvider.state(community);
+    $stateProvider.state(joinCommunity);
     $stateProvider.state(userprofile);
     $stateProvider.state(addCommunity);
     $stateProvider.state(gameManager);

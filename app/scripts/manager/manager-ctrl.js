@@ -64,7 +64,15 @@
       this.community.$loaded()
         .then(() => {
           this.players = this.Players.playersOfCommunity(this.community.$id, this.community.name);
+          this.guests = this.Players.guestsOfCommunity(this.community.$id);
+
+          this.players.$watch(() => this.combineMembersAndGuests());
+          this.guests.$watch(() => this.combineMembersAndGuests());
         });
+    },
+
+    combineMembersAndGuests: function () {
+      this.playersAndGuests = this.players.concat(this.guests);
     },
 
     refreshPlayersList: function () {

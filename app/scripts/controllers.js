@@ -79,12 +79,12 @@
       }
       this.playersSvc.playersCommunities(this.currentUser.playerId)
         .then(communities => {
-          this.communitiesTab.children = this.communitiesTab.children.concat(_.map(communities, (communityName, communityId) => {
+          this.communitiesTab.children = _.map(communities, (communityName, communityId) => {
             return {
               title: communityName,
               href: this.$state.href('community', {communityId: communityId})
             };
-          }));
+          });
         });
     },
     gamesForHrefs: function () {

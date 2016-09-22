@@ -21,9 +21,9 @@
                       <a class="btn btn-sm btn-default" ui-sref="player({playerId: player.$id})"><i class="icon icon-pencil"></i></a>
                     </td>
                     <td>
-                        <a href="mailto:{{ player.email }}" title="{{ player.email }}" target="_blank">{{ player.name }}</a>
+                        <a ng-href="mailto:{{ player.email }}" title="{{ player.email }}" target="_blank">{{ player.name }}</a>
                         <br/>
-                        <a href="tel:{{ player.phone }}">{{ player.phone }}</a>
+                        <a ng-href="tel:{{ player.phone }}">{{ player.phone }}</a>
                     </td>
                     <td>
                         <span class="label" ng-class="{'label-success': (player.balance > 0), 'label-danger': (player.balance < 0), 'label-default': (player.balance == 0)}">{{ player.balance }}</span>

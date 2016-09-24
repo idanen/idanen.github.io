@@ -67,7 +67,7 @@
           .then(this.dataForChart.bind(this))
           .finally(this.stopLoadingIndication.bind(this));
     } else {
-      this.player = this.Players.createPlayer();
+      this.player = this.Players.createPlayer(this.communityId);
       this.ready = this.$q.resolve();
     }
 

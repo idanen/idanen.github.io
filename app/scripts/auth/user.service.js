@@ -25,8 +25,8 @@
           .child(uid)
           .once('value')
           .then(snap => {
-            this.user = snap.val();
-            return this.user;
+            this.currentUser = snap.val();
+            return this.currentUser;
           })
       );
     },
@@ -86,25 +86,27 @@
         .then(newUser => this.saveUser(newUser, name));
     },
 
-    getImageUrl: function (identifier) {
+    generateImageUrl: function (identifier) {
       return `https://robohash.org/${identifier}?gravatar=yes&set=set2&bgset=bg1`;
     },
 
     saveUser: function (toSave, displayName) {
+      let newUser;
       if (!toSave || !toSave.uid) {
         return this.$q.reject(new Error('Did not receive valid user'));
       }
+      newUser = {
+        uid: toSave.uid,
+        displayName: displayName,
+        email: toSave.email,
+        photoURL: this.generateImageUrl(toSave.email),
+        provider: 'email'
+      };
       return this.$q.resolve(
         this.usersRef
           .child(toSave.uid)
-          .set({
-            uid: toSave.uid,
-            displayName: displayName,
-            email: toSave.email,
-            photoURL: this.getImageUrl(toSave.email),
-            provider: 'email'
-          })
-          .then(() => toSave)
+          .set(newUser)
+          .then(() => newUser)
       );
     },
 
@@ -131,14 +133,15 @@
 
     logout: function () {
       this.authObj.$signOut();
-      delete this.user;
+      delete this.currentUser;
     },
 
     linkUserToPlayer: function (player) {
       return this.usersRef
-        .child(this.user.uid)
+        .child(this.currentUser.uid)
         .child('playerId')
         .set(player.$id)
+        .then(() => this.getUser(this.currentUser.uid))
         .then(() => player);
     },
 
@@ -148,11 +151,11 @@
       };
       this.waitForUser()
         .then(() => {
-          if (!this.user) {
+          if (!this.currentUser) {
             return;
           }
           return this.usersRef
-            .child(this.user.uid)
+            .child(this.currentUser.uid)
             .child('devices')
             .orderByChild('subscriptionId')
             .equalTo(subscriptionId)
@@ -170,11 +173,11 @@
     removeSubscriptionId: function (subscriptionId) {
       this.waitForUser()
         .then(() => {
-          if (!this.user) {
+          if (!this.currentUser) {
             return;
           }
           return this.usersRef
-            .child(this.user.uid)
+            .child(this.currentUser.uid)
             .child('devices')
             .orderByChild('subscriptionId')
             .equalTo(subscriptionId)

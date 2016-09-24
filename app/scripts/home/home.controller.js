@@ -4,12 +4,13 @@
   angular.module('pokerManager')
     .controller('HomeCtrl', HomeController);
 
-  HomeController.$inject = ['communitiesSvc', 'userService', 'playersMembership', 'polymerToaster'];
-  function HomeController(communitiesSvc, userService, playersMembership, polymerToaster) {
+  HomeController.$inject = ['communitiesSvc', 'userService', 'playersMembership', 'Players', 'polymerToaster'];
+  function HomeController(communitiesSvc, userService, playersMembership, playersSvc, polymerToaster) {
     this.communities = communitiesSvc.getCommunities();
     this.communitiesSvc = communitiesSvc;
     this.userService = userService;
     this.playersMembership = playersMembership;
+    this.playersSvc = playersSvc;
     this.polymerToaster = polymerToaster;
 
     this.newCommunity = '';
@@ -66,27 +67,25 @@
         this.communityInputDisabled = true;
         communityToAdd.name = this.newCommunity;
         communityToAdd.defaultSettings = this.defaultSettings;
-        this.communities.$add(communityToAdd)
-            .then(ref => {
-              communityToAdd.$id = ref.key;
-              return this.userService.waitForUser();
-            })
-            .then(user => {
-              return this.playersMembership.setAdminOfCommunity(communityToAdd, user.uid);
-            })
-            .catch(err => {
-              console.error('Couldn\'t add community: ', err);
-            })
-            .finally(() => {
-              this.communityInputDisabled = false;
-              this.newCommunity = '';
-              this.defaultSettings = {
-                chipValue: 1,
-                defaultBuyin: 50,
-                hostingCosts: 10
-              };
-              this.closeCommunityEdit();
-            });
+        this.userService.waitForUser()
+          .then(user => {
+            this.communitiesSvc.createCommunity(communityToAdd);
+            return user;
+          })
+          .then(user => this.playersMembership.setAdminOfCommunity(communityToAdd, user.uid))
+          .catch(err => {
+            console.error('Couldn\'t add community: ', err);
+          })
+          .finally(() => {
+            this.communityInputDisabled = false;
+            this.newCommunity = '';
+            this.defaultSettings = {
+              chipValue: 1,
+              defaultBuyin: 50,
+              hostingCosts: 10
+            };
+            this.closeCommunityEdit();
+          });
       }
     },
 

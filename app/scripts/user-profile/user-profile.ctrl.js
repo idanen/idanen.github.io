@@ -41,7 +41,7 @@
         this.markErrors();
         return;
       }
-      return this.userService.createUser(this.userInputs.name, this.userInputs.email, this.userInputs.pass)
+      return this.playersUsers.createUser(this.userInputs.name, this.userInputs.email, this.userInputs.pass)
         .then(saved => console.log('sign up success', saved))
         .catch(err => console.error(err));
     },

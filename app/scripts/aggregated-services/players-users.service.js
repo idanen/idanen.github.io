@@ -4,8 +4,9 @@
   angular.module('pokerManager')
     .service('playersUsers', PlayersUsersService);
 
-  PlayersUsersService.$inject = ['Ref', 'Players', 'userService'];
-  function PlayersUsersService(Ref, Players, userService) {
+  PlayersUsersService.$inject = ['$q', 'Ref', 'Players', 'userService'];
+  function PlayersUsersService($q, Ref, Players, userService) {
+    this.$q = $q;
     this.Ref = Ref;
     this.playersSvc = Players;
     this.userSvc = userService;
@@ -18,9 +19,11 @@
     },
 
     matchUserToPlayer: function (user) {
-      return this.playersSvc.findBy('email', user.email)
-        .then(this.playersSvc.addUser.bind(this.playersSvc, user))
-        .then(this.userSvc.linkUserToPlayer.bind(this.userSvc));
+      return this.$q.resolve(
+        this.playersSvc.findBy('email', user.email)
+          .then(player => this.playersSvc.addUser(user, player))
+          .then(this.userSvc.linkUserToPlayer.bind(this.userSvc))
+      );
     }
   };
 }());

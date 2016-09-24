@@ -21,25 +21,30 @@
      * Saves the given player and signs him to the given community, if one is provided.
      * @param {Object} player The player to save.
      * @param {Object} [community] A community to add the given player to.
-     * @returns {Promise} A promise that resolves with
+     * @returns {Promise} A promise that resolves when user is created and added to the given community (if one was provided).
      */
     addPlayer: function (player, community) {
-      return this.playersSvc.save(player)
-        .then(() => this.playersSvc.joinCommunity(player, community, true))
-        .then(() => this.communitiesSvc.addMember(player, community));
+      return this.$q.resolve(
+        this.playersSvc.save(player)
+          .then(() => this.playersSvc.joinCommunity(player, community, true))
+          .then(() => this.communitiesSvc.addMember(player, community))
+      );
     },
+
     /**
      * @name setAdminOfCommunity
      * @description
      * Sets player associated to the given `userId` to be the admin and member in the given community.
      * @param {Object} community The community the player will be the admin of.
      * @param {string} userId The user's identifier.
+     * @returns {Promise} A promise resolves when finished syncing data to server
      */
     setAdminOfCommunity: function (community, userId) {
       // Fetch player
-      this.playersSvc.findBy('userUid', userId)
+      return this.playersSvc.findBy('userUid', userId)
         .then(this.setPlayerAsAdminOfCommunity.bind(this, community));
     },
+
     /**
      * @name setPlayerAsAdminOfCommunity
      * @description

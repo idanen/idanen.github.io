@@ -9,17 +9,38 @@
       MEMBERS: 'members'
     }));
 
-  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject', 'Memberships'];
-  function CommunitiesService($q, Ref, $firebaseArray, $firebaseObject, Memberships) {
+  CommunitiesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject', 'userService', 'Memberships'];
+  function CommunitiesService($q, Ref, $firebaseArray, $firebaseObject, userService, Memberships) {
     this.$q = $q;
     this.$firebaseArray = $firebaseArray;
     this.$firebaseObject = $firebaseObject;
+    this.userService = userService;
     this.Memberships = Memberships;
     this.communitiesRef = Ref.child('communities');
     this.publicCommunitiesRef = Ref.child('public_communities');
   }
 
   CommunitiesService.prototype = {
+    createCommunity: function (toAdd) {
+      let user = this.userService.getCurrentUser(),
+          communityId;
+      if (!user) {
+        throw new Error('Only a logged in user can create a new community');
+      }
+      communityId = this.communitiesRef.push().key;
+      toAdd.admins = {};
+      toAdd.admins[user.playerId] = user.displayName || user.name;
+      toAdd.members = _.extend({}, toAdd.admins);
+      return this.$q.resolve(
+        this.communitiesRef
+          .child(communityId)
+          .set(toAdd)
+          .then(() => {
+            toAdd.$id = communityId;
+            return toAdd;
+          })
+      );
+    },
     getCommunities: function () {
       return this.$firebaseArray(this.communitiesRef);
     },

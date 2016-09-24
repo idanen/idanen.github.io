@@ -5,11 +5,12 @@
     .module('pokerManager')
     .service('playerModal', PlayerModal);
 
-  PlayerModal.$inject = ['$uibModal', 'Players', '$rootScope'];
-  function PlayerModal($modal, Players, $rootScope) {
+  PlayerModal.$inject = ['$uibModal', 'Players', '$rootScope', '$stateParams'];
+  function PlayerModal($modal, Players, $rootScope, $stateParams) {
     this.$modal = $modal;
     this.Players = Players;
     this.$rootScope = $rootScope;
+    this.$stateParams = $stateParams;
   }
 
   PlayerModal.prototype = {
@@ -18,7 +19,7 @@
           modalInstance, unwatch;
 
       if (isNew) {
-        player = this.Players.createPlayer();
+        player = this.Players.createPlayer(this.$stateParams.communityId);
       }
       modalInstance = this.$modal.open({
         templateUrl: 'partials/modals/addNewPlayer.html',

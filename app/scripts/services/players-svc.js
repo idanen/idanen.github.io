@@ -7,17 +7,18 @@
   angular.module('pokerManager')
     .service('Players', PlayersService);
 
-  PlayersService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
-  function PlayersService($q, Ref, $firebaseArray, $firebaseObject) {
+  PlayersService.$inject = ['$q', '$stateParams', 'Ref', '$firebaseArray', '$firebaseObject'];
+  function PlayersService($q, $stateParams, Ref, $firebaseArray, $firebaseObject) {
     this.$q = $q;
+    this.$stateParams = $stateParams;
     this.playersRef = Ref.child('players');
     this.$firebaseArray = $firebaseArray;
     this.$firebaseObject = $firebaseObject;
   }
 
   PlayersService.prototype = {
-    createPlayer: function () {
-      return {
+    createPlayer: function (communityId) {
+      let newPlayer = {
         name: '',
         balance: 0,
         isPlaying: false,
@@ -28,6 +29,12 @@
         createDate: Date.now(),
         isNew: true
       };
+
+      if (communityId) {
+        newPlayer.guestOf = communityId;
+      }
+
+      return newPlayer;
     },
 
     allPlayers: function () {
@@ -104,9 +111,8 @@
       if (isGuest) {
         return this.playersRef
           .child(player.$id)
-          .set({
-            guestOf: community.$id
-          });
+          .child('guestOf')
+          .set(community.$id);
       }
       return this.playersRef
         .child(player.$id)
@@ -120,7 +126,11 @@
       return this.playersRef
         .child(player.$id)
         .child('guestOf')
-        .remove();
+        .remove()
+        .then(() => {
+          delete player.guestOf;
+          return player;
+        });
     },
 
     findBy: function (field, value, multi) {
@@ -147,16 +157,14 @@
     },
 
     addUser: function (user, player) {
-      var newPlayer, newPlayerRef;
+      var newPlayer, newPlayerId;
 
       if (player && player.$id) {
         return this.playersRef
           .child(player.$id)
           .child('userUid')
           .set(user.uid)
-          .then(function () {
-            return this.getPlayer(player.$id);
-          }.bind(this));
+          .then(() => this.getPlayer(player.$id));
       }
 
       newPlayer = this.createPlayer();
@@ -165,14 +173,17 @@
       newPlayer.email = user.email;
       newPlayer.imageUrl = user.imageUrl || user.photoURL;
       delete newPlayer.isNew;
-      newPlayerRef = this.playersRef.push(player);
-      newPlayer.$id = newPlayerRef.key;
-      return newPlayerRef
-        .then(function () {
+      newPlayerId = this.playersRef.push().key;
+      return this.playersRef
+        .child(newPlayerId)
+        .set(newPlayer)
+        .then(() => {
+          newPlayer.$id = newPlayerId;
           return newPlayer;
         })
-        .catch(function (error) {
+        .catch(error => {
           console.log(error);
+          return this.$q.reject(error);
         });
     },
 

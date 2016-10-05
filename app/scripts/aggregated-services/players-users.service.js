@@ -22,7 +22,7 @@
       return this.$q.resolve(
         this.playersSvc.findBy('email', user.email)
           .then(player => this.playersSvc.addUser(user, player))
-          .then(this.userSvc.linkUserToPlayer.bind(this.userSvc))
+          .then(player => this.userSvc.linkUserToPlayer(player))
       );
     }
   };

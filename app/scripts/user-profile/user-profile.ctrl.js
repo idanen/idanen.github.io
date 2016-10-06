@@ -4,13 +4,15 @@
   angular.module('pokerManager')
     .controller('UserProfileCtrl', UserProfileController);
 
-  UserProfileController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc'];
-  function UserProfileController($element, userService, playersUsers, communitiesSvc) {
+  UserProfileController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players'];
+  function UserProfileController($element, userService, playersUsers, communitiesSvc, Players) {
     this.$element = $element;
     this.userService = userService;
     this.playersUsers = playersUsers;
+    this.playersSvc = Players;
     this.communitiesSvc = communitiesSvc;
 
+    this.cardElement = this.$element.find('paper-card');
     this.userInputs = {
       name: '',
       email: '',
@@ -21,19 +23,46 @@
   }
 
   UserProfileController.prototype = {
-    $postLink: function () {
-      this.cardElement = this.$element.find('paper-card');
-    },
+    // $postLink: function () {
+    //   this.cardElement = this.$element.find('paper-card');
+    // },
 
     userChanged: function (currentUser) {
       this.currentUser = currentUser;
       if (this.cardElement) {
         if (this.currentUser) {
           this.cardElement.heading = this.currentUser.name;
+          this.player = this.playersSvc.getPlayer(this.currentUser.playerId);
+          this.player.$loaded()
+            .then(() => {
+              let communities = [];
+              if (this.player.memberIn) {
+                communities = communities.concat(_.map(this.player.memberIn, (value, key) => {
+                  return {
+                    label: value,
+                    value: key
+                  };
+                }));
+              }
+              if (this.player.guestOf) {
+                communities = communities.concat(_.map(this.player.guestOf, (value, key) => {
+                  return {
+                    label: value,
+                    value: key
+                  };
+                }));
+              }
+              this.communities = communities;
+            });
         } else {
           this.cardElement.heading = 'Login / Signup';
         }
       }
+    },
+
+    communitySelectionChanged: function (community) {
+      this.selectedCommunity = community;
+      console.log('Change selected community', community);
     },
 
     signup: function () {

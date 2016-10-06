@@ -5,66 +5,67 @@
    * The managed game's directive
    */
   angular.module('pokerManager')
-    .directive('playerDetails', playerDetailsDirective);
-
-  playerDetailsDirective.$inject = ['$timeout'];
-
-  function playerDetailsDirective($timeout) {
-    return {
-      restrict: 'AE',
-      scope: {
+    .component('playerDetails', {
+      controller: PlayerDetailsController,
+      controllerAs: 'pCtrl',
+      bindings: {
         playerId: '<?',
+        communityFilter: '<?',
         onChanges: '&'
       },
-      controller: 'PlayerDetailsCtrl',
-      controllerAs: 'pCtrl',
-      bindToController: true,
-      templateUrl: 'partials/tmpls/player-details-tmpl.html',
-      link: postLinkFn
+      templateUrl: 'partials/tmpls/player-details-tmpl.html'
+    });
+
+  PlayerDetailsController.$inject = ['$q', '$stateParams', 'Players', 'Games'];
+  function PlayerDetailsController($q, $stateParams, Players, Games) {
+    this.$q = $q;
+    this.Games = Games;
+    this.Players = Players;
+    this.communityId = $stateParams.communityId;
+
+    this.isAdmin = function () {
+      return true;
     };
 
-    function postLinkFn($scope, $element, $attrs, $ctrl) {
-      const chartHolder = angular.element('<div/>'),
-          refreshBtn = $element.find('.refresh-data-btn');
-      let chartObj;
+    // Re-fetch player from server
+    if (this.playerId) {
+      this.player = this.Players.getPlayer(this.playerId);
+      this.playerGames = this.Players.getPlayerGames(this.playerId);
 
-      // Save changes on blur
-      $element.find('form').on('blur', '.form-control', () => $ctrl.onUserChanges());
+      // Get games and calculate stats
+      // this.ready = this.$q.all([this.player.$loaded(), this.playerGames.$loaded()])
+      //     .then(this.dataForChart.bind(this))
+      //     .finally(this.stopLoadingIndication.bind(this));
+    } else {
+      this.player = this.Players.createPlayer(this.communityId);
+      this.ready = this.$q.resolve();
+    }
 
-      // Create a placeholder for the chart
-      refreshBtn.after(chartHolder);
-      chartHolder.attr('id', 'player-chart');
+    this.onChanges({player: this.player});
+  }
 
-      // Construct chart once the controller finished getting and processing the data
-      $ctrl.ready.then(function () {
-        chartObj = $ctrl.createChartObject();
-        // Defer the chart build so that it could take the parent's width (the parent is hidden until $digest will be done to update the ng-show)
-        $timeout(renderChart, 0, false);
-      });
-
-      refreshBtn.on('click', () => {
-        chartObj = $ctrl.createChartObject();
-      });
-
-      $element.on('$destroy', function () {
-        if (chartHolder) {
-          chartHolder.highcharts().destroy();
-          chartHolder.remove();
-        }
-        refreshBtn.off();
-      });
-
-      function renderChart() {
-        const chart = chartHolder.highcharts();
-        if (chart) {
-          chart.destroy();
-        }
-
-        chartObj = $ctrl.createChartObject();
-        if (chartObj) {
-          chartHolder.highcharts(chartObj);
+  PlayerDetailsController.prototype = {
+    $onChanges: function (changes) {
+      if (changes && changes.playerId && changes.playerId.currentValue !== changes.playerId.previousValue) {
+        const playerId = changes.playerId.currentValue;
+        if (playerId) {
+          this.player = this.Players.getPlayer(playerId);
+          this.playerGames = this.Players.getPlayerGames(playerId);
         }
       }
+
+      if (changes && changes.communityFilter && changes.communityFilter.currentValue) {
+        this.filteredGames = this.playerGames.filter(game => game.communityId === this.communityFilter);
+      } else {
+        this.filteredGames = this.playerGames;
+      }
+    },
+
+    onUserChanges: function () {
+      if (_.isFunction(this.player.$save)) {
+        this.player.$save();
+      }
+      this.onChanges({player: this.player});
     }
-  }
+  };
 }());

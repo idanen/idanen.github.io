@@ -10,7 +10,8 @@
       apiKey: 'AIzaSyDMrP9xSV8woT6-lt-TBiyMkSy0r3EiHAs',
       authDomain: 'fiery-heat-6939.firebaseapp.com',
       databaseURL: 'https://fiery-heat-6939.firebaseio.com',
-      storageBucket: 'fiery-heat-6939.appspot.com'
+      storageBucket: 'fiery-heat-6939.appspot.com',
+      messagingSenderId: '101062618190'
     })
     .constant('loginRedirectPath', '/login')
     .config(firebaseConfig);

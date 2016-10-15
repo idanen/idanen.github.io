@@ -27,8 +27,8 @@
         },
         joinCommunity = {
           name: 'joinCommunity',
-          parent: 'community',
-          url: '^/join?:joinCode',
+          parent: 'home',
+          url: '^/join-community/:communityId?:joinCode',
           templateUrl: 'scripts/join-community/join-community.view.html',
           controller: 'JoinCommunityCtrl',
           controllerAs: '$ctrl'

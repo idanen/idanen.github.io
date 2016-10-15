@@ -1,0 +1,38 @@
+<form ng-show="!$ctrl.currentUser" name="$ctrl.userProfileForm">
+  <fieldset>
+    <!--<legend>Social login</legend>-->
+    <paper-button raised ng-click="$ctrl.login('google')">
+      <span class="icon icon-google-plus"></span>
+      <span> Login</span>
+    </paper-button>
+  </fieldset>
+  <fieldset>
+    <!--<legend>Email login</legend>-->
+    <label>
+      <input type="checkbox" ng-model="$ctrl.signingUp">
+      <span>Sign up</span>
+    </label>
+    <paper-input-container auto-validate ng-show="$ctrl.signingUp">
+      <label>Name</label>
+      <input is="iron-input" name="name" ng-model="$ctrl.userInputs.name" ng-required="$ctrl.signingUp">
+      <paper-input-error>Name is mandatory</paper-input-error>
+    </paper-input-container>
+    <paper-input-container auto-validate>
+      <label>Email</label>
+      <input is="iron-input" name="email" ng-model="$ctrl.userInputs.email" required>
+    </paper-input-container>
+    <paper-input-container auto-validate>
+      <label>Password</label>
+      <input is="iron-input" name="password" type="password" ng-model="$ctrl.userInputs.pass" pattern="[\w]{6,}" required>
+      <paper-input-error>Password should be at least 6 characters long</paper-input-error>
+    </paper-input-container>
+    <paper-button raised ng-click="$ctrl.signup()" ng-show="$ctrl.signingUp">
+      <span class="fa fa-send"></span>
+      <span> Signup</span>
+    </paper-button>
+    <paper-button raised ng-click="$ctrl.login('email')" ng-hide="$ctrl.signingUp">
+      <span class="fa fa-send"></span>
+      <span> Login</span>
+    </paper-button>
+  </fieldset>
+</form>

@@ -7,13 +7,17 @@
       </div>
     </div>
     <div ng-if="!!vm.currentUser">
-      <div class="row" ng-if="vm.isAdmin">
+      <div class="row" ng-if="vm.isAdmin && vm.joiners.length">
         <div class="col-xs-12">
           <h3>Joining users</h3>
-          <ul>
+          <ul class="joining-users">
             <li ng-repeat="joiner in vm.joiners">
-              <span>{{ joiner.email }}</span>
-              <paper-button raised ng-click="vm.confirmPlayer(joiner)">Confirm</paper-button>
+              <!--<span>{{ joiner.email }}</span>-->
+              <player-chip player="joiner"></player-chip>
+              <paper-button raised ng-click="vm.confirmPlayer(joiner)">
+                <span class="fa fa-check"></span>
+                <span> Confirm</span>
+              </paper-button>
             </li>
           </ul>
           <!--<paper-card ng-repeat="joiner in vm.joiners">-->

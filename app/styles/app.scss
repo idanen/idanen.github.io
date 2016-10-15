@@ -52,6 +52,29 @@ body {
   left: -14px;
 }
 
+.player-chip {
+  position: relative;
+  .profile-img {
+    width: 5.5rem;
+    z-index: 1;
+  }
+  .player-name {
+    display: inline-block;
+    padding: .8rem 1.8rem .8rem 3.8rem;
+    margin-left: -3rem;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 30% 100%;
+    border-bottom-right-radius: 30% 100%;
+
+  }
+}
+
+.joining-users {
+  padding: 0;
+}
+
 .menu {
   list-style: none;
   border-bottom: 0.1em solid black;

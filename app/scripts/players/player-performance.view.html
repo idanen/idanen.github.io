@@ -1,6 +1,6 @@
 <div class="player-performance-container">
   <div class="loader" ng-show="$ctrl.loading">Loading...</div>
-  <div class="chart-holder"></div>
+  <div ng-show="$ctrl.games.length" class="chart-holder"></div>
   <div ng-hide="loading">
     <button class="btn btn-info refresh-data-btn" analytics-on analytics-event="Player Performance" analytics-category="Actions" analytics-label="{{ $ctrl.player.name }}">Refresh <span class="icon icon-refresh"></span></button>
     <table class="table table-striped table-hover">

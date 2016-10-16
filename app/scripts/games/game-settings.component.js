@@ -11,9 +11,10 @@
       }
     });
 
-  GameSettingsController.$inject = ['$element'];
-  function GameSettingsController($element) {
+  GameSettingsController.$inject = ['$element', 'communitiesSvc'];
+  function GameSettingsController($element, communitiesSvc) {
     this.$element = $element;
+    this.communitiesSvc = communitiesSvc;
   }
 
   GameSettingsController.prototype = {
@@ -30,6 +31,12 @@
 
     $onDestroy: function () {
       this.$element.off();
+    },
+
+    saveGameSettingsAsDefault: function () {
+      if (this.game.communityId) {
+        this.communitiesSvc.setDefaultGameSettings(this.game.communityId, this.settings);
+      }
     },
 
     chipsValueUpdated: function (newChipValue) {

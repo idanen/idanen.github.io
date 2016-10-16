@@ -17,5 +17,7 @@
         <input class="form-control hosting-costs-control" type="number" min="10" step="10" id="hostingCosts" ng-model="$ctrl.settings.hostingCosts" />
       </div>
     </form>
+
+    <paper-button raised ng-click="$ctrl.saveGameSettingsAsDefault()">Save as community's default</paper-button>
   </uib-accordion-group>
 </uib-accordion>

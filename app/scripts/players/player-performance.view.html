@@ -8,7 +8,7 @@
         <tr>
           <th>Date</th>
           <th>Profit/Loss</th>
-          <th>BBs</th>
+          <th>Buys</th>
           <th>Balance</th>
         </tr>
       </thead>
@@ -32,7 +32,7 @@
       <tr>
         <th>Played {{ $ctrl.playerGamesCount }} games</th>
         <th>{{ $ctrl.playerWinningSessions }} winning sessions <span class="badge">{{ $ctrl.playerWinningSessions / ($ctrl.playerGamesCount || 1) | percentage:1 }}</span></th>
-        <th>Average winnings (in BBs): <span class="badge">{{ $ctrl.playerAvgWinning | number:2 }}</span></th>
+        <th>Average winnings (in Buys): <span class="badge">{{ $ctrl.playerAvgWinning | number:2 }}</span></th>
         <th>
           {{ $ctrl.games[$ctrl.games.length - 1].balance }}
         </th>

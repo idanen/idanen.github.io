@@ -115,6 +115,14 @@
       );
     },
 
+    setDefaultGameSettings: function (communityId, newSettings) {
+      return this.$q.resolve(
+        this.communitiesRef.child(communityId)
+          .child('defaultGameSettings')
+          .set(newSettings)
+      );
+    },
+
     getCommunitiesByIds: function (communityIds) {
       return this.$q(resolve => {
         let communities = [];

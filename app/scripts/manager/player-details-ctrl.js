@@ -7,20 +7,20 @@
   angular.module('pokerManager')
     .controller('ModalPlayerDetailsCtrl', ModalPlayerDetailsController);
 
-  ModalPlayerDetailsController.$inject = ['$uibModalInstance', '$stateParams', 'player', 'playersMembership', 'communitiesSvc'];
+  ModalPlayerDetailsController.$inject = ['$uibModalInstance', '$stateParams', 'player', 'Players', 'communitiesSvc'];
 
-  function ModalPlayerDetailsController($uibModalInstance, $stateParams, player, playersMembership, communitiesSvc) {
+  function ModalPlayerDetailsController($uibModalInstance, $stateParams, player, playersSvc, communitiesSvc) {
     var vm = this;
     vm.player = player;
 
     this.$uibModalInstance = $uibModalInstance;
     this.community = communitiesSvc.getCommunity($stateParams.communityId);
-    this.playersMembership = playersMembership;
+    this.playersSvc = playersSvc;
   }
 
   ModalPlayerDetailsController.prototype = {
     ok: function () {
-      return this.playersMembership.addPlayer(this.player, this.community)
+      return this.playersSvc.save(this.player)
         .then(() => this.closeDialog());
     },
 

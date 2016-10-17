@@ -67,6 +67,10 @@
                   // It's the perfect time to display a "New content is
                   // available; please refresh." message in the page's interface.
 
+                  let reloader = document.createElement('a');
+                  reloader.innerText = 'Reload';
+                  reloader.addEventListener('click', () => window.location.reload(true));
+                  swInstalledToast.appendChild(reloader);
                   document.querySelector('body').appendChild(swInstalledToast);
                   swInstalledToast.show({
                     text: 'New updates available, please refresh',
@@ -74,7 +78,7 @@
                   });
                   window.setTimeout(function () {
                     swInstalledToast.parentNode.removeChild(swInstalledToast);
-                  }, duration + 50);
+                  }, duration + 1000);
                   break;
 
                 case 'redundant':

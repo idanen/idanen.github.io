@@ -42,20 +42,36 @@
     },
 
     save: function (player) {
-      let newPlayerRef;
+      let newPlayerRef,
+          playerId;
       if (!player.$id) {
         delete player.isNew;
         newPlayerRef = this.playersRef.push();
-        return newPlayerRef.set(player)
-          .then(() => {
-            player.$id = newPlayerRef.key;
+        return this.$q.resolve(
+          newPlayerRef.set(player)
+            .then(() => {
+              player.$id = newPlayerRef.key;
+              return player;
+            })
+        );
+      }
+      if (_.isFunction(player.$save)) {
+        return player.$save()
+          .then(function () {
             return player;
           });
       }
-      return player.$save()
-        .then(function () {
-          return player;
-        });
+
+      playerId = player.$id;
+      delete player.$id;
+      return this.$q.resolve(
+        this.playersRef.child(playerId)
+          .update(player)
+          .then(() => {
+            player.$id = playerId;
+            return player;
+          })
+      );
     },
 
     saveResult: function (gameResult, game) {
@@ -75,7 +91,14 @@
         .remove();
     },
 
-    getPlayer: function (playerId) {
+    getPlayer: function (playerId, withoutFirebaseObject) {
+      if (withoutFirebaseObject) {
+        return this.$q.resolve(
+          this.playersRef.child(playerId)
+            .once('value')
+            .then(snapshot => snapshot.val())
+        );
+      }
       return this.$firebaseObject(this.playersRef.child(playerId));
     },
 
@@ -101,9 +124,7 @@
           .child(playerId)
           .child('memberIn')
           .once('value')
-          .then(function (snapshot) {
-            return snapshot.val();
-          })
+          .then(snapshot => snapshot.val())
       );
     },
 
@@ -111,8 +132,9 @@
       if (isGuest) {
         return this.playersRef
           .child(player.$id)
-          .child('guestOf')
-          .set(community.$id);
+          .update({
+            guestOf: community.$id
+          });
       }
       return this.playersRef
         .child(player.$id)

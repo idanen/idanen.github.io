@@ -7,15 +7,16 @@
   angular.module('pokerManager')
     .controller('PokerManagerCtrl', PokerManagerController);
 
-  PokerManagerController.$inject = ['$scope', '$analytics', 'toaster', 'Players', 'playerModal', 'communitiesSvc', 'community', 'game', 'Games', 'playersGames'];
+  PokerManagerController.$inject = ['$analytics', 'Players', 'playerModal', 'communitiesSvc', 'playersMembership', 'community', 'game', 'playersGames'];
 
-  function PokerManagerController($scope, $analytics, toaster, Players, playerModal, communitiesSvc, community, game, Games, playersGames) {
+  function PokerManagerController($analytics, Players, playerModal, communitiesSvc, playersMembership, community, game, playersGames) {
     var vm = this;
 
     this.$analytics = $analytics;
     this.Players = Players;
     this.playerModal = playerModal;
     this.communitiesSvc = communitiesSvc;
+    this.playersMembership = playersMembership;
     this.community = community;
     this.playersGames = playersGames;
 
@@ -26,8 +27,6 @@
     // init game so not all methods fail before the game is loaded
     this.game = game;
     this.playersInGame = playersGames.getPlayersInGame(game.$id);
-    // Binding the firebase instance to the scope. This assumes that the controller's name is `vm`
-    // Games.getGame(game.$id).$bindTo($scope, 'vm.game');
 
     vm.init();
   }
@@ -92,10 +91,10 @@
       this.playersInGame = [];
     },
 
-    openPlayerDetailsDialog: function (player) {
+    openPlayerDetailsDialog: function () {
       this.closePlayersControl();
 
-      this.playerModal.open(player)
+      this.playerModal.open()
         .then(savedPlayer => {
           // If new -> update default values
           if (savedPlayer.isNew) {
@@ -103,8 +102,9 @@
             savedPlayer.isPlaying = false;
           }
 
-          player = savedPlayer;
+          return savedPlayer;
         })
+        .then(player => this.playersMembership.addPlayer(player, this.community))
         .then(this.init.bind(this));
     },
     updateMembership: function (player) {

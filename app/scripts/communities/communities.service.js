@@ -63,11 +63,13 @@
       return this._addMember(player, community, this.Memberships.MEMBERS);
     },
     _addMember: function (player, community, membership) {
-      return this.communitiesRef
-        .child(community.$id)
-        .child(membership)
-        .child(player.$id)
-        .set(player.name);
+      return this.$q.resolve(
+        this.communitiesRef
+          .child(community.$id)
+          .child(membership)
+          .child(player.$id)
+          .set(player.name)
+      );
     },
     isAdmin: function (playerId, communityId) {
       return this._isMemberOrAdmin(playerId, communityId, this.Memberships.ADMINS);
@@ -141,7 +143,10 @@
       });
     },
     getPlayerCommunities: function (player) {
-      return this.getCommunitiesByIds(player.memberIn);
+      if (player && player.memberIn) {
+        return this.getCommunitiesByIds(Object.keys(player.memberIn));
+      }
+      return [];
     }
   };
 }());

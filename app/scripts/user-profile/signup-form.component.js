@@ -26,11 +26,12 @@
   SignupFormController.prototype = {
     userChanged: function (currentUser) {
       this.currentUser = currentUser;
-      if (this.currentUser) {
-        this.player = this.playersSvc.getPlayer(this.currentUser.playerId);
-      } else if (this.player && _.isFunction(this.player.$destroy)) {
+      if (this.player && _.isFunction(this.player.$destroy)) {
         this.player.$destroy();
         this.player = null;
+      }
+      if (this.currentUser) {
+        this.player = this.playersSvc.getPlayer(this.currentUser.playerId);
       }
     },
 

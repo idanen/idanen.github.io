@@ -7,9 +7,8 @@
   angular.module('pokerManager')
     .controller('GameCtrl', GameController);
 
-  GameController.$inject = ['$scope', '$analytics', 'Games', 'playersGames', '$state'];
-  function GameController($scope, $analytics, gamesSvc, playersGames, $state) {
-    this.$scope = $scope;
+  GameController.$inject = ['$analytics', 'Games', 'playersGames', '$state'];
+  function GameController($analytics, gamesSvc, playersGames, $state) {
     this.$analytics = $analytics;
     this.playersGames = playersGames;
     this.gamesSvc = gamesSvc;

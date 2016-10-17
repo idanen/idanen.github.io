@@ -4,8 +4,9 @@
   angular.module('pokerManager')
     .controller('HomeCtrl', HomeController);
 
-  HomeController.$inject = ['communitiesSvc', 'userService', 'playersMembership', 'Players', 'polymerToaster'];
-  function HomeController(communitiesSvc, userService, playersMembership, playersSvc, polymerToaster) {
+  HomeController.$inject = ['$state', 'communitiesSvc', 'userService', 'playersMembership', 'Players', 'polymerToaster'];
+  function HomeController($state, communitiesSvc, userService, playersMembership, playersSvc, polymerToaster) {
+    this.$state = $state;
     this.communities = communitiesSvc.getCommunities();
     this.communitiesSvc = communitiesSvc;
     this.userService = userService;
@@ -32,6 +33,21 @@
 
     userChanged: function (user) {
       this.currentUser = user;
+      if (this.currentUser && this.currentUser.playerId) {
+        this.playersSvc.playersCommunities(this.currentUser.playerId)
+          .then(communities => {
+            this.communities = _.map(communities, (communityName, communityId) => {
+              return {
+                label: communityName,
+                value: communityId
+              };
+            });
+          });
+      }
+    },
+
+    gotoCommunity: function (communityId) {
+      this.$state.go('community', {communityId});
     },
 
     communitiesDropdownToggle() {

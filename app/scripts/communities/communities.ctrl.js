@@ -95,9 +95,7 @@
     },
 
     confirmPlayer: function (joiner) {
-      return this.userService.getUser(joiner.uid)
-        .then(user => this.playersUsers.matchUserToPlayer(user))
-        .then(() => this.communitiesSvc.removeJoiner(this.community.$id, joiner.uid));
+      return this.playersMembership.confirmJoiningPlayer(joiner.uid, this.community);
     },
 
     getCommunityJoiners: function (aCommunity) {

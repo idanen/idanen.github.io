@@ -74,7 +74,10 @@
           name: 'player',
           parent: 'community',
           url: '/player/:playerId',
-          onEnter: PlayerState
+          onEnter: PlayerState,
+          resolve: {
+            previousState: previousStateResolver
+          }
         };
 
     $locationProvider.html5Mode(true);
@@ -135,12 +138,15 @@
     return Games.getGame($stateParams.gameId);
   }
 
-  PlayerState.$inject = ['$stateParams', '$state', 'Players', 'playerModal'];
-  function PlayerState($stateParams, $state, Players, playerModal) {
+  PlayerState.$inject = ['$stateParams', '$state', 'Players', 'playerModal', 'previousState'];
+  function PlayerState($stateParams, $state, Players, playerModal, previousState) {
     var player = Players.getPlayer($stateParams.playerId);
     playerModal.open(player)
       .finally(function () {
-        $state.go('^');
+        if (_.isFunction(player.$destroy)) {
+          player.$destroy();
+        }
+        $state.go(previousState.name, previousState.params);
       });
   }
 

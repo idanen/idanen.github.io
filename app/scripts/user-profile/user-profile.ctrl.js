@@ -30,6 +30,10 @@
 
     userChanged: function (currentUser) {
       this.currentUser = currentUser;
+      if (this.player && _.isFunction(this.player.$destroy)) {
+        this.player.$destroy();
+        this.player = null;
+      }
       if (this.cardElement) {
         if (this.currentUser) {
           this.cardElement.heading = this.currentUser.name;

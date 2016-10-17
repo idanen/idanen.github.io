@@ -49,6 +49,12 @@
       if (changes && changes.playerId && changes.playerId.currentValue !== changes.playerId.previousValue) {
         const playerId = changes.playerId.currentValue;
         if (playerId) {
+          if (this.player && _.isFunction(this.player.$destroy)) {
+            this.player.$destroy();
+          }
+          if (this.playerGames && _.isFunction(this.playerGames.$destroy)) {
+            this.playerGames.$destroy();
+          }
           this.player = this.Players.getPlayer(playerId);
           this.playerGames = this.Players.getPlayerGames(playerId);
         }

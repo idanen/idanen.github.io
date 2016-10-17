@@ -2,21 +2,27 @@
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <h2>Welcome to Pokermunity</h2>
-            <div class="btn-group btn-group-justified">
-                <div class="btn-group btn-group-lg">
-                    <button class="btn btn-default btn-block" ng-click="vm.startAddingCommunity()">Create a community</button>
-                </div>
-                <div class="btn-group btn-group-lg" ng-class="{'open': vm.communityDropdownOpen}">
-                    <button class="btn btn-default btn-block dropdown-toggle" ng-click="vm.communitiesDropdownToggle()">Join a community <span class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                        <li ng-repeat="community in vm.communities">
-                            <a ng-click="vm.startJoiningCommunity( community )">{{ community.name }} <em ng-show="vm.admins[$index]">(administered by adminhere)</em></a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <p ng-class="{'open': vm.communityDropdownOpen}">
+              You can <paper-button raised ng-click="vm.startAddingCommunity()">create</paper-button> or
+              <em id="join-community-help">join <span class="fa fa-question-circle"></span></em><paper-tooltip for="join-community-help">To join a community, ask the admin to send you a joining link</paper-tooltip>
+              a community
+            </p>
+            <!--<div class="btn-group btn-group-justified">-->
+                <!--<div class="btn-group btn-group-lg">-->
+                    <!--<button class="btn btn-default btn-block" ng-click="vm.startAddingCommunity()">Create a community</button>-->
+                <!--</div>-->
+                <!--<div class="btn-group btn-group-lg" ng-class="{'open': vm.communityDropdownOpen}">-->
+                    <!--<button class="btn btn-default btn-block dropdown-toggle" ng-click="vm.communitiesDropdownToggle()">Join a community <span class="caret"></span></button>-->
+                    <!--<ul class="dropdown-menu">-->
+                        <!--<li ng-repeat="community in vm.communities">-->
+                            <!--<a ng-click="vm.startJoiningCommunity( community )">{{ community.name }} <em ng-show="vm.admins[$index]">(administered by adminhere)</em></a>-->
+                        <!--</li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
+    <community-picker communities="vm.communities" on-select="vm.gotoCommunity($event)"></community-picker>
     <div class="row new-community" ng-class="{'new-community__active': vm.editingCommunity}">
       <div class="col-xs-12">
         <div class="row">

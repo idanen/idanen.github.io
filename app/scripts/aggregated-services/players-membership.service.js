@@ -46,6 +46,21 @@
     },
 
     /**
+     * @name confirmJoiningPlayer
+     * @description
+     * For admins - joins the requesting player to the community
+     * @param {string} userId The user's identifier.
+     * @param {Object} community The community the player will be joining.
+     * @returns {Promise} A promise resolves when finished syncing data to server
+     */
+    confirmJoiningPlayer: function (userId, community) {
+      return this.playersSvc.findBy('userUid', userId)
+        .then(player => this.playersSvc.removeGuest(player))
+        .then(player => this.communitiesSvc.addMember(player, community))
+        .then(() => this.communitiesSvc.removeJoiner(community.$id, userId));
+    },
+
+    /**
      * @name setPlayerAsAdminOfCommunity
      * @description
      * Sets given player to be the admin and member in the given community.

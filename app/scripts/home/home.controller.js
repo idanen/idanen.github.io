@@ -47,7 +47,9 @@
     },
 
     gotoCommunity: function (communityId) {
-      this.$state.go('community', {communityId});
+      if (communityId) {
+        this.$state.go('community', {communityId});
+      }
     },
 
     communitiesDropdownToggle() {

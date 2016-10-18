@@ -42,22 +42,22 @@
         </div>
       </div>
       <div class="row" ng-if="!!vm.games">
-        <div class="col-xs-1">
-          <button class="btn btn-default" ng-click="vm.prevPage()">
-            <span class="icon icon-arrow-left"></span>
-          </button>
-        </div>
-        <div class="col-xs-10">
-          <ul class="nav nav-tabs">
-            <li class="slide" ng-repeat="game in vm.games | limitTo:vm.pageSize:vm.currentPage" ui-sref-active="active">
+        <div class="col-xs-12">
+          <ul class="pager">
+            <li ng-click="vm.prevPage()">
+              <a aria-label="Previous">
+                <span class="fa fa-arrow-left" aria-hidden="true"></span>
+              </a>
+            </li>
+            <li ng-repeat="game in vm.games | limitTo:vm.pageSize:vm.currentPage" ui-sref-active="active">
               <a ui-sref="game({ gameId: game.$id })" title="{{ game.$id }}" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
             </li>
+            <li ng-click="vm.nextPage()">
+              <a aria-label="Next">
+                <span class="fa fa-arrow-right" aria-hidden="true"></span>
+              </a>
+            </li>
           </ul>
-        </div>
-        <div class="col-xs-1">
-          <button class="btn btn-default" ng-click="vm.nextPage()">
-            <span class="icon icon-arrow-right"></span>
-          </button>
         </div>
       </div>
       <div class="row" ui-view></div>

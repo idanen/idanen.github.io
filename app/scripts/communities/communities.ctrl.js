@@ -38,7 +38,7 @@
         .then(player => this.playersMembership.addPlayer(player, toCommunity));
     },
     prevPage: function () {
-      if (this.currentPage <= 0) {
+      if (this.currentPage - this.pageSize <= 0) {
         this.currentPage = 0;
         return;
       }
@@ -46,7 +46,7 @@
     },
     nextPage: function () {
       if (this.currentPage + this.pageSize >= this.games.length) {
-        this.currentPage = this.games.length - this.pageSize;
+        // this.currentPage = this.games.length - this.pageSize;
         return;
       }
       this.currentPage += this.pageSize;

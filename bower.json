@@ -22,7 +22,7 @@
     "firebase": "~3.x.x",
     "angularfire": "~2.x.x",
     "paper-toast": "PolymerElements/paper-toast#~1.x.x",
-    "sw-toolbox": "~3.0.0",
+    "sw-toolbox": "^3.1.x",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.x.x",
     "platinum-push-messaging": "PolymerElements/platinum-push-messaging#^1.x.x",
     "platinum-sw": "PolymerElements/platinum-sw#^1.2.0",

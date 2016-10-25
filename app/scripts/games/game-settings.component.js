@@ -20,6 +20,9 @@
   GameSettingsController.prototype = {
     $onInit: function () {
       this.settings = _.pick(this.game, ['chipValue', 'defaultBuyin', 'hostingCosts']);
+      if (isNaN(this.settings.hostingCosts)) {
+        this.settings.hostingCosts = 10;
+      }
     },
     $postLink: function () {
       this.$element.on('input', '.form-control', () => {

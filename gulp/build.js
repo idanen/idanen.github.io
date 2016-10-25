@@ -383,9 +383,12 @@ module.exports = function (gulp, $, config) {
         // Add/remove glob patterns to match your directory setup.
         rootDir + '/img/**/*',
         rootDir + '/js/**/*.js',
+        rootDir + '/scripts/**/*.js',
         rootDir + '/vendor/**/*.js',
         rootDir + '/styles/**/*.css',
-        rootDir + '/styles/fonts/*.{otf,eot,svg,ttf,woff,woff2}',
+        rootDir + '/vendor/**/*.css',
+        rootDir + '/vendor/fonts/**/*.{otf,eot,svg,ttf,woff,woff2}',
+        rootDir + '/fonts/**/*.{otf,eot,svg,ttf,woff,woff2}',
         rootDir + '/scripts/**/*.html',
         rootDir + '/partials/**/*.{html,json}',
         rootDir + '/*.{html,json}'

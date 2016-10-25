@@ -34,7 +34,7 @@
     }
 
     numberOfHandsUpdated(counter) {
-      this.details.numberOfHands = counter;
+      this.details.numberOfHands = counter || 0;
       this.onUpdate({details: this.details});
     }
   }

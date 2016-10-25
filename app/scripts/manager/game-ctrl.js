@@ -159,7 +159,7 @@
     },
 
     numberOfHandsUpdated: function (counter) {
-      this.game.numberOfHands = counter;
+      this.game.numberOfHands = counter || 0;
       this.game.$save();
     },
 

@@ -66,7 +66,7 @@ module.exports = function (gulp, $, config) {
         }
       })))
       .pipe($.if(isProd, $.concat('app.css')))
-      //.pipe($.if(isProd, $.cssmin()))
+      .pipe($.if(isProd, $.cssmin()))
       .pipe($.if(isProd, $.rev()))
       .pipe(gulp.dest(config.buildCss));
   });
@@ -100,7 +100,7 @@ module.exports = function (gulp, $, config) {
       .pipe($.if(isProd, $.angularFilesort()))
       .pipe($.if(isProd, $.concat('app.js')))
       .pipe($.if(isProd, $.ngAnnotate()))
-      //.pipe($.if(isProd, $.uglify().on('error', function(e) { console.log('\x07',e.message); return this.end(); })))
+      .pipe($.if(isProd, $.uglify().on('error', function(e) { console.log('\x07',e.message); return this.end(); })))
       .pipe($.if(isProd, $.rev()))
       .pipe($.addSrc($.mainBowerFiles({filter: /webcomponents/})))
       .pipe($.sourcemaps.write('.'))
@@ -132,6 +132,7 @@ module.exports = function (gulp, $, config) {
           starttag: '<!-- inject:head:{{ext}} -->',
           endtag: '<!-- endinject -->',
           addRootSlash: false,
+          transform: transformScriptTagWithAsync,
           ignorePath: config.buildDir
         })
       )
@@ -402,4 +403,8 @@ module.exports = function (gulp, $, config) {
   });
 
   gulp.task('build', ['deleteTemplates', 'bowerAssets', 'images', 'fonts', 'generate-service-worker']);
+
+  function transformScriptTagWithAsync(filepath) {
+    return '<script async src="' + filepath + '"></script>';
+  }
 };

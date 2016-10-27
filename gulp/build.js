@@ -4,7 +4,6 @@ var _ = require('underscore.string')
   , fs = require('fs')
   , path = require('path')
   , swPrecache = require('sw-precache')
-  , vulcanize = require('gulp-vulcanize')
   , bowerDir = JSON.parse(fs.readFileSync('.bowerrc')).directory + path.sep;
 
 module.exports = function (gulp, $, config) {
@@ -285,7 +284,7 @@ module.exports = function (gulp, $, config) {
   // vulcanize web components
   gulp.task('vulcanize', ['bowerInject'], function () {
     return gulp.src(config.appComponents)
-      .pipe($.if(isProd, vulcanize()))
+      .pipe($.if(isProd, $.vulcanize()))
       .pipe($.if(isProd, $.htmlmin({
         collapseWhitespace: true,
         removeComments: true

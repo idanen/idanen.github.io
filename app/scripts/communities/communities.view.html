@@ -15,7 +15,7 @@
               <!--<span>{{ joiner.email }}</span>-->
               <player-chip player="joiner"></player-chip>
               <paper-button raised ng-click="vm.confirmPlayer(joiner)">
-                <span class="fa fa-check"></span>
+                <span class="icon icon-check"></span>
                 <span> Confirm</span>
               </paper-button>
             </li>
@@ -46,7 +46,7 @@
           <ul class="pager">
             <li ng-click="vm.prevPage()">
               <a aria-label="Previous">
-                <span class="fa fa-arrow-left" aria-hidden="true"></span>
+                <span class="icon icon-arrow-left" aria-hidden="true"></span>
               </a>
             </li>
             <li ng-repeat="game in vm.games | limitTo:vm.pageSize:vm.currentPage" ui-sref-active="active">
@@ -54,7 +54,7 @@
             </li>
             <li ng-click="vm.nextPage()">
               <a aria-label="Next">
-                <span class="fa fa-arrow-right" aria-hidden="true"></span>
+                <span class="icon icon-arrow-right" aria-hidden="true"></span>
               </a>
             </li>
           </ul>

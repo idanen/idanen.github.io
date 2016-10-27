@@ -284,7 +284,7 @@ module.exports = function (gulp, $, config) {
   // vulcanize web components
   gulp.task('vulcanize', ['bowerInject'], function () {
     return gulp.src(config.appComponents)
-      .pipe($.if(isProd, $.vulcanize()))
+      .pipe($.vulcanize())
       .pipe($.if(isProd, $.htmlmin({
         collapseWhitespace: true,
         removeComments: true
@@ -303,7 +303,7 @@ module.exports = function (gulp, $, config) {
 
   // copy custom fonts into build directory
   gulp.task('fonts', ['clean'], function () {
-    var fontFilter = $.filter('**/*.{eot,otf,svg,ttf,woff,woff2}', {restore: true}),
+    var fontFilter = $.filter(['**/*.{eot,otf,svg,ttf,woff,woff2}', '!**/*{fontawesome,glyphicons,FontAwesome}*'], {restore: true}),
         fontsDest = isProd ? config.buildFontsProd : config.buildFonts;
     return gulp.src([config.appFontFiles])
       .pipe(fontFilter)

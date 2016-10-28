@@ -56,6 +56,7 @@
     confirmJoiningPlayer: function (userId, community) {
       return this.playersSvc.findBy('userUid', userId)
         .then(player => this.playersSvc.removeGuest(player))
+        .then(player => this.playersSvc.joinCommunity(player, community))
         .then(player => this.communitiesSvc.addMember(player, community))
         .then(() => this.communitiesSvc.removeJoiner(community.$id, userId));
     },

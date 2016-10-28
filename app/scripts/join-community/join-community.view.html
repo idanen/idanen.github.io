@@ -6,8 +6,11 @@
   </div>
   <div class="row">
     <div class="col-xs-12">
-      <p ng-show="!$ctrl.joined">
+      <p ng-show="!$ctrl.joined && $ctrl.currentUser">
         To join the Pokermunity &quot;{{$ctrl.community.name}}&quot; click the &quot;join&quot; button.
+      </p>
+      <p ng-show="$ctrl.joined">
+        You have already asked to join the Pokermunity &quot;{{$ctrl.community.name}}&quot;.
       </p>
     </div>
   </div>
@@ -17,7 +20,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12" ng-show="!$ctrl.joined && $ctrl.currentUser">
       <paper-button raised ng-click="$ctrl.joinCommunity()">join &quot;{{$ctrl.community.name}}&quot;</paper-button>
     </div>
   </div>

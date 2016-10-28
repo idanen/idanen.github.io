@@ -101,7 +101,7 @@
         .then(() => this.getPlayersInGame(game.$id));
     },
     updatePlayerResult: function (player, game, gameResult) {
-      var promises = [];
+      let promises = [];
 
       promises.push(
         this.playersRef

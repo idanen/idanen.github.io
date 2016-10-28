@@ -41,6 +41,9 @@
             return this.polymerToaster.showToast({
               text: 'Thanks for joining :)'
             });
+          })
+          .then(() => {
+            this.joined = !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];
           });
       }
     }

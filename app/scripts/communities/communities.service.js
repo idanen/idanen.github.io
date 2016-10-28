@@ -69,6 +69,7 @@
           .child(membership)
           .child(player.$id)
           .set(player.name)
+          .then(() => player)
       );
     },
     isAdmin: function (playerId, communityId) {
@@ -126,21 +127,33 @@
     },
 
     getCommunitiesByIds: function (communityIds) {
-      return this.$q(resolve => {
-        let communities = [];
-        communityIds.forEach(communityId => {
+      let promises = [];
+      communityIds.forEach(communityId => {
+        promises.push(
           this.communitiesRef.child(communityId).once('value')
             .then(snap => {
               var community = snap.val();
               community.$id = community.id = snap.key;
-              communities.push(community);
-
-              if (communities.length === communityIds.length) {
-                resolve(communities);
-              }
-            });
-        });
+              return community;
+            })
+        );
       });
+      return this.$q.all(promises);
+      // return this.$q(resolve => {
+      //   let communities = [];
+      //   communityIds.forEach(communityId => {
+      //     this.communitiesRef.child(communityId).once('value')
+      //       .then(snap => {
+      //         var community = snap.val();
+      //         community.$id = community.id = snap.key;
+      //         communities.push(community);
+      //
+      //         if (communities.length === communityIds.length) {
+      //           resolve(communities);
+      //         }
+      //       });
+      //   });
+      // });
     },
     getPlayerCommunities: function (player) {
       if (player && player.memberIn) {

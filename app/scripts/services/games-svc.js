@@ -61,6 +61,21 @@
       );
     },
 
+    gamesByIds: function (gamesIds) {
+      let promises = [];
+      gamesIds.forEach(gameId => {
+        promises.push(
+          this.gamesRef.child(gameId).once('value')
+            .then(snap => {
+              var game = snap.val();
+              game.$id = game.id = snap.key;
+              return game;
+            })
+        );
+      });
+      return this.$q.all(promises);
+    },
+
     findBetweenDates: function (from, to, communityId) {
       return this.$q.resolve(
         this.gamesRef

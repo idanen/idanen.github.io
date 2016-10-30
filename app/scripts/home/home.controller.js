@@ -131,6 +131,10 @@
       }
     },
 
+    inHomeRoute: function () {
+      return this.$state.is('home');
+    },
+
     openCommunityEdit() {
       this.editingCommunity = true;
     },

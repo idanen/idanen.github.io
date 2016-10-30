@@ -153,6 +153,13 @@ ul {
   margin-top: 0;
 }
 
+.welcome-message {
+  display: none;
+  &.welcome-message--visible {
+    display: block;
+  }
+}
+
 .settings-menu {
   margin-bottom: 10px;
 }

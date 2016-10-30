@@ -4,7 +4,11 @@
   angular.module('pokerManager')
     .component('signupLoginForm', {
       controller: SignupFormController,
-      templateUrl: 'scripts/user-profile/signup-form.view.html'
+      templateUrl: 'scripts/user-profile/signup-form.view.html',
+      bindings: {
+        onLogin: '&',
+        onLogout: '&'
+      }
     });
 
   SignupFormController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players'];
@@ -41,12 +45,16 @@
         return;
       }
       return this.playersUsers.createUser(this.userInputs.name, this.userInputs.email, this.userInputs.pass)
-        .then(saved => console.log('sign up success', saved))
+        .then(saved => {
+          console.log('sign up success', saved);
+          this.onLogin({$event: saved.uid || saved.userUid});
+        })
         .catch(err => console.error(err));
     },
 
     login: function (method) {
-      this.userService.login(method, this.userInputs.email, this.userInputs.pass);
+      this.userService.login(method, this.userInputs.email, this.userInputs.pass)
+        .then(user => this.onLogin({$event: user.uid}));
     },
 
     markErrors: function () {
@@ -55,6 +63,7 @@
 
     logout: function () {
       this.userService.logout();
+      this.onLogout();
     }
   };
 }());

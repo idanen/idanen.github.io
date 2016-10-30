@@ -2,7 +2,7 @@
   <div class="card-content">
     <community-picker communities="$ctrl.communities" selected="$ctrl.selectedCommunity" on-select="$ctrl.communitySelectionChanged($event)"></community-picker>
     <player-details ng-show="!!$ctrl.currentUser.playerId" player-id="$ctrl.currentUser.playerId" community-filter="$ctrl.selectedCommunity"></player-details>
-    <signup-login-form></signup-login-form>
+    <signup-login-form on-login="$ctrl.loggedIn($event)" on-logout="$ctrl.loggedOut($event)"></signup-login-form>
   </div>
   <div class="card-actions">
     <paper-button ng-if="$ctrl.currentUser" ng-click="$ctrl.logout()">Logout</paper-button>

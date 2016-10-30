@@ -1,65 +1,99 @@
 (function () {
   'use strict';
 
-  angular
-    .module('pokerManager')
-    .directive('pushStateBtn', pushStateBtnFactory);
+  class PushStateBtnController {
+    static get $inject() {
+      return ['$element', 'pushState', 'userService', '$scope'];
+    }
 
-  pushStateBtnFactory.$inject = ['pushState', 'userService'];
-  function pushStateBtnFactory(pushState, userService) {
-    return {
-      restrict: 'E',
-      template: '<paper-toggle-button class="push-state-btn" disabled>Allow push notifications</paper-toggle-button>',
-      link: linkFn
-    };
+    constructor($element, pushState, userService, $scope) {
+      this.$element = $element;
+      this.pushState = pushState;
+      this.userService = userService;
+      this.$scope = $scope;
 
-    function linkFn($scope, $element) {
-      var toggler = $element.find('paper-toggle-button');
-      pushState.getInitialState()
-        .then(function (subscription) {
-          var subscriptionEndpoint;
-          if (!pushState.notificationDenied) {
-            toggler.removeAttr('disabled');
-          }
+      this.eventListeners = {};
+    }
 
-          if (subscription && pushState.notificationPermited) {
-            subscriptionEndpoint = pushState.getSubscriptionEndpoint();
-            $scope.$emit('pushState.subscription.successful', subscriptionEndpoint);
-            toggler[0].checked = true;
-          } else {
-            toggler[0].checked = false;
-          }
-        });
+    $postLink() {
+      this.toggler = this.$element.find('paper-toggle-button')[0];
+      this.pushState.getInitialState()
+        .then(this.updateSubscription.bind(this))
+        .then(this._attachEventListeners.bind(this));
+    }
 
-      toggler.on('iron-change', function (event) {
-        if (event.target.checked) {
-          pushState.subscribe()
-            .then(pushState.getSubscriptionEndpoint.bind(pushState))
-            .then(function (endpoint) {
-              var subscriptionEndpoint = endpoint;
-              toggler[0].dataset.pushEnabled = true;
-              toggler.addClass('active');
-              $scope.$emit('pushState.subscription.successful', subscriptionEndpoint);
-              userService.addSubscriptionId(subscriptionEndpoint);
-            })
-            .catch(function (error) {
-              toggler[0].dataset.pushEnabled = undefined;
-              toggler.removeClass('active');
-              $scope.$emit('pushState.subscription.error', error);
-            });
-        } else {
-          pushState.unsubscribe()
-            .then(function (subscriptionEndpoint) {
-              toggler[0].dataset.pushEnabled = false;
-              toggler.removeClass('active');
-              userService.removeSubscriptionId(subscriptionEndpoint);
-            });
-        }
+    $onDestroy() {
+      this._detachEventListeners();
+    }
+
+    updateSubscription(subscription) {
+      var subscriptionEndpoint;
+      if (!this.pushState.notificationDenied) {
+        this.toggler.removeAttribute('disabled');
+      }
+
+      if (subscription && this.pushState.notificationPermited) {
+        subscriptionEndpoint = this.pushState.getSubscriptionEndpoint();
+        this.$scope.$emit('pushState.subscription.successful', subscriptionEndpoint);
+        this.toggler.checked = true;
+      } else {
+        this.toggler.checked = false;
+      }
+
+      this.$scope.$applyAsync(() => {
+        this.permissionChange(this.pushState.notificationPermited);
       });
+    }
 
-      $element.on('$destroy', function () {
-        toggler.off('iron-change');
+    toggleChanged(event) {
+      if (event.target.checked) {
+        this.pushState.subscribe()
+          .then(() => this.pushState.getSubscriptionEndpoint())
+          .then(this.saveSubscriptionEndpoint.bind(this))
+          .catch(error => {
+            this.toggler.dataset.pushEnabled = undefined;
+            this.toggler.classList.remove('active');
+            this.$scope.$emit('pushState.subscription.error', error);
+          });
+      } else {
+        this.pushState.unsubscribe()
+          .then(this.deleteSubscriptionEndpoint.bind(this));
+      }
+    }
+
+    saveSubscriptionEndpoint(endpoint) {
+      this.toggler.dataset.pushEnabled = true;
+      this.toggler.classList.add('active');
+      this.$scope.$emit('pushState.subscription.successful', endpoint);
+      this.userService.addSubscriptionId(endpoint);
+    }
+
+    deleteSubscriptionEndpoint(subscriptionEndpoint) {
+      this.toggler.dataset.pushEnabled = false;
+      this.toggler.classList.remove('active');
+      this.userService.removeSubscriptionId(subscriptionEndpoint);
+    }
+
+    _attachEventListeners() {
+      this.eventListeners['iron-change'] = evt => this.toggleChanged(evt);
+      this.toggler.addEventListener('iron-change', this.eventListeners['iron-change']);
+    }
+
+    _detachEventListeners() {
+      Object.keys(this.eventListeners).forEach(eventName => {
+        this.toggler.removeEventListener(eventName, this.eventListeners[eventName]);
       });
     }
   }
+
+  angular
+    .module('pokerManager')
+    .component('pushStateBtn', {
+      controller: PushStateBtnController,
+      template: '<paper-toggle-button class="push-state-btn" disabled>{{$ctrl.label}}</paper-toggle-button>',
+      bindings: {
+        label: '@',
+        permissionChange: '&'
+      }
+    });
 }());

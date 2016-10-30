@@ -16,12 +16,14 @@
       templateUrl: 'partials/tmpls/player-details-tmpl.html'
     });
 
-  PlayerDetailsController.$inject = ['$q', '$stateParams', 'Players', 'Games'];
-  function PlayerDetailsController($q, $stateParams, Players, Games) {
+  PlayerDetailsController.$inject = ['$q', '$stateParams', 'Players', 'Games', 'playersMembership', 'communitiesSvc'];
+  function PlayerDetailsController($q, $stateParams, Players, Games, playersMembership, communitiesSvc) {
     this.$q = $q;
     this.Games = Games;
     this.Players = Players;
     this.communityId = $stateParams.communityId;
+    this.playersMembership = playersMembership;
+    this.communitiesSvc = communitiesSvc;
 
     this.isAdmin = function () {
       return true;
@@ -64,6 +66,13 @@
         this.filteredGames = this.playerGames.filter(game => game.communityId === this.communityFilter);
       } else {
         this.filteredGames = this.playerGames;
+      }
+    },
+
+    giveUserAdminPriveleges: function () {
+      if (this.player.memberIn[this.communityId]) {
+        return this.communitiesSvc.getUnboundCommunity(this.communityId)
+          .then(community => this.playersMembership.setPlayerAsAdminOfCommunity(community, this.player));
       }
     },
 

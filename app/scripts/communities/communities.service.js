@@ -79,15 +79,38 @@
       return this._isMemberOrAdmin(playerId, communityId, this.Memberships.MEMBERS);
     },
     _isMemberOrAdmin: function (playerId, communityId, membership) {
-      return this.communitiesRef
-        .child(communityId)
-        .child(membership)
-        .child(playerId)
-        .once('value')
-        .then(snap => snap.exists());
+      return this.$q.resolve(
+        this.communitiesRef
+          .child(communityId)
+          .child(membership)
+          .child(playerId)
+          .once('value')
+          .then(snap => snap.exists())
+      );
     },
     getCommunity: function (communityId) {
       return this.$firebaseObject(this.communitiesRef.child(communityId));
+    },
+
+    setJoinPass: function (communityId, joinPass) {
+      return this.$q.resolve(
+        this.communitiesRef
+          .child(communityId)
+          .set(joinPass)
+      );
+    },
+
+    getUnboundCommunity: function (communityId) {
+      return this.$q.resolve(
+        this.communitiesRef
+          .child(communityId)
+          .once('value')
+          .then(snap => {
+            var community = snap.val();
+            community.$id = snap.key;
+            return community;
+          })
+      );
     },
 
     askToJoin: function (joiner) {

@@ -46,7 +46,13 @@
     },
 
     login: function (method) {
-      this.userService.login(method, this.userInputs.email, this.userInputs.pass);
+      this.userService.login(method, this.userInputs.email, this.userInputs.pass)
+        .catch(err => {
+          if (err.message === 'USER_LOGGED_IN_DOESNT_EXIST') {
+            return this.playersUsers.newProviderUser();
+          }
+          throw err;
+        });
     },
 
     markErrors: function () {

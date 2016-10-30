@@ -91,6 +91,10 @@
       this.playersInGame = [];
     },
 
+    playersOrder: function (player) {
+      return player.games ? -Object.keys(player.games).length : 0;
+    },
+
     openPlayerDetailsDialog: function () {
       this.closePlayersControl();
 

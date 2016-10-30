@@ -17,7 +17,7 @@
     this.tabs = [];
     this.communitiesTab = {
       title: 'communities',
-      icon: 'fa-users',
+      icon: 'icon-users',
       children: [],
       actions: [{
         title: 'Add or join'
@@ -28,7 +28,7 @@
     this.statsTab = {
       title: 'Stats',
       href: $state.href('stats', {fromDate: Date.now() - DAY * 30, toDate: Date.now()}),
-      icon: 'fa-bar-chart'
+      icon: 'icon-bar-chart'
     };
     this.gamesTab = {
       title: 'Select Game',

@@ -36,13 +36,13 @@
           <input class="form-control" placeholder="Join code" type="text" ng-model="vm.community.joinCode">
         </div>
         <div class="col-xs-2">
-          <paper-button raised ng-click="vm.generateJoinLink()">
-            <span class="icon icon-send"></span>
+          <paper-button raised ng-click="vm.generateJoinLink()" uib-tooltip="Save">
+            <span class="icon icon-floppy-o"></span>
           </paper-button>
         </div>
         <div class="col-xs-6">
           <!--<span>https://ourhomegame.com/join-community/{{vm.community.$id}}?joinCode={{vm.community.joinCode}}</span>-->
-          <paper-button raised ngclipboard data-clipboard-text="https://ourhomegame.com/join-community/{{vm.community.$id}}">
+          <paper-button raised ngclipboard data-clipboard-text="https://ourhomegame.com/join-community/{{vm.community.$id}}" uib-tooltip="Copy to clipboard">
             <span class="icon icon-clipboard"></span>
           </paper-button>
         </div>

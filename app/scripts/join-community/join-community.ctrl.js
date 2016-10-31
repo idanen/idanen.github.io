@@ -21,7 +21,7 @@
       if (this.currentUser && this.currentUser.playerId) {
         this.community.$loaded()
           .then(() => {
-            this.joined = !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];
+            this.joined = !!this.community.members[this.currentUser.playerId] || !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];
           });
       }
     },

@@ -19,14 +19,14 @@
       <signup-login-form></signup-login-form>
     </div>
   </div>
-  <div class="row">
+  <div class="row" ng-show="!$ctrl.joined && $ctrl.currentUser">
     <div class="col-xs-8">
       <paper-input-container>
         <label>Community join password</label>
         <input is="iron-input" type="password" name="joinPass" ng-model="$ctrl.joinCode">
       </paper-input-container>
     </div>
-    <div class="col-xs-4" ng-show="!$ctrl.joined && $ctrl.currentUser">
+    <div class="col-xs-4">
       <paper-button raised ng-click="$ctrl.joinCommunity()">join &quot;{{$ctrl.community.name}}&quot;</paper-button>
     </div>
   </div>

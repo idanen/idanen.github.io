@@ -21,6 +21,7 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="input-group">
+              <label class="sr-only" ng-bind="vm.addingCommunity ? 'Community name' : 'Joining code (ask admin)'"></label>
               <input class="form-control" type="text" ng-model="vm.newCommunity" ng-disabled="vm.communityInputDisabled"
                      placeholder="{{vm.addingCommunity ? 'Community name' : 'Joining code (ask admin)'}}">
               <div class="input-group-btn">

@@ -9,24 +9,28 @@
     <form>
       <fieldset class="form-group">
         <label>Buyin</label>
-        <div class="btn-group btn-group-sm buy-amount">
-          <button class="btn btn-warning" ng-click="gameCtrl.cancelBuyin(player, 1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
-            <i class="icon icon-minus"></i>
-            <span class="hidden-xs"> 1</span>
-          </button>
-          <button class="btn btn-warning buy-amount__small" ng-click="gameCtrl.cancelBuyin(player, 0.1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
-            <i class="icon icon-minus"></i>
-            <span class="hidden-xs"> 0.1</span>
-          </button>
-          <button class="btn btn-default">{{player.buyin}}</button>
-          <button class="btn btn-success buy-amount__small" ng-click="gameCtrl.buyin(player, 0.1)" ng-disabled="!player.isPlaying" title="Buy-in">
-            <i class="icon icon-plus"></i>
-            <span class="hidden-xs"> 0.1</span>
-          </button>
-          <button class="btn btn-success" ng-click="gameCtrl.buyin(player, 1)" ng-disabled="!player.isPlaying" title="Buy-in">
-            <i class="icon icon-plus"></i>
-            <span class="hidden-xs"> 1</span>
-          </button>
+        <div class="input-group input-group-sm buy-amount">
+          <div class="input-group-btn">
+            <button class="btn btn-warning" ng-click="gameCtrl.cancelBuyin(player, 1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
+              <i class="icon icon-minus"></i>
+              <span class="hidden-xs"> 1</span>
+            </button>
+            <button class="btn btn-warning buy-amount__small" ng-click="gameCtrl.cancelBuyin(player, 0.1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
+              <i class="icon icon-minus"></i>
+              <span class="hidden-xs"> 0.1</span>
+            </button>
+          </div>
+          <button class="btn btn-default form-control">{{player.buyin}}</button>
+          <div class="input-group-btn">
+            <button class="btn btn-success buy-amount__small" ng-click="gameCtrl.buyin(player, 0.1)" ng-disabled="!player.isPlaying" title="Buy-in">
+              <i class="icon icon-plus"></i>
+              <span class="hidden-xs"> 0.1</span>
+            </button>
+            <button class="btn btn-success" ng-click="gameCtrl.buyin(player, 1)" ng-disabled="!player.isPlaying" title="Buy-in">
+              <i class="icon icon-plus"></i>
+              <span class="hidden-xs"> 1</span>
+            </button>
+          </div>
         </div>
       </fieldset>
       <fieldset class="form-group">
@@ -54,7 +58,16 @@
             </button>
           </div>
         </div>
-        <div class="btn-group btn-group-sm" style="margin: 7px 0;">
+      </fieldset>
+      <fieldset class="form-group">
+        <label>Buyout</label>
+        <p class="form-control-static">
+          <strong ng-class="{'text-success': (player.buyout - player.buyin > 0), 'text-danger': (player.buyout - player.buyin < 0)}">{{player.buyout}}</strong>
+        </p>
+      </fieldset>
+      <fieldset class="form-group">
+        <label>Actions</label>
+        <div class="btn-group btn-group-sm">
           <button ng-click="gameCtrl.buyout(player)" class="btn btn-primary" ng-disabled="!player.isPlaying" title="Buy out">
             <i class="icon icon-external-link"></i>
             <span class="hidden-xs"> Buy out</span>
@@ -65,12 +78,6 @@
           </button>
           <button ng-click="gameCtrl.comeBack(player)" class="btn btn-primary" ng-disabled="player.isPlaying" title="Come Back">Come Back</button>
         </div>
-      </fieldset>
-      <fieldset class="form-group">
-        <label>Buyout</label>
-        <p class="form-control-static">
-          <strong ng-class="{'text-success': (player.buyout - player.buyin > 0), 'text-danger': (player.buyout - player.buyin < 0)}">{{player.buyout}}</strong>
-        </p>
       </fieldset>
       <fieldset class="form-group">
         <label>Hosting</label>

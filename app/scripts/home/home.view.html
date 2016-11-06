@@ -1,25 +1,18 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
+          <div class="welcome-message" ng-class="{'welcome-message--visible': vm.inHomeRoute()}">
             <h2>Welcome to Pokermunity</h2>
-            <p ng-class="{'open': vm.communityDropdownOpen}">
+            <p>
+              Here you can track your home poker game results in relation to the people you play with.
+            </p>
+            <p></p>
+            <p>
               You can <paper-button raised ng-click="vm.startAddingCommunity()">create</paper-button> or
               <em id="join-community-help" uib-tooltip="To join a community, ask the admin to send you a joining link">join <span class="icon icon-question-circle"></span></em>
-              a community
+              a Pokermmunity (=the group of players you usually play with)<span ng-if="!vm.currentUser">, but first you'll need to <a ui-sref="userprofile({uid: ''})">login</a></span>
             </p>
-            <!--<div class="btn-group btn-group-justified">-->
-                <!--<div class="btn-group btn-group-lg">-->
-                    <!--<button class="btn btn-default btn-block" ng-click="vm.startAddingCommunity()">Create a community</button>-->
-                <!--</div>-->
-                <!--<div class="btn-group btn-group-lg" ng-class="{'open': vm.communityDropdownOpen}">-->
-                    <!--<button class="btn btn-default btn-block dropdown-toggle" ng-click="vm.communitiesDropdownToggle()">Join a community <span class="caret"></span></button>-->
-                    <!--<ul class="dropdown-menu">-->
-                        <!--<li ng-repeat="community in vm.communities">-->
-                            <!--<a ng-click="vm.startJoiningCommunity( community )">{{ community.name }} <em ng-show="vm.admins[$index]">(administered by adminhere)</em></a>-->
-                        <!--</li>-->
-                    <!--</ul>-->
-                <!--</div>-->
-            <!--</div>-->
+          </div>
         </div>
     </div>
     <community-picker communities="vm.communities" on-select="vm.gotoCommunity($event)"></community-picker>
@@ -28,6 +21,7 @@
         <div class="row">
           <div class="col-xs-12">
             <div class="input-group">
+              <label class="sr-only" ng-bind="vm.addingCommunity ? 'Community name' : 'Joining code (ask admin)'"></label>
               <input class="form-control" type="text" ng-model="vm.newCommunity" ng-disabled="vm.communityInputDisabled"
                      placeholder="{{vm.addingCommunity ? 'Community name' : 'Joining code (ask admin)'}}">
               <div class="input-group-btn">

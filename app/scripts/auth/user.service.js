@@ -25,6 +25,9 @@
           .child(uid)
           .once('value')
           .then(snap => {
+            if (!snap.exists()) {
+              return this.$q.reject(new Error('USER_LOGGED_IN_DOESNT_EXIST'));
+            }
             this.currentUser = snap.val();
             return this.currentUser;
           })
@@ -99,14 +102,17 @@
         uid: toSave.uid,
         displayName: displayName,
         email: toSave.email,
-        photoURL: this.generateImageUrl(toSave.email),
-        provider: 'email'
+        photoURL: toSave.photoURL || this.generateImageUrl(toSave.email),
+        provider: toSave.provider || 'email'
       };
       return this.$q.resolve(
         this.usersRef
           .child(toSave.uid)
           .set(newUser)
-          .then(() => newUser)
+          .then(() => {
+            this.currentUser = newUser;
+            return this.currentUser;
+          })
       );
     },
 

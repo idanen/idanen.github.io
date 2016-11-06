@@ -81,6 +81,9 @@
       });
 
       this.displayGames.players = _.values(players);
+      this.displayGames.players = _.sortBy(this.displayGames.players, [player => {
+        return player.gamesCount && (player.buyin - player.buyout) / player.gamesCount;
+      }]);
       this.totalGames = Object.keys(gamesForCount).length;
 
       return this.displayGames.players;

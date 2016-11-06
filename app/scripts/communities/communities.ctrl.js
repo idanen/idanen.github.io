@@ -94,6 +94,15 @@
         });
     },
 
+    generateJoinLink: function () {
+      if (this.isAdmin) {
+        this.community.$save()
+          .then(ref => {
+            console.log(ref);
+          });
+      }
+    },
+
     confirmPlayer: function (joiner) {
       return this.playersMembership.confirmJoiningPlayer(joiner.uid, this.community);
     },

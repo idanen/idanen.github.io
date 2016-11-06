@@ -4,16 +4,16 @@
   angular.module('pokerManager')
     .controller('UserProfileCtrl', UserProfileController);
 
-  UserProfileController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players'];
-  function UserProfileController($element, userService, playersUsers, communitiesSvc, Players) {
+  UserProfileController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players', '$state'];
+  function UserProfileController($element, userService, playersUsers, communitiesSvc, Players, $state) {
     this.$element = $element;
     this.userService = userService;
     this.playersUsers = playersUsers;
     this.playersSvc = Players;
     this.communitiesSvc = communitiesSvc;
+    this.$state = $state;
 
     this.cardElement = this.$element.find('paper-card');
-    this.signingUp = false;
     this.userInputs = {
       name: '',
       email: '',
@@ -65,6 +65,14 @@
           this.cardElement.heading = 'Login / Signup';
         }
       }
+    },
+
+    loggedIn: function (uid) {
+      this.$state.go(this.$state.current, {uid}, {reload: true});
+    },
+
+    loggedOut: function () {
+      this.$state.go('userprofile', {uid: null});
     },
 
     communitySelectionChanged: function (community) {

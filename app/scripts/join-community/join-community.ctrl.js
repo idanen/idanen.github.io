@@ -8,7 +8,6 @@
   function JoinCommunityController($stateParams, communitiesSvc, userService, polymerToaster) {
     this.communitiesSvc = communitiesSvc;
     this.community = this.communitiesSvc.getCommunity($stateParams.communityId);
-    this.joinCode = $stateParams.joinCode;
     this.userService = userService;
     this.polymerToaster = polymerToaster;
     this.joined = false;
@@ -22,12 +21,13 @@
       if (this.currentUser && this.currentUser.playerId) {
         this.community.$loaded()
           .then(() => {
-            this.joined = !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];
+            this.joined = !!this.community.members[this.currentUser.playerId] || !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];
           });
       }
     },
 
     joinCommunity: function () {
+      this.joiningFailed = '';
       if (this.currentUser && this.community && !this.joined) {
         return this.communitiesSvc.askToJoin({
           communityId: this.community.$id,
@@ -44,6 +44,9 @@
           })
           .then(() => {
             this.joined = !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];
+          })
+          .catch(() => {
+            this.joiningFailed = 'Join request failed. Verify you have the right link and the right joining code';
           });
       }
     }

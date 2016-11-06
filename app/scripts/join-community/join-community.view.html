@@ -7,7 +7,7 @@
   <div class="row">
     <div class="col-xs-12">
       <p ng-show="!$ctrl.joined && $ctrl.currentUser">
-        To join the Pokermunity &quot;{{$ctrl.community.name}}&quot; click the &quot;join&quot; button.
+        To join the Pokermunity &quot;{{$ctrl.community.name}}&quot;, enter the password you received from the admin and click the &quot;join&quot; button.
       </p>
       <p ng-show="$ctrl.joined">
         You have already asked to join the Pokermunity &quot;{{$ctrl.community.name}}&quot;.
@@ -19,8 +19,14 @@
       <signup-login-form></signup-login-form>
     </div>
   </div>
-  <div class="row">
-    <div class="col-xs-12" ng-show="!$ctrl.joined && $ctrl.currentUser">
+  <div class="row" ng-show="!$ctrl.joined && $ctrl.currentUser">
+    <div class="col-xs-8">
+      <paper-input-container>
+        <label>Community join password</label>
+        <input is="iron-input" type="password" name="joinPass" ng-model="$ctrl.joinCode">
+      </paper-input-container>
+    </div>
+    <div class="col-xs-4">
       <paper-button raised ng-click="$ctrl.joinCommunity()">join &quot;{{$ctrl.community.name}}&quot;</paper-button>
     </div>
   </div>

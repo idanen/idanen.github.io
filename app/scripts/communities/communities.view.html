@@ -30,6 +30,23 @@
           <!--</paper-card>-->
         </div>
       </div>
+      <div class="row" ng-if="vm.isAdmin">
+        <div class="col-xs-4">
+          <label class="sr-only">Join code</label>
+          <input class="form-control" placeholder="Join code" type="text" ng-model="vm.community.joinCode">
+        </div>
+        <div class="col-xs-2">
+          <paper-button raised ng-click="vm.generateJoinLink()" uib-tooltip="Save">
+            <span class="icon icon-floppy-o"></span>
+          </paper-button>
+        </div>
+        <div class="col-xs-6">
+          <!--<span>https://ourhomegame.com/join-community/{{vm.community.$id}}?joinCode={{vm.community.joinCode}}</span>-->
+          <paper-button raised ngclipboard data-clipboard-text="https://ourhomegame.com/join-community/{{vm.community.$id}}" uib-tooltip="Copy to clipboard">
+            <span class="icon icon-clipboard"></span>
+          </paper-button>
+        </div>
+      </div>
       <div class="row">
         <div class="col-sm-4">
           <input type="text" class="form-control" ng-model="vm.fromDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="fromDate" bs-datepicker>
@@ -49,7 +66,7 @@
                 <span class="icon icon-arrow-left" aria-hidden="true"></span>
               </a>
             </li>
-            <li ng-repeat="game in vm.games | limitTo:vm.pageSize:vm.currentPage" ui-sref-active="active">
+            <li ng-repeat="game in vm.games | orderBy:'date' | limitTo:vm.pageSize:vm.currentPage" ui-sref-active="active">
               <a ui-sref="game({ gameId: game.$id })" title="{{ game.$id }}" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
             </li>
             <li ng-click="vm.nextPage()">

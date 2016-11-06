@@ -98,6 +98,7 @@
     comeBack: function (player) {
       if (!player.isPlaying) {
         player.isPlaying = true;
+        player.currentChipCount = player.buyout * this.game.chipValue;
         this.playerResultUpdated(player);
       }
     },

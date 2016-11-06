@@ -13,6 +13,13 @@
       storageBucket: 'fiery-heat-6939.appspot.com',
       messagingSenderId: '101062618190'
     })
+    // .constant('FIREBASE_CONFIG', {
+    //   apiKey: 'AIzaSyB2F0cxPuxY_D-Fh-sxneK4q24SEWFQEJo',
+    //   authDomain: 'idan-devenv.firebaseapp.com',
+    //   databaseURL: 'https://idan-devenv.firebaseio.com',
+    //   storageBucket: 'idan-devenv.appspot.com',
+    //   messagingSenderId: '181276329848'
+    // })
     .constant('loginRedirectPath', '/login')
     .config(firebaseConfig);
 

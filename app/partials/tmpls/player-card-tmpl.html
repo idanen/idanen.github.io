@@ -13,22 +13,22 @@
           <div class="input-group-btn">
             <button class="btn btn-warning" ng-click="gameCtrl.cancelBuyin(player, 1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
               <i class="icon icon-minus"></i>
-              <span class="hidden-xs"> 1</span>
+              <span class="hidden-xs hidden-sm"> 1</span>
             </button>
             <button class="btn btn-warning buy-amount__small" ng-click="gameCtrl.cancelBuyin(player, 0.1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
               <i class="icon icon-minus"></i>
-              <span class="hidden-xs"> 0.1</span>
+              <span class="hidden-xs hidden-sm"> 0.1</span>
             </button>
           </div>
           <button class="btn btn-default form-control">{{player.buyin}}</button>
           <div class="input-group-btn">
             <button class="btn btn-success buy-amount__small" ng-click="gameCtrl.buyin(player, 0.1)" ng-disabled="!player.isPlaying" title="Buy-in">
               <i class="icon icon-plus"></i>
-              <span class="hidden-xs"> 0.1</span>
+              <span class="hidden-xs hidden-sm"> 0.1</span>
             </button>
             <button class="btn btn-success" ng-click="gameCtrl.buyin(player, 1)" ng-disabled="!player.isPlaying" title="Buy-in">
               <i class="icon icon-plus"></i>
-              <span class="hidden-xs"> 1</span>
+              <span class="hidden-xs hidden-sm"> 1</span>
             </button>
           </div>
         </div>
@@ -39,22 +39,22 @@
           <div class="input-group-btn">
             <button class="btn btn-danger" ng-click="gameCtrl.addOrSubtractChips(player, 1)" ng-disabled="!player.isPlaying">
               <i class="icon icon-minus"></i>
-              <span class="hidden-xs"> 1</span>
+              <span class="hidden-xs hidden-sm"> 1</span>
             </button>
             <button class="btn btn-danger buy-amount__small" ng-click="gameCtrl.addOrSubtractChips(player, 0.10)" ng-disabled="!player.isPlaying">
               <i class="icon icon-minus"></i>
-              <span class="hidden-xs">0.1</span>
+              <span class="hidden-xs hidden-sm">0.1</span>
             </button>
           </div>
           <input class="form-control" ng-model="player.currentChipCount" ng-change="gameCtrl.chipCountUpdate(player)" type="number" min="0" step="{{ settings.chipValue }}" ng-disabled="!player.isPlaying" autofocus/>
           <div class="input-group-btn">
             <button class="btn btn-success buy-amount__small" ng-click="gameCtrl.addOrSubtractChips(player, 0.10, true)" ng-disabled="!player.isPlaying">
               <i class="icon icon-plus"></i>
-              <span class="hidden-xs"> 0.1</span>
+              <span class="hidden-xs hidden-sm"> 0.1</span>
             </button>
             <button class="btn btn-success" ng-click="gameCtrl.addOrSubtractChips(player, 1, true)" ng-disabled="!player.isPlaying">
               <i class="icon icon-plus"></i>
-              <span class="hidden-xs"> 1</span>
+              <span class="hidden-xs hidden-sm"> 1</span>
             </button>
           </div>
         </div>

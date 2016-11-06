@@ -12,7 +12,9 @@
       this.userService = userService;
       this.$scope = $scope;
 
-      this.eventListeners = {};
+      this.eventListeners = {
+        'iron-change': evt => this.toggleChanged(evt)
+      };
     }
 
     $postLink() {
@@ -75,8 +77,9 @@
     }
 
     _attachEventListeners() {
-      this.eventListeners['iron-change'] = evt => this.toggleChanged(evt);
-      this.toggler.addEventListener('iron-change', this.eventListeners['iron-change']);
+      Object.keys(this.eventListeners).forEach(eventName => {
+        this.toggler.addEventListener(eventName, this.eventListeners[eventName]);
+      });
     }
 
     _detachEventListeners() {

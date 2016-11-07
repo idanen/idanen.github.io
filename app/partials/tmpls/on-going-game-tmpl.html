@@ -26,17 +26,25 @@
 		</div>
 	</div>
 
-	<uib-accordion>
-		<uib-accordion-group>
-			<uib-accordion-heading>
-				<i class="icon icon-trash"></i>
+  <div class="row">
+    <div class="col-xs-12">
+      <paper-confirm-button on-action-confirmed="vm.deleteGame()">
+        <i class="icon icon-trash"></i>
         <span> Delete game</span>
-			</uib-accordion-heading>
-			<hr/>
-			<div class="row">
-				<button class="btn btn-lg btn-danger btn-block" ng-click="vm.deleteGame()">Delete Game</button>
-			</div>
-			<hr/>
-		</uib-accordion-group>
-	</uib-accordion>
+      </paper-confirm-button>
+    </div>
+  </div>
+	<!--<uib-accordion>-->
+		<!--<uib-accordion-group>-->
+			<!--<uib-accordion-heading>-->
+				<!--<i class="icon icon-trash"></i>-->
+        <!--<span> Delete game</span>-->
+			<!--</uib-accordion-heading>-->
+			<!--<hr/>-->
+			<!--<div class="row">-->
+				<!--<button class="btn btn-lg btn-danger btn-block" ng-click="vm.deleteGame()">Delete Game</button>-->
+			<!--</div>-->
+			<!--<hr/>-->
+		<!--</uib-accordion-group>-->
+	<!--</uib-accordion>-->
 </div>

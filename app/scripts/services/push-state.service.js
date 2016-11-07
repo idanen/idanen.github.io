@@ -120,6 +120,8 @@
           endpointParts = endpoint.split('/');
           return endpointParts[endpointParts.length - 1];
         }
+
+        return endpoint;
       }
     },
     isEnabled: function () {

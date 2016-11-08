@@ -25,7 +25,7 @@
       }
 
       // Are Notifications supported in the service worker?
-      if (!('showNotification' in this.$window.ServiceWorkerRegistration.prototype)) {
+      if (!this.$window.ServiceWorkerRegistration || !('showNotification' in this.$window.ServiceWorkerRegistration.prototype)) {
         console.warn('Notifications aren\'t supported.');
         return Promise.reject('Notifications aren\'t supported.');
       }

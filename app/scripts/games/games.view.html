@@ -1,11 +1,11 @@
-<button class="btn btn-default players-drawer-btn visible-sm visible-xs" ng-class="{ 'players-drawer-open': vm.prefs.playersOpen }" ng-click="vm.openPlayersControl()"><span class="icon icon-user-plus"></span></button>
+<button class="btn btn-default players-drawer-btn visible-xs" ng-class="{ 'players-drawer-open': vm.prefs.playersOpen }" ng-click="vm.openPlayersControl()"><span class="icon icon-user-plus"></span></button>
 
-<div id="players-control" class="col-md-4" ng-class="{'nav-visible': vm.prefs.playersOpen}">
+<div id="players-control" class="col-sm-4" ng-class="{'nav-visible': vm.prefs.playersOpen}">
     <h3 class="hidden-xs"><i class="icon icon-user"></i> Players</h3>
     <div class="row">
         <div class="col-xs-8">
             <div class="btn-group">
-                <button title="Close" class="btn btn-danger visible-sm visible-xs" id="close-players-panel" ng-click="vm.closePlayersControl()"><i class="icon icon-remove"></i></button>
+                <button title="Close" class="btn btn-danger visible-xs" id="close-players-panel" ng-click="vm.closePlayersControl()"><i class="icon icon-remove"></i></button>
                 <button class="btn btn-success" ng-click="vm.openPlayerDetailsDialog()"><i class="icon icon-plus"></i> New Player</button>
             </div>
         </div>
@@ -38,6 +38,6 @@
         </div>
     </div>
 </div>
-<div class="col-md-8">
+<div class="col-sm-8">
   <on-going-game game-id="vm.game.$id" on-chip-value-update="vm.chipsValueChanged(curr, prev)"></on-going-game>
 </div>

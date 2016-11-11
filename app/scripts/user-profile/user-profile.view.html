@@ -1,6 +1,8 @@
 <paper-card class="container-fluid" image="{{ $ctrl.currentUser.provider === 'google' ? $ctrl.currentUser.photoURL + '?sz=150' : $ctrl.currentUser.photoURL }}" alt="User's profile image">
   <div class="card-content">
-    <community-picker communities="$ctrl.communities" selected="$ctrl.selectedCommunity" on-select="$ctrl.communitySelectionChanged($event)"></community-picker>
+    <div ng-if="$ctrl.currentUser">
+      <community-picker communities="$ctrl.communities" selected="$ctrl.selectedCommunity" on-select="$ctrl.communitySelectionChanged($event)"></community-picker>
+    </div>
     <player-details ng-show="!!$ctrl.currentUser.playerId" player-id="$ctrl.currentUser.playerId" community-filter="$ctrl.selectedCommunity"></player-details>
     <signup-login-form on-login="$ctrl.loggedIn($event)" on-logout="$ctrl.loggedOut($event)"></signup-login-form>
   </div>

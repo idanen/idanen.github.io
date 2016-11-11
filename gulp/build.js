@@ -82,6 +82,7 @@ module.exports = function (gulp, $, config) {
       '!' + config.appComponents,
       '!**/*.test.*',
       '!**/index.html',
+      '!**/runtime-caching.js',
       '!**/service-worker.js'
     ])
       .pipe($.sourcemaps.init())
@@ -142,7 +143,10 @@ module.exports = function (gulp, $, config) {
   // copy bower components into build directory
   gulp.task('bowerCopy', ['inject'], function () {
     var cssFilter = $.filter('**/*.css', {restore: true})
-      , jsFilter = $.filter('**/*.js', {restore: true})
+      , jsFilter = $.filter([
+        '**/*.js',
+        '!**/sw-toolbox.js'
+      ], {restore: true})
       , ngStrapPath = 'bower_components/angular-strap/';
 
     // Fix ui-bootstrap and angular-strap colliding
@@ -202,7 +206,7 @@ module.exports = function (gulp, $, config) {
     } else {
       return gulp.src(config.buildDir + 'index.html')
         .pipe($.wiredep.stream({
-          exclude: [/webcomponents/],
+          exclude: [/webcomponents/, /sw-toolbox/],
           ignorePath: '../../' + bowerDir.replace(/\\/g, '/'),
           fileTypes: {
             html: {

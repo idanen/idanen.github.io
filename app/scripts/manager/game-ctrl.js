@@ -41,7 +41,7 @@
       // player.balance -= player.buyin;
       player.currentChipCount = parseInt(player.currentChipCount, 10) + calculatedBuyin * this.game.chipValue;
       player.buyout = player.currentChipCount / this.game.chipValue;
-      this.playersInGame.$save(player);
+      this.playerResultUpdated(player);
 
       try {
         this.$analytics.eventTrack('Buyin', {category: 'Actions', label: player.name});
@@ -56,7 +56,7 @@
       // player.balance += player.buyin;
       player.currentChipCount = parseInt(player.currentChipCount, 10) - actualBuyin * this.game.chipValue;
       player.buyout = player.currentChipCount / this.game.chipValue;
-      this.playersInGame.$save(player);
+      this.playerResultUpdated(player);
     },
 
     updatePlayersInGame: function (updated) {
@@ -166,7 +166,7 @@
 
     playerResultUpdated: function (player) {
       // this.playersInGame.$save(player);
-      this.playersGames.updatePlayerResult(player, this.game, player);
+      return this.playersGames.updatePlayerResult(player, this.game, player);
     }
   };
 }());

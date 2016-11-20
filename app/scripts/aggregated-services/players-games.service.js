@@ -6,6 +6,7 @@
 
   PlayersGamesService.$inject = ['Ref', '$q', '$firebaseArray', '$firebaseUtils'];
   function PlayersGamesService(Ref, $q, $firebaseArray, $firebaseUtils) {
+    this.rootRef = Ref;
     this.playersRef = Ref.child('players');
     this.gamesRef = Ref.child('games');
     this.$q = $q;
@@ -29,47 +30,34 @@
       );
     },
     removePlayerFromGame: function (playerId, gameId) {
-      var promises = [];
+      var updateRefs = {};
 
-      promises.push(
-        this.gamesRef
-          .child(gameId)
-          .child('players')
-          .child(playerId)
-          .remove()
-      );
-      promises.push(
-        this.playersRef
-          .child(playerId)
-          .child('games')
-          .child(gameId)
-          .remove()
-      );
+      updateRefs[`players/${playerId}/games/${gameId}`] = null;
+      updateRefs[`games/${gameId}/players/${playerId}`] = null;
 
-      return this.$q.all(promises)
+      return this.$q.resolve(this.rootRef.update(updateRefs))
         .then(() => this.getPlayersInGame(gameId));
     },
     removeAllPlayersFromGame: function (gameId) {
+      let updateRefs = {};
+
+      updateRefs[`games/${gameId}/players`] = null;
       return this.gamesRef
           .child(gameId)
           .child('players')
           .once('value')
             .then(snap => {
-              return Object.keys(snap.val());
-            })
-            .then(playersIds => {
-              let promises = [];
-              playersIds.forEach(playerId => {
-                promises.push(
-                  this.removePlayerFromGame(playerId, gameId)
-                );
+              snap.forEach(playerSnap => {
+                updateRefs[`players/${playerSnap.key}/games/${gameId}`] = null;
               });
-              return this.$q.all(promises);
+            })
+            .then(() => {
+              return this.$q.resolve(this.rootRef.update(updateRefs));
             });
     },
     addPlayerToGame: function (player, game) {
       var gameResult = {},
-          promises = [];
+          updateRefs = {};
 
       player.isPlaying = true;
       gameResult.name = player.name;
@@ -82,44 +70,42 @@
       gameResult.date = game.date;
       gameResult.location = game.location;
 
-      promises.push(
-        this.playersRef
-          .child(player.$id)
-          .child('games')
-          .child(game.$id)
-          .set(gameResult)
-      );
-      promises.push(
-        this.gamesRef
-          .child(game.$id)
-          .child('players')
-          .child(player.$id)
-          .set(gameResult)
-      );
+      updateRefs[`players/${player.$id}/games/${game.$id}`] = gameResult;
+      updateRefs[`games/${game.$id}/players/${player.$id}`] = gameResult;
 
-      return this.$q.all(promises)
+      return this.$q.resolve(this.rootRef.update(updateRefs))
         .then(() => this.getPlayersInGame(game.$id));
     },
     updatePlayerResult: function (player, game, gameResult) {
-      let promises = [];
+      let updateRefs = {},
+          dollarStripped = _.omit(gameResult, (val, key) => (/^\$/).test(key));
 
-      promises.push(
-        this.playersRef
-          .child(player.$id)
-          .child('games')
-          .child(game.$id)
-          .update(this.$firebaseUtils.toJSON(gameResult))
-      );
-      promises.push(
-        this.gamesRef
-          .child(game.$id)
-          .child('players')
-          .child(player.$id)
-          .update(this.$firebaseUtils.toJSON(gameResult))
-      );
+      updateRefs[`players/${player.$id}/games/${game.$id}`] = dollarStripped;
+      updateRefs[`games/${game.$id}/players/${player.$id}`] = dollarStripped;
 
-      return this.$q.all(promises)
+      return this.$q.resolve(this.rootRef.update(updateRefs))
         .then(() => this.getPlayersInGame(game.$id));
+    },
+    moveResultsToAnotherPlayer: function (fromPlayerId, toPlayer) {
+      let updateRefs = {};
+
+      return this.playersRef
+        .child(fromPlayerId)
+        .child('games')
+        .once('value')
+        .then(snap => {
+          snap.forEach(gameSnap => {
+            let gameResult = gameSnap.val();
+            gameResult.name = toPlayer.name;
+            // Delete previous player from game
+            updateRefs[`games/${gameSnap.key}/players/${fromPlayerId}`] = null;
+            // Add new player to game
+            updateRefs[`games/${gameSnap.key}/players/${toPlayer.$id}`] = gameResult;
+            // and add the game to the player
+            updateRefs[`players/${toPlayer.$id}/games/${gameSnap.key}`] = gameResult;
+          });
+        })
+        .then(() => this.$q.resolve(this.rootRef.update(updateRefs)));
     }
   };
 }());

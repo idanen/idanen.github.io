@@ -113,21 +113,6 @@
     },
     updateMembership: function (player) {
       return this.communitiesSvc.addMember(player, this.community);
-    },
-    chipsValueChanged: function (current) {
-      if (!current) {
-        current = this.game.chipValue = 1;
-      }
-      if (this.playersInGame) {
-        _.forEach(this.playersInGame, player => {
-          if (player.buyout) {
-            player.currentChipCount = player.buyout * current;
-          } else {
-            player.currentChipCount = 0;
-          }
-          this.playersInGame.$save(player);
-        });
-      }
     }
   };
 }());

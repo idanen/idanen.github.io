@@ -9,6 +9,7 @@
 
   GamesService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject'];
   function GamesService($q, Ref, $firebaseArray, $firebaseObject) {
+    this.rootRef = Ref;
     this.gamesRef = Ref.child('games');
     this.$q = $q;
     this.$firebaseArray = $firebaseArray;
@@ -74,6 +75,37 @@
         );
       });
       return this.$q.all(promises);
+    },
+
+    chipsValueUpdated: function (game) {
+      let updateRefs = {};
+
+      updateRefs[`games/${game.$id}/chipValue`] = game.chipValue;
+
+      if (game.players) {
+        _.forEach(game.players, (player, playerId) => {
+          var newChipCount = (player.buyout || 0) * game.chipValue;
+          updateRefs[`games/${game.$id}/players/${playerId}/currentChipCount`] = newChipCount;
+          updateRefs[`players/${playerId}/games/${game.$id}/currentChipCount`] = newChipCount;
+        });
+      }
+
+      return this.$q.resolve(this.rootRef.update(updateRefs));
+    },
+
+    dateUpdated: function (game) {
+      let updateRefs = {};
+
+      updateRefs[`games/${game.$id}/date`] = game.date;
+
+      if (game.players) {
+        _.forEach(game.players, (player, playerId) => {
+          updateRefs[`games/${game.$id}/players/${playerId}/date`] = game.date;
+          updateRefs[`players/${playerId}/games/${game.$id}/date`] = game.date;
+        });
+      }
+
+      return this.$q.resolve(this.rootRef.update(updateRefs));
     },
 
     findBetweenDates: function (from, to, communityId) {

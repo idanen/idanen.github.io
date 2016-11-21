@@ -67,13 +67,21 @@
     },
 
     gameSettingsChanged: function (newSettings) {
+      let chipValueUpdated = this.game.chipValue !== newSettings.chipValue;
       _.extend(this.game, newSettings);
       this.game.$save();
+      if (chipValueUpdated) {
+        this.gamesSvc.chipsValueUpdated(this.game);
+      }
     },
 
     gameDetailsChanged: function (newDetails) {
+      let dateChanged = this.game.date !== newDetails.date;
       _.extend(this.game, newDetails);
       this.game.$save();
+      if (dateChanged) {
+        this.gamesSvc.dateUpdated(this.game);
+      }
     },
 
     cancelAddPlayer: function (player) {
@@ -146,17 +154,6 @@
 
     isGameInProgress: function () {
       return this.playersInGame && _.some(this.playersInGame, 'isPlaying');
-    },
-
-    chipsValueUpdated: function (val) {
-      var prev;
-      if (val === this.game.chipValue) {
-        return;
-      }
-      prev = this.game.chipValue || 1;
-      this.game.chipValue = val || 1;
-      this.game.$save();
-      this.onChipValueUpdate({prev: prev, curr: this.game.chipValue});
     },
 
     numberOfHandsUpdated: function (counter) {

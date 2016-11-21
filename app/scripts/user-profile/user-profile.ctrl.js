@@ -72,31 +72,13 @@
     },
 
     loggedOut: function () {
-      this.$state.go('userprofile', {uid: null});
+      this.$state.go('userprofile', {});
     },
 
     communitySelectionChanged: function (community) {
       this.selectedCommunity = community;
-      console.log('Change selected community', community);
+      // console.log('Change selected community', community);
     },
-
-    // signup: function () {
-    //   if (!this.userProfileForm.$valid) {
-    //     this.markErrors();
-    //     return;
-    //   }
-    //   return this.playersUsers.createUser(this.userInputs.name, this.userInputs.email, this.userInputs.pass)
-    //     .then(saved => console.log('sign up success', saved))
-    //     .catch(err => console.error(err));
-    // },
-    //
-    // login: function (method) {
-    //   this.userService.login(method, this.userInputs.email, this.userInputs.pass);
-    // },
-    //
-    // markErrors: function () {
-    //   console.log('marking errors');
-    // },
 
     logout: function () {
       this.userService.logout();

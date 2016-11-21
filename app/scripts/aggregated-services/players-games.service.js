@@ -78,7 +78,7 @@
     },
     updatePlayerResult: function (player, game, gameResult) {
       let updateRefs = {},
-          dollarStripped = _.omit(gameResult, (val, key) => (/^\$/).test(key));
+          dollarStripped = _.omitBy(gameResult, (val, key) => (/^\$/).test(key));
 
       updateRefs[`players/${player.$id}/games/${game.$id}`] = dollarStripped;
       updateRefs[`games/${game.$id}/players/${player.$id}`] = dollarStripped;

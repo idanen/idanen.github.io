@@ -3,15 +3,18 @@
 
   angular
     .module('pokerManager.services')
-    .service('userService', UserService);
+    .service('userService', UserService)
+    .constant('USER_DOESNT_EXIST_ERROR', 'USER_LOGGED_IN_DOESNT_EXIST');
 
-  UserService.$inject = ['$q', '$window', '$firebaseAuth', 'Ref', 'GOOGLE_AUTH_SCOPES'];
-  function UserService($q, $window, $firebaseAuth, Ref, GOOGLE_AUTH_SCOPES) {
+  UserService.$inject = ['$q', '$window', '$firebaseAuth', 'Ref', 'GOOGLE_AUTH_SCOPES', 'USER_DOESNT_EXIST_ERROR'];
+  function UserService($q, $window, $firebaseAuth, Ref, GOOGLE_AUTH_SCOPES, USER_DOESNT_EXIST_ERROR) {
     this.$q = $q;
     this.$window = $window;
     this.authObj = $firebaseAuth();
+    this.rootRef = Ref;
     this.usersRef = Ref.child('users');
     this.GOOGLE_AUTH_SCOPES = GOOGLE_AUTH_SCOPES;
+    this.USER_DOESNT_EXIST_ERROR = USER_DOESNT_EXIST_ERROR;
 
     this.authObj.$onAuthStateChanged(this.authStateChanged.bind(this));
 
@@ -26,7 +29,7 @@
           .once('value')
           .then(snap => {
             if (!snap.exists()) {
-              return this.$q.reject(new Error('USER_LOGGED_IN_DOESNT_EXIST'));
+              return this.$q.reject(new Error(this.USER_DOESNT_EXIST_ERROR));
             }
             this.currentUser = snap.val();
             return this.currentUser;

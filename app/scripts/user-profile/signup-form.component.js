@@ -11,13 +11,14 @@
       }
     });
 
-  SignupFormController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players'];
-  function SignupFormController($element, userService, playersUsers, communitiesSvc, Players) {
+  SignupFormController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players', 'USER_DOESNT_EXIST_ERROR'];
+  function SignupFormController($element, userService, playersUsers, communitiesSvc, Players, USER_DOESNT_EXIST_ERROR) {
     this.$element = $element;
     this.userService = userService;
     this.playersUsers = playersUsers;
     this.playersSvc = Players;
     this.communitiesSvc = communitiesSvc;
+    this.USER_DOESNT_EXIST_ERROR = USER_DOESNT_EXIST_ERROR;
     this.userInputs = {
       name: '',
       email: '',
@@ -34,7 +35,7 @@
         this.player.$destroy();
         this.player = null;
       }
-      if (this.currentUser) {
+      if (this.currentUser && this.currentUser.playerId) {
         this.player = this.playersSvc.getPlayer(this.currentUser.playerId);
       }
     },
@@ -56,7 +57,7 @@
       this.userService.login(method, this.userInputs.email, this.userInputs.pass)
         .then(user => this.onLogin({$event: user.uid}))
         .catch(err => {
-          if (err.message === 'USER_LOGGED_IN_DOESNT_EXIST') {
+          if (err.message === this.USER_DOESNT_EXIST_ERROR) {
             return this.playersUsers.newProviderUser();
           }
           throw err;

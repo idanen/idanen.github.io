@@ -7,6 +7,7 @@
   PlayersMembership.$inject = ['$q', 'Ref', 'Players', 'communitiesSvc', 'userService'];
   function PlayersMembership($q, Ref, Players, communitiesSvc, userService) {
     this.$q = $q;
+    this.rootRef = Ref;
     this.playersRef = Ref.child('players');
     this.communitiesRef = Ref.child('communities');
     this.playersSvc = Players;
@@ -55,10 +56,16 @@
      */
     confirmJoiningPlayer: function (userId, community) {
       return this.playersSvc.findBy('userUid', userId)
-        .then(player => this.playersSvc.removeGuest(player))
-        .then(player => this.playersSvc.joinCommunity(player, community))
-        .then(player => this.communitiesSvc.addMember(player, community))
-        .then(() => this.communitiesSvc.removeJoiner(community.$id, userId));
+        .then(player => {
+          let updateRefs = {};
+
+          updateRefs[`players/${player.$id}/guestOf`] = null;
+          updateRefs[`players/${player.$id}/memberIn/${community.$id}`] = community.name;
+          updateRefs[`communities/${community.$id}/members/${player.$id}`] = player.name;
+          updateRefs[`communities/${community.$id}/joiners/${userId}`] = null;
+
+          return this.rootRef.update(updateRefs);
+        });
     },
 
     /**

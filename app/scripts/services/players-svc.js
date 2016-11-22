@@ -192,8 +192,9 @@
       newPlayer = this.createPlayer();
       newPlayer.userUid = user.uid;
       newPlayer.name = user.name || user.displayName;
+      newPlayer.displayName = newPlayer.name;
       newPlayer.email = user.email;
-      newPlayer.imageUrl = user.imageUrl || user.photoURL;
+      newPlayer.photoURL = user.imageUrl || user.photoURL;
       delete newPlayer.isNew;
       newPlayerId = this.playersRef.push().key;
       return this.playersRef

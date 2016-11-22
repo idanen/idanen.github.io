@@ -25,6 +25,17 @@
             community: communityResolver
           }
         },
+        communityPlayers = {
+          name: 'communityPlayers',
+          parent: 'community',
+          url: '^/community/:communityId/players',
+          templateUrl: 'scripts/players/community-players.view.html',
+          controller: 'CommunityPlayersCtrl',
+          controllerAs: '$ctrl',
+          resolve: {
+            community: communityResolver
+          }
+        },
         joinCommunity = {
           name: 'joinCommunity',
           parent: 'home',
@@ -84,6 +95,7 @@
 
     $stateProvider.state(home);
     $stateProvider.state(community);
+    $stateProvider.state(communityPlayers);
     $stateProvider.state(joinCommunity);
     $stateProvider.state(userprofile);
     $stateProvider.state(addCommunity);

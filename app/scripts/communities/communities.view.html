@@ -7,7 +7,15 @@
       </div>
     </div>
     <div ng-if="!!vm.currentUser">
-      <div class="row" ng-if="vm.isAdmin && vm.joiners.length">
+      <div class="row" ng-if="vm.isAdmin">
+        <div class="col-xs-3 col-xs-offset-9 pull-right">
+          <a class="manage-players-btn" ui-sref="communityPlayers({communityId: vm.community.$id})">
+            <paper-button raised>
+              <paper-badge ng-if="vm.joiners.length" ng-bind="vm.joiners.length"></paper-badge>
+              <span class="manage-players-btn__btn-text">manage players</span>
+            </paper-button>
+          </a>
+        </div>
         <div class="col-xs-12">
           <h3>Joining users</h3>
           <ul class="joining-users">

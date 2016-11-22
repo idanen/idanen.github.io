@@ -1,3 +1,4 @@
 <div class="player-chip">
-  <img class="profile-img img-circle" ng-src="{{ $ctrl.player.photoURL }}" alt="profile image"><span class="player-name">{{$ctrl.player.displayName}}</span>
+  <img class="profile-img img-circle" ng-src="{{ $ctrl.photoURL }}" alt="profile image">
+  <span class="player-name">{{$ctrl.player.displayName || $ctrl.player.name}}</span>
 </div>

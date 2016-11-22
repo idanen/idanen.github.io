@@ -71,8 +71,22 @@ body {
   }
 }
 
-.joining-users {
+.joining-users,
+.community-members {
   padding: 0;
+  li {
+    float: left;
+    margin-right: 1.5rem;
+  }
+}
+
+.community-players {
+  player-chip {
+    display: inline-block;
+    &.selected {
+      font-weight: bold;
+    }
+  }
 }
 
 .menu {
@@ -111,6 +125,12 @@ ul {
 .community-wrap {
   width: 100%;
   margin: 5px 0;
+}
+
+.manage-players-btn {
+  .manage-players-btn__btn-text {
+    white-space: nowrap;
+  }
 }
 
 .new-community {

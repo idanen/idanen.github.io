@@ -86,23 +86,30 @@
       return this.$q.resolve(this.rootRef.update(updateRefs))
         .then(() => this.getPlayersInGame(game.$id));
     },
-    moveResultsToAnotherPlayer: function (fromPlayerId, toPlayer) {
+    moveResultsToAnotherPlayer: function (sourcePlayerId, targetPlayer) {
       let updateRefs = {};
 
       return this.playersRef
-        .child(fromPlayerId)
+        .child(sourcePlayerId)
         .child('games')
         .once('value')
         .then(snap => {
           snap.forEach(gameSnap => {
             let gameResult = gameSnap.val();
-            gameResult.name = toPlayer.name;
-            // Delete previous player from game
-            updateRefs[`games/${gameSnap.key}/players/${fromPlayerId}`] = null;
-            // Add new player to game
-            updateRefs[`games/${gameSnap.key}/players/${toPlayer.$id}`] = gameResult;
-            // and add the game to the player
-            updateRefs[`players/${toPlayer.$id}/games/${gameSnap.key}`] = gameResult;
+            if (targetPlayer.name) {
+              gameResult.name = targetPlayer.name;
+            }
+            if (targetPlayer.displayName) {
+              gameResult.displayName = targetPlayer.displayName;
+            }
+            // Delete source player from game
+            updateRefs[`games/${gameSnap.key}/players/${sourcePlayerId}`] = null;
+            // Delete game from source player
+            updateRefs[`players/${sourcePlayerId}/games/${gameSnap.key}`] = null;
+            // Add target player to game
+            updateRefs[`games/${gameSnap.key}/players/${targetPlayer.$id}`] = gameResult;
+            // and add the game to the target player
+            updateRefs[`players/${targetPlayer.$id}/games/${gameSnap.key}`] = gameResult;
           });
         })
         .then(() => this.$q.resolve(this.rootRef.update(updateRefs)));

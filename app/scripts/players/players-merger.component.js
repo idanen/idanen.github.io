@@ -3,11 +3,12 @@
 
   class PlyersMergerController {
     static get $inject() {
-      return ['$element', 'playersGames'];
+      return ['$element', '$q', 'playersGames'];
     }
 
-    constructor($element, playersGames) {
+    constructor($element, $q, playersGames) {
       this.$element = $element;
+      this.$q = $q;
       this.playersGames = playersGames;
     }
 
@@ -17,15 +18,21 @@
     }
 
     $onChanges() {
+      let promises = [];
       if (this.players) {
-        this.players.$loaded()
-          .then(() => this._initPickersLists());
+        promises.push(this.players.$loaded());
       }
+      if (this.guests) {
+        promises.push(this.guests.$loaded());
+      }
+
+      return this.$q.all(promises)
+        .then(() => this._initPickersLists());
     }
 
     $postLink() {
       this.targetSelector.addEventListener('value-changed', event => {
-        this.targetPlayer = _.find(this.players, {$id: event.detail.value});
+        this.targetPlayer = _.find(this.players, {$id: event.detail.value}) || _.find(this.guests, {$id: event.detail.value});
       });
       this.sourceSelector.addEventListener('value-changed', event => {
         this.sourcePlayerId = event.detail.value;
@@ -33,14 +40,15 @@
     }
 
     _initPickersLists() {
-      let playersForPickers = this.players.map(player => {
-        return {
-          label: player.displayName || player.name,
-          value: player.$id
-        };
-      });
-      this.targetSelector.items = playersForPickers;
-      this.sourceSelector.items = playersForPickers;
+      let allPlayers = [];
+      if (this.players) {
+        allPlayers = allPlayers.concat(this.players.map(this._playersMappingFn));
+      }
+      if (this.guests) {
+        allPlayers = allPlayers.concat(this.guests.map(this._playersMappingFn));
+      }
+      this.targetSelector.items = allPlayers;
+      this.sourceSelector.items = allPlayers;
     }
 
     mergePlayers() {
@@ -48,13 +56,21 @@
         return this.playersGames.moveResultsToAnotherPlayer(this.sourcePlayerId, this.targetPlayer);
       }
     }
+
+    _playersMappingFn(player) {
+      return {
+        label: player.displayName || player.name,
+        value: player.$id
+      };
+    }
   }
 
   angular.module('pokerManager')
     .component('playersMerger', {
       controller: PlyersMergerController,
       bindings: {
-        players: '<'
+        players: '<',
+        guests: '<'
       },
       templateUrl: 'scripts/players/players-merger.view.html'
     });

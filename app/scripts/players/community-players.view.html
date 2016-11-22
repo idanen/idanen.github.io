@@ -12,9 +12,18 @@
           </paper-button>
         </li>
       </ul>
+      <!--<paper-card ng-repeat="joiner in vm.joiners">-->
+        <!--<div class="card-content">-->
+          <!--{{ joiner.email }}-->
+        <!--</div>-->
+        <!--<div class="card-actions">-->
+          <!--<paper-button ng-click="vm.confirmPlayer(joiner)">Confirm</paper-button>-->
+        <!--</div>-->
+      <!--</paper-card>-->
     </div>
   </div>
-  <players-merger players="$ctrl.members"></players-merger>
+  <h3>Merging players results</h3>
+  <players-merger players="$ctrl.members" guests="$ctrl.guests"></players-merger>
   <div class="row">
     <div class="col-xs-12">
       <h3>Members</h3>

@@ -3,11 +3,12 @@
 
   class CommunityPlayersController {
     static get $inject() {
-      return ['community', 'communitiesSvc', 'Players', 'playersMembership'];
+      return ['community', '$q', 'communitiesSvc', 'Players', 'playersMembership'];
     }
 
-    constructor(community, communitiesSvc, Players, playersMembership) {
+    constructor(community, $q, communitiesSvc, Players, playersMembership) {
       this.community = community;
+      this.$q = $q;
       this.communitiesSvc = communitiesSvc;
       this.playersSvc = Players;
       this.playersMembership = playersMembership;
@@ -16,10 +17,8 @@
         .then(() => {
           this.joiners = this.communitiesSvc.getJoiners(this.community.$id);
           this.members = this.playersSvc.playersOfCommunity(this.community.$id, this.community.name);
-          return this.members.$loaded();
-        })
-        .then(() => {
           this.guests = this.playersSvc.guestsOfCommunity(this.community.$id);
+          return this.$q.all([this.members.$loaded(), this.guests.$loaded()]);
         });
     }
 

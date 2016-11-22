@@ -11,31 +11,10 @@
         <div class="col-xs-3 col-xs-offset-9 pull-right">
           <a class="manage-players-btn" ui-sref="communityPlayers({communityId: vm.community.$id})">
             <paper-button raised>
-              <paper-badge ng-if="vm.joiners.length" ng-bind="vm.joiners.length"></paper-badge>
+              <paper-badge ng-if="vm.joiners.length" label="{{vm.joiners.length || 0}}"></paper-badge>
               <span class="manage-players-btn__btn-text">manage players</span>
             </paper-button>
           </a>
-        </div>
-        <div class="col-xs-12">
-          <h3>Joining users</h3>
-          <ul class="joining-users">
-            <li ng-repeat="joiner in vm.joiners">
-              <!--<span>{{ joiner.email }}</span>-->
-              <player-chip player="joiner"></player-chip>
-              <paper-button raised ng-click="vm.confirmPlayer(joiner)">
-                <span class="icon icon-check"></span>
-                <span> Confirm</span>
-              </paper-button>
-            </li>
-          </ul>
-          <!--<paper-card ng-repeat="joiner in vm.joiners">-->
-            <!--<div class="card-content">-->
-              <!--{{ joiner.email }}-->
-            <!--</div>-->
-            <!--<div class="card-actions">-->
-              <!--<paper-button ng-click="vm.confirmPlayer(joiner)">Confirm</paper-button>-->
-            <!--</div>-->
-          <!--</paper-card>-->
         </div>
       </div>
       <div class="row" ng-if="vm.isAdmin">

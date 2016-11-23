@@ -7,15 +7,15 @@ image: node:6.5.0
 
 pipelines:
   tags:
-    version-*:
+    release-*:
       - step:
-        script:
-          - npm install -g gulp-cli bower firebase-tools
-          - npm install
-          - bower install --allow-root
-          - gulp build --stage prod
-          - firebase use --token $FIREBASE_PROD_DEPLOY_TOKEN default
-          - firebase deploy -m "Pipeline commit $BITBUCKET_COMMIT" --non-interactive --token $FIREBASE_PROD_DEPLOY_TOKEN
+          script:
+            - npm install -g gulp-cli bower firebase-tools
+            - npm install
+            - bower install --allow-root
+            - gulp build --stage prod
+            - firebase use --token $FIREBASE_PROD_DEPLOY_TOKEN default
+            - firebase deploy -m "Pipeline commit $BITBUCKET_COMMIT" --non-interactive --token $FIREBASE_PROD_DEPLOY_TOKEN
   branches:
     feature/firebase-migration:
       - step:

@@ -73,7 +73,7 @@
           promises = [];
 
       player.isPlaying = true;
-      gameResult.name = player.name;
+      gameResult.displayName = player.displayName;
       gameResult.isPlaying = true;
       gameResult.buyin = 0;
       gameResult.buyout = 0;

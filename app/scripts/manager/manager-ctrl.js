@@ -48,7 +48,7 @@
         .then(playersInGame => this.updatePlayersInGame(playersInGame));
 
       try {
-        this.$analytics.eventTrack('Join Game', {category: 'Actions', label: player.name});
+        this.$analytics.eventTrack('Join Game', {category: 'Actions', label: player.dispalyName});
       } catch (err) {}
     },
     openPlayersControl: function () {

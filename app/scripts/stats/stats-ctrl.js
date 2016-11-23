@@ -44,7 +44,7 @@
     };
 
     vm.playerPredicate = function (player) {
-      return new RegExp(vm.filter.name, 'gi').test(player.name) && player.gamesCount > Math.floor(vm.filter.gamesCount * vm.totalGames);
+      return new RegExp(vm.filter.name, 'gi').test(player.displayName) && player.gamesCount > Math.floor(vm.filter.gamesCount * vm.totalGames);
     };
 
     // function formatDate(aDate) {
@@ -185,7 +185,7 @@
           /*
            * Update the local instance if the player with the changeable fields from the modal
            */
-          player.name = savedPlayer.name;
+          player.displayName = savedPlayer.displayName;
           player.phone = savedPlayer.phone;
           player.email = savedPlayer.email;
         });

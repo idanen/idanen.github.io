@@ -62,7 +62,7 @@
 
           playerUpdates.guestOf = null;
           playerUpdates[`memberIn/${community.$id}`] = community.name;
-          communityUpdates[`${community.$id}/members/${player.$id}`] = player.name;
+          communityUpdates[`${community.$id}/members/${player.$id}`] = player.displayName;
           communityUpdates[`${community.$id}/joiners/${userId}`] = null;
 
           // return this.rootRef.update(updateRefs);

@@ -1,8 +1,8 @@
 <div class="player-card" ng-class="{'bg-success': (player.buyout - player.buyin > 0), 'bg-danger': (player.buyout - player.buyin < 0)}">
 	<button class="btn btn-xs btn-danger cancel-btn" title="Cancel" ng-disabled="!player.isPlaying" ng-click="gameCtrl.cancelAddPlayer(player)"><span class="icon icon-trash"></span></button>
-	<header class="well well-sm" title="{{player.name}}">
+	<header class="well well-sm" title="{{player.displayName}}">
 		<strong ng-class="{'text-success': (player.buyout - player.buyin > 0), 'text-danger': (player.buyout - player.buyin < 0)}">
-			<span class="icon icon-user"></span>&nbsp;{{player.name}}
+			<span class="icon icon-user"></span>&nbsp;{{player.displayName}}
 		</strong>
 	</header>
 	<div class="player-card-content">

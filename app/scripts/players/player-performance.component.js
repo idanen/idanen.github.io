@@ -120,7 +120,7 @@
       return {
         chart: {},
         title: {
-          text: this.player.name + '\'s performance'
+          text: this.player.displayName + '\'s performance'
         },
         xAxis: {
           categories: this.chartData.dates
@@ -140,7 +140,7 @@
         series: [
           {
             type: 'column',
-            name: this.player.name,
+            name: this.player.displayName,
             data: this.chartData.profits
           },
           {

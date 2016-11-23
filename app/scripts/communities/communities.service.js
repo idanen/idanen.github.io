@@ -68,7 +68,7 @@
           .child(community.$id)
           .child(membership)
           .child(player.$id)
-          .set(player.name)
+          .set(player.displayName)
           .then(() => player)
       );
     },

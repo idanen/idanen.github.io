@@ -60,7 +60,7 @@
 				<tbody>
 					<tr ng-repeat="player in vm.displayGames.players | filter:vm.playerPredicate" ng-class="{'success': (player.buyout > player.buyin), 'danger': (player.buyout < player.buyin)}">
 						<td>
-							<span>{{ player.name }}</span> <span class="badge" title="Games played">{{ player.gamesCount }}</span> <button class="btn btn-link" ng-click="vm.openPlayerDetailsDialog(player)" analytics-on analytics-event="Player Details" analytics-category="Actions" analytics-label="{{ player.name }}"><span class="icon icon-external-link"></span></button>
+							<span>{{ player.displayName }}</span> <span class="badge" title="Games played">{{ player.gamesCount }}</span> <button class="btn btn-link" ng-click="vm.openPlayerDetailsDialog(player)" analytics-on analytics-event="Player Details" analytics-category="Actions" analytics-label="{{ player.displayName }}"><span class="icon icon-external-link"></span></button>
 						</td>
 						<td class="hidden-sm hidden-xs">{{ player.buyin }}</td>
 						<td class="hidden-sm hidden-xs">{{ player.buyout }}</td>

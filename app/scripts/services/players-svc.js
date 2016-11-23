@@ -191,8 +191,7 @@
 
       newPlayer = this.createPlayer();
       newPlayer.userUid = user.uid;
-      newPlayer.name = user.name || user.displayName;
-      newPlayer.displayName = newPlayer.name;
+      newPlayer.displayName = user.name || user.displayName;
       newPlayer.email = user.email;
       newPlayer.photoURL = user.imageUrl || user.photoURL;
       delete newPlayer.isNew;

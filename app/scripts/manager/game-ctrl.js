@@ -44,7 +44,7 @@
       this.playerResultUpdated(player);
 
       try {
-        this.$analytics.eventTrack('Buyin', {category: 'Actions', label: player.name});
+        this.$analytics.eventTrack('Buyin', {category: 'Actions', label: player.displayName});
       } catch (err) {}
     },
     startGame: function () {

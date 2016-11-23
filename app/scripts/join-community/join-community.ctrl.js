@@ -4,12 +4,13 @@
   angular.module('pokerManager')
     .controller('JoinCommunityCtrl', JoinCommunityController);
 
-  JoinCommunityController.$inject = ['$stateParams', 'communitiesSvc', 'userService', 'polymerToaster'];
-  function JoinCommunityController($stateParams, communitiesSvc, userService, polymerToaster) {
+  JoinCommunityController.$inject = ['$stateParams', 'communitiesSvc', 'userService', 'polymerToaster', 'Players'];
+  function JoinCommunityController($stateParams, communitiesSvc, userService, polymerToaster, Players) {
     this.communitiesSvc = communitiesSvc;
     this.community = this.communitiesSvc.getCommunity($stateParams.communityId);
     this.userService = userService;
     this.polymerToaster = polymerToaster;
+    this.playersSvc = Players;
     this.joined = false;
 
     this.userService.onUserChange(user => this.userChanged(user));
@@ -37,6 +38,12 @@
           photoURL: this.currentUser.photoURL,
           displayName: this.currentUser.displayName
         })
+          .then(() => {
+            return this.playersSvc.findBy('userUid', this.currentUser.uid);
+          })
+          .then(player => {
+            return this.playersSvc.joinCommunity(player, this.community, true);
+          })
           .then(() => {
             return this.polymerToaster.showToast({
               text: 'Thanks for joining :)'

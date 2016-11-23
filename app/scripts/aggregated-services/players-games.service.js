@@ -30,34 +30,47 @@
       );
     },
     removePlayerFromGame: function (playerId, gameId) {
-      var updateRefs = {};
+      var promises = [];
 
-      updateRefs[`players/${playerId}/games/${gameId}`] = null;
-      updateRefs[`games/${gameId}/players/${playerId}`] = null;
+      promises.push(
+        this.gamesRef
+          .child(gameId)
+          .child('players')
+          .child(playerId)
+          .remove()
+      );
+      promises.push(
+        this.playersRef
+          .child(playerId)
+          .child('games')
+          .child(gameId)
+          .remove()
+      );
 
-      return this.$q.resolve(this.rootRef.update(updateRefs))
+      return this.$q.all(promises)
         .then(() => this.getPlayersInGame(gameId));
     },
     removeAllPlayersFromGame: function (gameId) {
-      let updateRefs = {};
-
-      updateRefs[`games/${gameId}/players`] = null;
       return this.gamesRef
           .child(gameId)
           .child('players')
           .once('value')
             .then(snap => {
-              snap.forEach(playerSnap => {
-                updateRefs[`players/${playerSnap.key}/games/${gameId}`] = null;
-              });
+              return Object.keys(snap.val());
             })
-            .then(() => {
-              return this.$q.resolve(this.rootRef.update(updateRefs));
+            .then(playersIds => {
+              let promises = [];
+              playersIds.forEach(playerId => {
+                promises.push(
+                  this.removePlayerFromGame(playerId, gameId)
+                );
+              });
+              return this.$q.all(promises);
             });
     },
     addPlayerToGame: function (player, game) {
       var gameResult = {},
-          updateRefs = {};
+          promises = [];
 
       player.isPlaying = true;
       gameResult.name = player.name;
@@ -70,30 +83,53 @@
       gameResult.date = game.date;
       gameResult.location = game.location;
 
-      updateRefs[`players/${player.$id}/games/${game.$id}`] = gameResult;
-      updateRefs[`games/${game.$id}/players/${player.$id}`] = gameResult;
+      promises.push(
+        this.playersRef
+          .child(player.$id)
+          .child('games')
+          .child(game.$id)
+          .set(gameResult)
+      );
+      promises.push(
+        this.gamesRef
+          .child(game.$id)
+          .child('players')
+          .child(player.$id)
+          .set(gameResult)
+      );
 
-      return this.$q.resolve(this.rootRef.update(updateRefs))
+      return this.$q.all(promises)
         .then(() => this.getPlayersInGame(game.$id));
     },
     updatePlayerResult: function (player, game, gameResult) {
-      let updateRefs = {},
+      let promises = [],
           dollarStripped = _.omitBy(gameResult, (val, key) => (/^\$/).test(key));
 
-      updateRefs[`players/${player.$id}/games/${game.$id}`] = dollarStripped;
-      updateRefs[`games/${game.$id}/players/${player.$id}`] = dollarStripped;
+      promises.push(
+        this.playersRef
+          .child(player.$id)
+          .child('games')
+          .child(game.$id)
+          .update(dollarStripped)
+      );
+      promises.push(
+        this.gamesRef
+          .child(game.$id)
+          .child('players')
+          .child(player.$id)
+          .update(dollarStripped)
+      );
 
-      return this.$q.resolve(this.rootRef.update(updateRefs))
+      return this.$q.all(promises)
         .then(() => this.getPlayersInGame(game.$id));
     },
     moveResultsToAnotherPlayer: function (sourcePlayerId, targetPlayer) {
-      let updateRefs = {};
-
       return this.playersRef
         .child(sourcePlayerId)
         .child('games')
         .once('value')
         .then(snap => {
+          let promises = [];
           snap.forEach(gameSnap => {
             let gameResult = gameSnap.val();
             if (targetPlayer.name) {
@@ -103,16 +139,25 @@
               gameResult.displayName = targetPlayer.displayName;
             }
             // Delete source player from game
-            updateRefs[`games/${gameSnap.key}/players/${sourcePlayerId}`] = null;
+            promises.push(
+              this.gamesRef.child(`${gameSnap.key}/players/${sourcePlayerId}`).remove()
+            );
             // Delete game from source player
-            updateRefs[`players/${sourcePlayerId}/games/${gameSnap.key}`] = null;
+            promises.push(
+              this.playersRef.child(`${sourcePlayerId}/games/${gameSnap.key}`).remove()
+            );
             // Add target player to game
-            updateRefs[`games/${gameSnap.key}/players/${targetPlayer.$id}`] = gameResult;
+            promises.push(
+              this.gamesRef.child(`${gameSnap.key}/players/${targetPlayer.$id}`).set(gameResult)
+            );
             // and add the game to the target player
-            updateRefs[`players/${targetPlayer.$id}/games/${gameSnap.key}`] = gameResult;
+            promises.push(
+              this.playersRef.child(`${targetPlayer.$id}/games/${gameSnap.key}`).set(gameResult)
+            );
           });
-        })
-        .then(() => this.$q.resolve(this.rootRef.update(updateRefs)));
+
+          return this.$q.all(promises);
+        });
     }
   };
 }());

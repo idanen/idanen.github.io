@@ -16,8 +16,6 @@
     this.GOOGLE_AUTH_SCOPES = GOOGLE_AUTH_SCOPES;
     this.USER_DOESNT_EXIST_ERROR = USER_DOESNT_EXIST_ERROR;
 
-    this.authObj.$onAuthStateChanged(this.authStateChanged.bind(this));
-
     this._userChangedListeners = [];
     this._getUserPromise = this.$q.resolve();
   }
@@ -49,12 +47,16 @@
         });
     },
 
+    startAuthChangeListener: function () {
+      this.authObj.$onAuthStateChanged(this.authStateChanged.bind(this));
+    },
+
     authStateChanged: function (authState) {
       let promise;
 
       if (!authState) {
         this.currentUser = null;
-        promise = this.$q.resolve(null);
+        promise = this.$q.reject(new Error('Not logged in yet'));
       } else {
         promise = this.getUser(authState.uid)
           .then(user => {
@@ -91,7 +93,11 @@
 
     createUser: function (name, email, pass) {
       return this.authObj.$createUserWithEmailAndPassword(email, pass)
-        .then(newUser => this.saveUser(newUser, name));
+        .then(newUser => this.saveUser(newUser, name))
+        .then(() => {
+          this.startAuthChangeListener();
+          return this.currentUser;
+        });
     },
 
     generateImageUrl: function (identifier) {
@@ -139,6 +145,7 @@
       }
 
       return loginPromise
+        .then(() => this.startAuthChangeListener())
         .then(() => this.waitForUser());
     },
 

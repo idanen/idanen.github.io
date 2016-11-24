@@ -8,7 +8,7 @@
     </div>
     <div ng-if="!!vm.currentUser">
       <div class="row" ng-if="vm.isAdmin">
-        <div class="col-xs-3 col-xs-offset-9 pull-right">
+        <div class="col-xs-5">
           <a class="manage-players-btn" ui-sref="communityPlayers({communityId: vm.community.$id})">
             <paper-button raised>
               <paper-badge ng-if="vm.joiners.length" label="{{vm.joiners.length || 0}}"></paper-badge>

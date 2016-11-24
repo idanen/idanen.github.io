@@ -17,12 +17,11 @@
     this.USER_DOESNT_EXIST_ERROR = USER_DOESNT_EXIST_ERROR;
 
     this._userChangedListeners = [];
-    this._getUserPromise = this.$q.resolve();
   }
 
   UserService.prototype = {
     getUser: function (uid) {
-      this._getUserPromise = this._getUserPromise.then(
+      return this.$q.resolve(
         this.usersRef
           .child(uid)
           .once('value')
@@ -34,7 +33,6 @@
             return this.currentUser;
           })
       );
-      return this._getUserPromise;
     },
     waitForUser: function () {
       return this.$q.resolve(this.authObj.$waitForSignIn())
@@ -145,8 +143,11 @@
       }
 
       return loginPromise
-        .then(() => this.startAuthChangeListener())
-        .then(() => this.waitForUser());
+        .then(authData => {
+          this.startAuthChangeListener();
+          return authData;
+        })
+        .then(authData => this.getUser(authData.uid));
     },
 
     logout: function () {

@@ -19,11 +19,12 @@
     this.authObj.$onAuthStateChanged(this.authStateChanged.bind(this));
 
     this._userChangedListeners = [];
+    this._getUserPromise = this.$q.resolve();
   }
 
   UserService.prototype = {
     getUser: function (uid) {
-      return this.$q.resolve(
+      this._getUserPromise = this._getUserPromise.then(
         this.usersRef
           .child(uid)
           .once('value')
@@ -35,6 +36,7 @@
             return this.currentUser;
           })
       );
+      return this._getUserPromise;
     },
     waitForUser: function () {
       return this.$q.resolve(this.authObj.$waitForSignIn())

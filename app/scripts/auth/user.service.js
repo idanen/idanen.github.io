@@ -147,7 +147,7 @@
           this.startAuthChangeListener();
           return authData;
         })
-        .then(authData => this.getUser(authData.uid));
+        .then(authData => this.getUser(authData.user.uid));
     },
 
     logout: function () {

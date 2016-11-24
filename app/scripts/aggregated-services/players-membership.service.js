@@ -66,7 +66,11 @@
           communityUpdates[`${community.$id}/joiners/${userId}`] = null;
 
           // return this.rootRef.update(updateRefs);
-          return this.$q.all([this.playersRef.child(player.$id).update(playerUpdates), this.communitiesRef.update(communityUpdates)]);
+          return this.$q.all([
+            this.playersRef.child(player.$id).child('guestOf').remove(),
+            this.playersRef.child(`${player.$id}/memberIn/${community.$id}`).set(player.displayName),
+            this.communitiesRef.update(communityUpdates)
+          ]);
         });
     },
 

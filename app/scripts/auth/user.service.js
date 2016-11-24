@@ -16,6 +16,8 @@
     this.GOOGLE_AUTH_SCOPES = GOOGLE_AUTH_SCOPES;
     this.USER_DOESNT_EXIST_ERROR = USER_DOESNT_EXIST_ERROR;
 
+    this.authObj.$onAuthStateChanged(this.authStateChanged.bind(this));
+
     this._userChangedListeners = [];
   }
 
@@ -43,10 +45,6 @@
 
           return null;
         });
-    },
-
-    startAuthChangeListener: function () {
-      this.authObj.$onAuthStateChanged(this.authStateChanged.bind(this));
     },
 
     authStateChanged: function (authState) {
@@ -91,11 +89,7 @@
 
     createUser: function (name, email, pass) {
       return this.authObj.$createUserWithEmailAndPassword(email, pass)
-        .then(newUser => this.saveUser(newUser, name))
-        .then(() => {
-          this.startAuthChangeListener();
-          return this.currentUser;
-        });
+        .then(newUser => this.saveUser(newUser, name));
     },
 
     generateImageUrl: function (identifier) {
@@ -143,10 +137,6 @@
       }
 
       return loginPromise
-        .then(authData => {
-          this.startAuthChangeListener();
-          return authData;
-        })
         .then(authData => this.getUser(authData.user.uid));
     },
 

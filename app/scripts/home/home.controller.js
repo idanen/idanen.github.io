@@ -7,13 +7,13 @@
   HomeController.$inject = ['$state', 'communitiesSvc', 'userService', 'playersMembership', 'Players', 'polymerToaster'];
   function HomeController($state, communitiesSvc, userService, playersMembership, playersSvc, polymerToaster) {
     this.$state = $state;
-    this.communities = communitiesSvc.getCommunities();
     this.communitiesSvc = communitiesSvc;
     this.userService = userService;
     this.playersMembership = playersMembership;
     this.playersSvc = playersSvc;
     this.polymerToaster = polymerToaster;
 
+    this.communities = [];
     this.newCommunity = '';
     this.defaultSettings = {
       chipValue: 1,

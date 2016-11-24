@@ -24,7 +24,6 @@
     this.defaultGameSettings = {};
     this.inputDisabled = false;
     this.communitiesSvc = communitiesSvc;
-    this.communities = this.communitiesSvc.getCommunities();
 
     this.getCommunityGames(this.community);
     this.getCommunityJoiners(this.community);

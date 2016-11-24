@@ -10,7 +10,7 @@
 	<button class="btn btn-default" ng-click="vm.startGame()" ng-disabled="!vm.playersInGame.length">Start game</button>
 
 	<div class="row game-container">
-		<div class="col-sm-6 col-xs-12 fader" ng-repeat="player in vm.playersInGame | orderBy:'name'">
+		<div class="col-sm-6 col-xs-12 fader" ng-repeat="player in vm.playersInGame | orderBy:'displayName'">
 			<player-card player="player" on-update="vm.playerResultUpdated(updates)"></player-card>
 		</div>
 	</div>

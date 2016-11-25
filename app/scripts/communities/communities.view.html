@@ -3,7 +3,9 @@
     <div class="row" ng-if="!vm.currentUser || !vm.isMember">
       <div class="col-xs-12">
         <h3>Not a member</h3>
-        <login-state></login-state>
+        <a ui-sref="joinCommunity({communityId: vm.community.$id})">
+          <paper-button raised>Join</paper-button>
+        </a>
       </div>
     </div>
     <div ng-if="!!vm.currentUser">

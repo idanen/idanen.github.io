@@ -7,6 +7,7 @@
   JoinCommunityController.$inject = ['$stateParams', 'communitiesSvc', 'userService', 'polymerToaster', 'Players'];
   function JoinCommunityController($stateParams, communitiesSvc, userService, polymerToaster, Players) {
     this.communitiesSvc = communitiesSvc;
+    this.$stateParams = $stateParams;
     this.community = this.communitiesSvc.getCommunity($stateParams.communityId);
     this.userService = userService;
     this.polymerToaster = polymerToaster;
@@ -20,6 +21,10 @@
     userChanged: function (user) {
       this.currentUser = user;
       if (this.currentUser && this.currentUser.playerId) {
+        if (this.community && _.isFunction(this.community.$destroy)) {
+          this.community.$destroy();
+        }
+        this.community = this.communitiesSvc.getCommunity(this.$stateParams.communityId);
         this.community.$loaded()
           .then(() => {
             this.joined = !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];

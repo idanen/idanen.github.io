@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="pokerManager">
+<html lang="en">
 <head>
 	<title>Home Poker Game</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -88,5 +88,11 @@
 		ga('create', 'UA-53379634-1', 'auto');
 		//ga('send', 'pageview');
 	</script>
+
+  <script>
+    angular.element(function () {
+      angular.bootstrap(document, ['pokerManager']);
+    });
+  </script>
 </body>
 </html>

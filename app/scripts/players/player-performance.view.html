@@ -15,7 +15,7 @@
       <tbody>
       <tr ng-repeat="game in $ctrl.games" ng-class="{'success': (game.balance > 0), 'danger': (game.balance < 0)}">
         <td>
-          <span>{{ game.date | date:'y-MM-dd' }}</span><a ui-sref="game({ communityId: game.communityId, gameId: (game.$id || game.id) })"><span class="icon icon-external-link"></span></a>
+          <span>{{ game.date | date:'y-MM-dd' }} </span><a ui-sref="game({ communityId: game.communityId, gameId: (game.$id || game.id) })"><span class="icon icon-external-link"></span></a>
         </td>
         <td>
           <span ng-class="{'label label-success': (game.buyout > game.buyin), 'label label-danger': (game.buyout < game.buyin), 'label label-default': (game.buyout == game.buyin)}">{{ game.buyout - game.buyin | number:0 }}</span>

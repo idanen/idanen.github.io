@@ -2,6 +2,9 @@
   'use strict';
 
   class GameDetails {
+    static get $inject() {
+      return ['$element'];
+    }
     constructor($element) {
       this.$element = $element;
     }
@@ -11,15 +14,8 @@
     }
 
     $onChanges(changes) {
-      if (!this.details) {
-        this.details = {};
-      }
       if (changes.game && changes.game.currentValue) {
-        _.forEach(changes.game.currentValue, (detail, key) => {
-          if (detail !== this.details[key]) {
-            this.details[key] = detail;
-          }
-        });
+        this.details = _.pick(this.game, ['location', 'date', 'numberOfHands']);
       }
     }
 
@@ -38,8 +34,6 @@
       this.onUpdate({details: this.details});
     }
   }
-
-  GameDetails.$inject = ['$element'];
 
   angular.module('pokerManager')
     .component('gameDetails', {

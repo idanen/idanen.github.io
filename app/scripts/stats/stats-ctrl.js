@@ -56,6 +56,7 @@
     getPlayers: function () {
       var fromDate = this.$stateParams.fromDate || this.displayGames.fromDate,
           toDate = this.$stateParams.toDate || this.displayGames.toDate;
+      // console.time('calculating-stats');
       return this.Games.findBetweenDates(fromDate, toDate, this.$stateParams.communityId)
         .then(this.gamesToPlayers.bind(this));
     },
@@ -63,10 +64,10 @@
     gamesToPlayers: function (games) {
       var players = {},
           gamesForCount = {};
-      games.forEach(function (game) {
+      games.forEach(game => {
         gamesForCount[game.$id] = true;
         if (game.players) {
-          _.forEach(game.players, function (player, playerId) {
+          _.forEach(game.players, (player, playerId) => {
             if (playerId in players) {
               players[playerId].buyin += player.buyin;
               players[playerId].buyout += player.buyout;
@@ -85,6 +86,7 @@
         return player.gamesCount && (player.buyin - player.buyout) / player.gamesCount;
       }]);
       this.totalGames = Object.keys(gamesForCount).length;
+      // console.timeEnd('calculating-stats');
 
       return this.displayGames.players;
     },

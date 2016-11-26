@@ -15,9 +15,27 @@
     this.game = this.gamesSvc.getGame(this.gameId);
     this.playersInGame = playersGames.getPlayersInGame(this.gameId);
     this.$state = $state;
+
+    this.game.$loaded()
+      .then(() => {
+        if (!this.game.chipValue) {
+          this.game.chipValue = 1;
+        }
+        if (!this.game.defaultBuyin) {
+          this.game.defaultBuyin = 50;
+        }
+        if (!this.game.hostingCosts) {
+          this.game.hostingCosts = 10;
+        }
+      });
   }
 
   GameController.prototype = {
+    $onChanges: function (changes) {
+      if (changes.gameId && changes.gameId.previousValue !== this.gameId) {
+        this.game = this.gamesSvc.getGame(this.gameId);
+      }
+    },
     initGame: function () {
       this.playersGames.removeAllPlayersFromGame(this.gameId);
       this.game.location = '';

@@ -23,11 +23,11 @@
       <signup-login-form></signup-login-form>
     </div>
   </div>
-  <div class="row" ng-show="!$ctrl.joined && $ctrl.currentUser">
+  <div class="row" ng-show="!$ctrl.joined && !$ctrl.approved && $ctrl.currentUser">
     <div class="col-xs-8">
       <paper-input-container>
         <label>Community join password</label>
-        <input is="iron-input" type="password" name="joinPass" ng-model="$ctrl.joinCode">
+        <input is="iron-input" name="joinPass" ng-model="$ctrl.joinCode">
       </paper-input-container>
     </div>
     <div class="col-xs-4">

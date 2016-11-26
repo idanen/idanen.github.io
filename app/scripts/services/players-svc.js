@@ -19,7 +19,7 @@
   PlayersService.prototype = {
     createPlayer: function (communityId) {
       let newPlayer = {
-        name: '',
+        displayName: '',
         balance: 0,
         isPlaying: false,
         buyin: 0,

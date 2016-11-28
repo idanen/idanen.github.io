@@ -7,14 +7,13 @@
   angular.module('pokerManager')
     .controller('LoginCtrl', LoginController);
 
-  LoginController.$inject = ['userService', '$analytics', '$firebaseAuth', 'playersUsers', 'Players'];
-  function LoginController(userService, $analytics, $firebaseAuth, playersUsers, playersSvc) {
+  LoginController.$inject = ['userService', '$analytics', 'playersUsers', 'Players'];
+  function LoginController(userService, $analytics, playersUsers, playersSvc) {
     this.userService = userService;
     this.$analytics = $analytics;
     this.playersUsers = playersUsers;
     this.playersSvc = playersSvc;
 
-    $firebaseAuth().$onAuthStateChanged(this.obtainedUserInfo.bind(this));
     this.userService.onUserChange(this.obtainedUserInfo.bind(this));
   }
 
@@ -26,6 +25,7 @@
 
       this.userService.logout();
       delete this.user;
+      this.onLogout();
     },
 
     matchUserToPlayer: function (user) {

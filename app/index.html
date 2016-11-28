@@ -61,7 +61,7 @@
               </a>
             </li>
 						<li ng-show="main.currentUser">
-              <login-state></login-state>
+              <login-state on-logout="main.loggedOut()"></login-state>
             </li>
 					</ul>
 				</div>

@@ -38,12 +38,14 @@
       // this.ready = this.$q.all([this.player.$loaded(), this.playerGames.$loaded()])
       //     .then(this.dataForChart.bind(this))
       //     .finally(this.stopLoadingIndication.bind(this));
+      this.player.$loaded()
+        .then(() => this.onChanges({player: this.player}));
     } else {
       this.player = this.Players.createPlayer(this.communityId);
       this.ready = this.$q.resolve();
-    }
 
-    this.onChanges({player: this.player});
+      this.onChanges({player: this.player});
+    }
   }
 
   PlayerDetailsController.prototype = {
@@ -74,13 +76,6 @@
         return this.communitiesSvc.getUnboundCommunity(this.communityId)
           .then(community => this.playersMembership.setPlayerAsAdminOfCommunity(community, this.player));
       }
-    },
-
-    onUserChanges: function () {
-      if (_.isFunction(this.player.$save)) {
-        this.player.$save();
-      }
-      this.onChanges({player: this.player});
     }
   };
 }());

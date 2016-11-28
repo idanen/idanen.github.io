@@ -73,6 +73,9 @@
       this.communitiesForHrefs();
       this.gamesForHrefs();
     },
+    loggedOut: function () {
+      this.currentUser = null;
+    },
     communitiesForHrefs: function () {
       if (!this.currentUser || !this.currentUser.playerId) {
         return;

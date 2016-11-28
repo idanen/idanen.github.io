@@ -26,9 +26,33 @@
     };
 
     this.userService.onUserChange(user => this.userChanged(user));
+
+    this.listeners = [];
   }
 
   SignupFormController.prototype = {
+    $onInit: function () {
+      this.listeners = [
+        {
+          element: this.$element.find('.google-login-btn')[0],
+          event: 'tap',
+          listener: () => this.login('google')
+        }
+      ];
+    },
+
+    $postLink: function () {
+      this.listeners.forEach(toAttach => {
+        toAttach.element.addEventListener(toAttach.event, toAttach.listener);
+      });
+    },
+
+    $onDestroy: function () {
+      this.listeners.forEach(toAttach => {
+        toAttach.element.removeEventListener(toAttach.event, toAttach.listener);
+      });
+    },
+
     userChanged: function (currentUser) {
       this.currentUser = currentUser;
       if (this.player && _.isFunction(this.player.$destroy)) {

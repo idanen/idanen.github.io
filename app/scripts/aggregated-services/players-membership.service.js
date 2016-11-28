@@ -68,7 +68,7 @@
           // return this.rootRef.update(updateRefs);
           return this.$q.all([
             this.playersRef.child(player.$id).child('guestOf').remove(),
-            this.playersRef.child(`${player.$id}/memberIn/${community.$id}`).set(player.displayName),
+            this.playersRef.child(`${player.$id}/memberIn/${community.$id}`).set(community.name),
             this.communitiesRef.update(communityUpdates)
           ]);
         });

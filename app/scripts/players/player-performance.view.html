@@ -34,7 +34,7 @@
         <th>{{ $ctrl.playerWinningSessions }} winning sessions <span class="badge">{{ $ctrl.playerWinningSessions / ($ctrl.playerGamesCount || 1) | percentage:1 }}</span></th>
         <th>Average winnings (in Buys): <span class="badge">{{ $ctrl.playerAvgWinning | number:2 }}</span></th>
         <th>
-          {{ $ctrl.games[$ctrl.games.length - 1].balance }}
+          {{ $ctrl.games[$ctrl.games.length - 1].balance | number:0 }}
         </th>
       </tr>
       </tfoot>

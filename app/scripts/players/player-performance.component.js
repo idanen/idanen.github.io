@@ -70,21 +70,26 @@
     dataForChart: function () {
       if (this.games) {
         this.playerGamesCount = this.games.length;
-        _.reduce(this.games, (sum, gameResult) => {
-          var profit;
+        this.chartData = _.reduce(this.games, (chartData, gameResult) => {
+          let profit,
+              sum = chartData.balances[chartData.balances.length - 1] || 0;
           if (!isNaN(gameResult.date)) {
-            this.chartData.dates.push(this.$filter('date')(gameResult.date, 'y-MM-dd'));
+            chartData.dates.push(this.$filter('date')(gameResult.date, 'y-MM-dd'));
           } else {
-            this.chartData.dates.push(gameResult.date);
+            chartData.dates.push(gameResult.date);
           }
           profit = gameResult.buyout - gameResult.buyin;
           sum += profit;
           gameResult.balance = sum;
-          this.chartData.profits.push(profit);
-          this.chartData.balances.push(sum);
+          chartData.profits.push(profit);
+          chartData.balances.push(sum);
 
-          return sum;
-        }, 0);
+          return chartData;
+        }, {
+          dates: [],
+          profits: [],
+          balances: []
+        });
       }
     },
     winningSessions: function () {

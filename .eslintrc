@@ -12,6 +12,7 @@
   "rules": {
     "angular/controller-name": [2, "/[A-Z].*Ctrl$/"],
     "angular/window-service": 0,
+    "angular/document-service": 0,
     "angular/log": 0,
     "angular/typecheck-function": 0,
     "angular/json-functions": 0,

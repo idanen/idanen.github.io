@@ -9,6 +9,20 @@ body {
   padding-top: 60px;
 }
 
+#game-location-dialog {
+  width: 85%;
+}
+
+@media screen and (min-width: 768px) {
+  #game-location-dialog {
+    width: 600px;
+  }
+}
+
+google-map {
+  height: 300px;
+}
+
 .login-state-logged-in {
   display: inline-block;
   /*padding: 10px 0;*/

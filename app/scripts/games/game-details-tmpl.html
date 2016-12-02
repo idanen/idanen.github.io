@@ -1,4 +1,4 @@
-<form class="form-inline" role="form" name="$ctrl.gameSettings">
+<form class="form-inline" role="form" name="$ctrl.gameDetails">
   <div class="form-group input-group-sm">
     <label for="gameLocation">Playing at</label>
     <input class="form-control" id="gameLocation" type="text" ng-model="$ctrl.details.location" placeholder="Game Location" />
@@ -10,5 +10,8 @@
   <div class="form-group">
     <label># of hands:</label>
     <pk-counter counter="$ctrl.details.numberOfHands" on-update="$ctrl.numberOfHandsUpdated(counter)"></pk-counter>
+  </div>
+  <div class="form-group">
+    <paper-button class="show-on-map-btn" raised>show on map</paper-button>
   </div>
 </form>

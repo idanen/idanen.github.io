@@ -72,6 +72,21 @@
       <push-state-btn label="Notify me when a new game starts"></push-state-btn>
 			<div ui-view></div>
 		</div>
+
+    <paper-dialog id="game-location-dialog" with-backdrop>
+      <h2>Game Location</h2>
+      <paper-dialog-scrollable>
+        <google-map latitude="32.184781"
+                    longitude="34.871326"
+                    zoom="15"
+                    api-key="AIzaSyD0NkS_BMUWImyi0HRYtWc-xnngz9SyY3Q">
+        </google-map>
+        <google-map-search></google-map-search>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button dialog-dismiss autofocus>Close</paper-button>
+      </div>
+    </paper-dialog>
 	</div>
 
   <!-- bower:js -->

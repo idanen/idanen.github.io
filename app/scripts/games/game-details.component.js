@@ -47,6 +47,12 @@
       this.gameLocationDialogSvc.open();
       this.gameLocationDialogSvc.markAddress(this.details.address);
     }
+
+    locationSelected($event) {
+      this.details.location = $event.name;
+      this.details.address = $event.address;
+      this.onUpdate({details: this.details});
+    }
   }
 
   angular.module('pokerManager')

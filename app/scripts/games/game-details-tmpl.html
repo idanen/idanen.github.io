@@ -1,7 +1,6 @@
 <form class="form-inline" role="form" name="$ctrl.gameDetails">
   <div class="form-group input-group-sm">
-    <label for="gameLocation">Playing at</label>
-    <input class="form-control" id="gameLocation" type="text" ng-model="$ctrl.details.location" placeholder="Game Location" />
+    <location-editor community-id="$ctrl.game.communityId" selected="$ctrl.details.location" on-select="$ctrl.locationSelected($event)"></location-editor>
   </div>
   <div class="form-group">
     <label>on</label>

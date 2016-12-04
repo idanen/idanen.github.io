@@ -7,13 +7,14 @@
   angular.module('pokerManager')
     .service('Players', PlayersService);
 
-  PlayersService.$inject = ['$q', '$stateParams', 'Ref', '$firebaseArray', '$firebaseObject'];
-  function PlayersService($q, $stateParams, Ref, $firebaseArray, $firebaseObject) {
+  PlayersService.$inject = ['$q', '$stateParams', 'Ref', '$firebaseArray', '$firebaseObject', 'firebaseCommon'];
+  function PlayersService($q, $stateParams, Ref, $firebaseArray, $firebaseObject, firebaseCommon) {
     this.$q = $q;
     this.$stateParams = $stateParams;
     this.playersRef = Ref.child('players');
     this.$firebaseArray = $firebaseArray;
     this.$firebaseObject = $firebaseObject;
+    this.firebaseCommon = firebaseCommon;
   }
 
   PlayersService.prototype = {
@@ -93,11 +94,7 @@
 
     getPlayer: function (playerId, withoutFirebaseObject) {
       if (withoutFirebaseObject) {
-        return this.$q.resolve(
-          this.playersRef.child(playerId)
-            .once('value')
-            .then(snapshot => snapshot.val())
-        );
+        return this.firebaseCommon.getValue(`players/${playerId}`);
       }
       return this.$firebaseObject(this.playersRef.child(playerId));
     },
@@ -119,13 +116,7 @@
     },
 
     playersCommunities: function (playerId) {
-      return this.$q.resolve(
-        this.playersRef
-          .child(playerId)
-          .child('memberIn')
-          .once('value')
-          .then(snapshot => snapshot.val())
-      );
+      return this.firebaseCommon.getValue(`players/${playerId}/memberIn`);
     },
 
     joinCommunity: function (player, community, isGuest) {

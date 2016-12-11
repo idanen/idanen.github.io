@@ -70,7 +70,7 @@
     getAndSetLocations: function () {
       this.locationsSvc.getLocations(this.communityId)
         .then(locations => {
-          this.locations = locations;
+          this.locations = locations || [];
           return this.locations;
         })
         .then(this.mapLocations.bind(this))

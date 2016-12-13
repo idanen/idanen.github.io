@@ -19,9 +19,12 @@
 
   GameSettingsController.prototype = {
     $onInit: function () {
-      this.settings = _.pick(this.game, ['chipValue', 'defaultBuyin', 'hostingCosts']);
+      this.settings = _.pick(this.game, ['chipValue', 'defaultBuyin', 'hostingCosts', 'allowedGuests']);
       if (isNaN(this.settings.hostingCosts)) {
         this.settings.hostingCosts = 10;
+      }
+      if (isNaN(this.settings.allowedGuests) || this.settings.allowedGuests < 0) {
+        this.settings.allowedGuests = 0;
       }
     },
     $postLink: function () {
@@ -29,6 +32,10 @@
         this.onUpdate({
           settings: this.settings
         });
+      });
+
+      this.$element.on('tap', '.save-community-default', () => {
+        this.saveGameSettingsAsDefault();
       });
     },
 
@@ -44,6 +51,13 @@
 
     chipsValueUpdated: function (newChipValue) {
       this.settings.chipValue = newChipValue;
+      this.onUpdate({
+        settings: this.settings
+      });
+    },
+
+    allowedGuestsUpdated: function (counter) {
+      this.settings.allowedGuests = counter || 0;
       this.onUpdate({
         settings: this.settings
       });

@@ -9,15 +9,17 @@
       this.$element = $element;
       this.locationsSvc = locationsSvc;
       this.gameLocationDialogSvc = gameLocationDialogSvc;
+
+      this.RELEVANT_FIELDS = ['location', 'date', 'numberOfHands'];
     }
 
     $onInit() {
-      this.details = _.pick(this.game, ['location', 'date', 'numberOfHands']);
+      this.details = this._onlyRelevantFields(this.game);
     }
 
     $onChanges(changes) {
       if (changes.game && changes.game.currentValue) {
-        this.details = _.pick(this.game, ['location', 'date', 'numberOfHands']);
+        this.details = this._onlyRelevantFields(this.game);
         this.locationsSvc.getAddress(this.details.location, this.game.communityId)
           .then(address => {
             this.details.address = address;
@@ -27,7 +29,7 @@
 
     $postLink() {
       this.$element.on('input', '.form-control', () => {
-        this.onUpdate({details: this.details});
+        this.sendUpdate();
       });
 
       this.$element.find('.show-on-map-btn').on('tap', () => this.showOnMap());
@@ -40,7 +42,7 @@
 
     numberOfHandsUpdated(counter) {
       this.details.numberOfHands = counter || 0;
-      this.onUpdate({details: this.details});
+      this.sendUpdate();
     }
 
     showOnMap() {
@@ -51,7 +53,15 @@
     locationSelected($event) {
       this.details.location = $event.name;
       this.details.address = $event.address;
-      this.onUpdate({details: this.details});
+      this.sendUpdate();
+    }
+
+    sendUpdate() {
+      this.onUpdate({details: this._onlyRelevantFields(this.details)});
+    }
+
+    _onlyRelevantFields(gameOrDetails) {
+      return _.pick(gameOrDetails, this.RELEVANT_FIELDS);
     }
   }
 

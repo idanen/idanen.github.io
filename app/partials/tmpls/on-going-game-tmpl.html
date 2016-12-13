@@ -5,6 +5,34 @@
 
   <game-details game="vm.game" on-update="vm.gameDetailsChanged(details)"></game-details>
 
+  <div class="row">
+    <div class="col-xs-12 game-approve-panel">
+      <label>Can you attend?</label>
+      <paper-button class="game-approve-panel__approve" raised>
+        <span class="icon icon-check"></span>
+        <span>&nbsp;I'm in</span>
+      </paper-button>
+      <paper-button class="game-approve-panel__maybe" raised>
+        <span class="icon icon-question"></span>
+        <span>&nbsp;Not sure yet</span>
+      </paper-button>
+      <paper-button class="game-approve-panel__cancel" raised>
+        <span class="icon icon-remove"></span>
+        <span>&nbsp;Can't make it</span>
+      </paper-button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <ul>
+        <li ng-repeat="attending in vm.attendingPlayers">
+          <span class="icon" ng-class="{'icon-approve': attending > 0}"></span>
+          <player-chip player="attending"></player-chip>
+        </li>
+      </ul>
+    </div>
+  </div>
+
 	<!-- <button class="btn btn-default players-drawer-btn visible-xs" ng-click="vm.openPlayersControl()"><span class="icon icon-arrow-right"></span></button> -->
 
 	<button class="btn btn-default" ng-click="vm.startGame()" ng-disabled="!vm.playersInGame.length">Start game</button>
@@ -34,17 +62,4 @@
       </paper-confirm-button>
     </div>
   </div>
-	<!--<uib-accordion>-->
-		<!--<uib-accordion-group>-->
-			<!--<uib-accordion-heading>-->
-				<!--<i class="icon icon-trash"></i>-->
-        <!--<span> Delete game</span>-->
-			<!--</uib-accordion-heading>-->
-			<!--<hr/>-->
-			<!--<div class="row">-->
-				<!--<button class="btn btn-lg btn-danger btn-block" ng-click="vm.deleteGame()">Delete Game</button>-->
-			<!--</div>-->
-			<!--<hr/>-->
-		<!--</uib-accordion-group>-->
-	<!--</uib-accordion>-->
 </div>

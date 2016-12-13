@@ -1,6 +1,7 @@
 <form class="form-inline" role="form" name="$ctrl.gameDetails">
   <div class="form-group input-group-sm">
     <location-editor community-id="$ctrl.game.communityId" selected="$ctrl.details.location" on-select="$ctrl.locationSelected($event)"></location-editor>
+    <paper-button class="show-on-map-btn" raised>show on map</paper-button>
   </div>
   <div class="form-group">
     <label>on</label>
@@ -9,8 +10,5 @@
   <div class="form-group">
     <label># of hands:</label>
     <pk-counter counter="$ctrl.details.numberOfHands" on-update="$ctrl.numberOfHandsUpdated(counter)"></pk-counter>
-  </div>
-  <div class="form-group">
-    <paper-button class="show-on-map-btn" raised>show on map</paper-button>
   </div>
 </form>

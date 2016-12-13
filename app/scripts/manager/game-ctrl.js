@@ -7,13 +7,16 @@
   angular.module('pokerManager')
     .controller('GameCtrl', GameController);
 
-  GameController.$inject = ['$analytics', 'Games', 'playersGames', '$state'];
-  function GameController($analytics, gamesSvc, playersGames, $state) {
+  GameController.$inject = ['$element', '$analytics', 'Games', 'playersGames', 'userService', '$state'];
+  function GameController($element, $analytics, gamesSvc, playersGames, userService, $state) {
+    this.$element = $element;
     this.$analytics = $analytics;
     this.playersGames = playersGames;
     this.gamesSvc = gamesSvc;
+    this.userService = userService;
     this.game = this.gamesSvc.getGame(this.gameId);
     this.playersInGame = playersGames.getPlayersInGame(this.gameId);
+    this.attendingPlayers = playersGames.getApprovalsForGame(this.gameId);
     this.$state = $state;
 
     this.game.$loaded()
@@ -35,6 +38,15 @@
       if (changes.gameId && changes.gameId.previousValue !== this.gameId) {
         this.game = this.gamesSvc.getGame(this.gameId);
       }
+    },
+    $postLink: function () {
+      this.$element.find('.game-approve-panel').on('tap', 'paper-button', e => {
+        let currentUser = this.userService.getCurrentUser(),
+            attendCount = e.target.classList.contains('game-approve-panel__approve') ? 1 : 0;
+        if (currentUser) {
+          this.playersGames.changePlayerApproval(this.gameId, currentUser.playerId, attendCount);
+        }
+      });
     },
     initGame: function () {
       this.playersGames.removeAllPlayersFromGame(this.gameId);

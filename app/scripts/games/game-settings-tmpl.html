@@ -1,7 +1,8 @@
 <uib-accordion class="settings-menu">
   <uib-accordion-group>
     <uib-accordion-heading>
-      <i class="icon icon-cogs"></i> Game Preferences: Chip value {{ $ctrl.settings.chipValue }}, Default buyin {{ $ctrl.settings.defaultBuyin }}, Hosting {{ $ctrl.settings.hostingCosts }}
+      <span class="icon icon-cogs"></span>
+      <span> Game Preferences: Chip value {{ $ctrl.settings.chipValue }}, Default buyin {{ $ctrl.settings.defaultBuyin }}, Hosting {{ $ctrl.settings.hostingCosts }}, gusts {{ $ctrl.settings.allowedGuests }}</span>
     </uib-accordion-heading>
     <form class="form-inline row">
       <div class="form-group col-md-4">
@@ -16,8 +17,12 @@
         <label for="hostingCosts">Hosting costs:</label>
         <input class="form-control hosting-costs-control" type="number" min="10" step="10" id="hostingCosts" ng-model="$ctrl.settings.hostingCosts" />
       </div>
+      <div class="form-group col-xs-12">
+        <label># allowed guests:</label>
+        <pk-counter counter="$ctrl.details.allowedGuests" on-update="$ctrl.allowedGuestsUpdated(counter)"></pk-counter>
+      </div>
     </form>
 
-    <paper-button raised ng-click="$ctrl.saveGameSettingsAsDefault()">Save as community's default</paper-button>
+    <paper-button class="save-community-default" raised>Save as community's default</paper-button>
   </uib-accordion-group>
 </uib-accordion>

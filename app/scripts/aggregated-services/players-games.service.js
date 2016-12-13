@@ -29,6 +29,23 @@
           .child('games')
       );
     },
+    getApprovalsForGame: function (gameId) {
+      return this.$firebaseArray(
+        this.gamesRef
+          .child(gameId)
+          .child('attending')
+      );
+    },
+    changePlayerApproval: function (gameId, playerId, guests) {
+      return this.$q.resolve(
+        this.gamesRef
+          .child(gameId)
+          .child('attending')
+          .child(playerId)
+          .set(1 + (guests || 0))
+      )
+        .then(() => this.getApprovalsForGame(gameId));
+    },
     removePlayerFromGame: function (playerId, gameId) {
       var promises = [];
 

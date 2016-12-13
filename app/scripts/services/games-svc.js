@@ -25,7 +25,8 @@
         chipValue: 4,
         defaultBuyin: 50,
         communityId: communityId,
-        hostingCosts: 20
+        allowedGuests: 0,
+        hostingCosts: 10
       }, gameDefaults || {});
 
       return this.gamesRef

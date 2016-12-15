@@ -26,7 +26,7 @@
     <div class="col-xs-12">
       <ul>
         <li ng-repeat="attending in vm.attendingPlayers">
-          <span class="icon" ng-class="{'icon-approve': attending > 0}"></span>
+          <span class="icon" ng-class="{'icon-check': attending.attendance === 'yes', 'icon-question': attending.attendance === 'maybe', 'icon-remove': attending.attendance === 'no'}"></span>
           <player-chip player="attending"></player-chip>
         </li>
       </ul>

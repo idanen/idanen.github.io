@@ -1,6 +1,8 @@
 <button class="btn btn-default players-drawer-btn visible-xs" ng-class="{ 'players-drawer-open': vm.prefs.playersOpen }" ng-click="vm.openPlayersControl()"><span class="icon icon-user-plus"></span></button>
 
 <div id="players-control" class="col-sm-4" ng-class="{'nav-visible': vm.prefs.playersOpen}">
+  <attendance-panel players="vm.players" game-id="vm.game.$id" community-id="vm.game.communityId" on-update="vm.updateAttendance($event)"></attendance-panel>
+  <button class="btn btn-default" ng-click="vm.addPlayersToGame(vm.attendingPlayersIds)">Add all approved players</button>
     <h3 class="hidden-xs"><i class="icon icon-user"></i> Players</h3>
     <div class="row">
         <div class="col-xs-8">

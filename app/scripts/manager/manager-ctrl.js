@@ -12,7 +12,7 @@
   function PokerManagerController($q, $analytics, Players, playerModal, communitiesSvc, playersMembership, community, game, playersGames) {
     this.$q = $q;
     this.$analytics = $analytics;
-    this.Players = Players;
+    this.playersSvc = Players;
     this.playerModal = playerModal;
     this.communitiesSvc = communitiesSvc;
     this.playersMembership = playersMembership;
@@ -23,7 +23,6 @@
       playersOpen: false
     };
     this.players = [];
-    // init game so not all methods fail before the game is loaded
     this.game = game;
     this.playersInGame = playersGames.getPlayersInGame(game.$id);
 
@@ -67,12 +66,20 @@
       // Refresh view
       this.community.$loaded()
         .then(() => {
-          this.players = this.Players.playersOfCommunity(this.community.$id, this.community.name);
-          this.guests = this.Players.guestsOfCommunity(this.community.$id);
+          this.players = this.playersSvc.playersOfCommunity(this.community.$id, this.community.name);
+          this.guests = this.playersSvc.guestsOfCommunity(this.community.$id);
 
           this.players.$watch(() => this.combineMembersAndGuests());
           this.guests.$watch(() => this.combineMembersAndGuests());
         });
+    },
+
+    updateAttendance: function (groupedAttendance) {
+      if (groupedAttendance && groupedAttendance.yes) {
+        this.attendingPlayersIds = groupedAttendance.yes.map(attending => {
+          return attending.$id;
+        });
+      }
     },
 
     combineMembersAndGuests: function () {

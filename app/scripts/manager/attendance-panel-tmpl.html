@@ -1,0 +1,77 @@
+<div class="row" ng-show="$ctrl.isAdmin">
+  <div class="col-xs-12">
+    <players-picker players="$ctrl.players" selected="$ctrl.currentUser.playerId" on-select="$ctrl.playerSelected($event)"></players-picker>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12 game-approve-panel">
+    <label>Can {{ $ctrl.playerForAttendance.displayName }} attend?</label>
+    <paper-button class="game-approve-panel__yes" data-answer="yes" raised>
+      <span class="icon icon-check"></span>
+      <span>&nbsp;I'm in</span>
+    </paper-button>
+    <paper-button class="game-approve-panel__maybe" data-answer="maybe" raised>
+      <span class="icon icon-question"></span>
+      <span>&nbsp;Not sure yet</span>
+    </paper-button>
+    <paper-button class="game-approve-panel__no" data-answer="no" raised>
+      <span class="icon icon-remove"></span>
+      <span>&nbsp;Can't make it</span>
+    </paper-button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-4">
+    <span class="icon icon-check"></span>
+    <span> In </span>
+    <span class="label label-success" ng-bind="$ctrl.attendanceCount.yes.length"></span>
+  </div>
+  <div class="col-xs-4">
+    <span class="icon icon-question"></span>
+    <span> Maybe </span>
+    <span class="label label-warning" ng-bind="$ctrl.attendanceCount.maybe.length"></span>
+  </div>
+  <div class="col-xs-4">
+    <span class="icon icon-remove"></span>
+    <span> Out </span>
+    <span class="label label-danger" ng-bind="$ctrl.attendanceCount.no.length"></span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-4">
+    <ul class="unpadded-list">
+      <li ng-repeat="attending in $ctrl.attendanceCount.yes">
+        <div class="thumbnail">
+          <img ng-src="{{ attending.photoURL }}" uib-tooltip="{{ attending.displayName }}">
+          <strong>
+            {{ attending.displayName }}
+          </strong>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="col-xs-4">
+    <ul class="unpadded-list">
+      <li ng-repeat="attending in $ctrl.attendanceCount.maybe">
+        <div class="thumbnail">
+          <img ng-src="{{ attending.photoURL }}">
+          <strong>
+            {{ attending.displayName }}
+          </strong>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="col-xs-4">
+    <ul class="unpadded-list">
+      <li ng-repeat="attending in $ctrl.attendanceCount.no">
+        <div class="thumbnail">
+          <img ng-src="{{ attending.photoURL }}">
+          <strong>
+            {{ attending.displayName }}
+          </strong>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -7,20 +7,14 @@
   angular.module('pokerManager')
     .controller('GameCtrl', GameController);
 
-  GameController.$inject = ['$element', '$analytics', 'Games', 'playersGames', 'Players', 'userService', '$state'];
-  function GameController($element, $analytics, gamesSvc, playersGames, Players, userService, $state) {
-    this.$element = $element;
+  GameController.$inject = ['$analytics', 'Games', 'playersGames', '$state'];
+  function GameController($analytics, gamesSvc, playersGames, $state) {
     this.$analytics = $analytics;
     this.playersGames = playersGames;
-    this.playersSvc = Players;
     this.gamesSvc = gamesSvc;
-    this.userService = userService;
     this.game = this.gamesSvc.getGame(this.gameId);
     this.playersInGame = playersGames.getPlayersInGame(this.gameId);
-    this.attendingPlayers = playersGames.getApprovalsForGame(this.gameId);
     this.$state = $state;
-
-    this.guests = 0;
 
     this.game.$loaded()
       .then(() => {
@@ -37,9 +31,6 @@
           this.game.allowedGuests = 1;
         }
       });
-
-    this.attendingPlayers.$loaded()
-      .then(this.buildAttendanceCounts.bind(this));
   }
 
   GameController.prototype = {
@@ -48,54 +39,6 @@
         this.game = this.gamesSvc.getGame(this.gameId);
       }
     },
-    $postLink: function () {
-      this.$element.find('.game-approve-panel').on('tap', 'paper-button', this.changeAttendance.bind(this));
-    },
-
-    changeAttendance: function (evt) {
-      let currentUser = this.userService.getCurrentUser(),
-          attendance;
-
-      if (currentUser) {
-        this.playersSvc.getPlayer(currentUser.playerId, true)
-          .then(player => {
-            let selectedBtn = angular.element(evt.target).closest('paper-button');
-            attendance = selectedBtn.length && selectedBtn[0].dataset.answer;
-            this.playersGames.changePlayerApproval({
-              gameId: this.gameId,
-              playerId: currentUser.playerId,
-              player,
-              attendance: attendance || 'no',
-              guests: this.guests
-            })
-              .then(attendingPlayers => {
-                this.guests = 0;
-
-                if (this.attendingPlayers && _.isFunction(this.attendingPlayers.$destroy)) {
-                  this.attendingPlayers.$destroy();
-                  this.attendingPlayers = null;
-                }
-
-                this.attendingPlayers = attendingPlayers;
-                this.attendingPlayers.$loaded()
-                  .then(this.buildAttendanceCounts.bind(this));
-              });
-          });
-      }
-    },
-
-    buildAttendanceCounts: function () {
-      this.attendanceCount = this.attendingPlayers.reduce((attendanceCount, attending) => {
-        attendanceCount[attending.attendance] += 1;
-
-        return attendanceCount;
-      }, {
-        yes: 0,
-        maybe: 0,
-        no: 0
-      });
-    },
-
     initGame: function () {
       this.playersGames.removeAllPlayersFromGame(this.gameId);
       this.game.location = '';
@@ -126,14 +69,7 @@
       } catch (err) {}
     },
     startGame: function () {
-      let playersIds = this.attendingPlayers.reduce((ids, attending) => {
-        if (attending.attendance !== 'no') {
-          ids.push(attending.$id);
-        }
-        return ids;
-      }, []);
-      this.onGameStart({$event: playersIds});
-      // _.forEach(this.playersInGame, player => this.buyin(player, 1));
+      _.forEach(this.playersInGame, player => this.buyin(player, 1));
     },
     cancelBuyin: function (player, rationalBuyin) {
       let actualBuyin = rationalBuyin * this.game.defaultBuyin;

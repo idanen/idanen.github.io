@@ -37,29 +37,18 @@
       );
     },
     changePlayerApproval: function ({gameId, playerId, player, attendance = 'maybe', guests = 0}) {
-      let toSave = _.pick(player, ['displayName', 'photoURL']),
-          fbAction;
+      let toSave = _.pick(player, ['displayName', 'photoURL']);
 
       toSave.attendance = attendance;
       toSave.guests = guests;
       toSave.approveDate = Date.now();
 
-      if (attendance === 'no') {
-        fbAction = this.gamesRef
-          .child(gameId)
-          .child('attending')
-          .child(playerId)
-          .remove();
-      } else {
-        fbAction = this.gamesRef
-          .child(gameId)
-          .child('attending')
-          .child(playerId)
-          .set(toSave);
-      }
-
       return this.$q.resolve(
-        fbAction
+        this.gamesRef
+          .child(gameId)
+          .child('attending')
+          .child(playerId)
+          .set(toSave)
       )
         .then(() => this.getApprovalsForGame(gameId));
     },

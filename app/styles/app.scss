@@ -23,6 +23,16 @@ google-map {
   height: 300px;
 }
 
+.unpadded-list {
+  padding: 0;
+}
+
+attendance-panel {
+  .thumbnail {
+    margin-bottom: 0;
+  }
+}
+
 .login-state-logged-in {
   display: inline-block;
   /*padding: 10px 0;*/

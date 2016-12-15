@@ -40,7 +40,7 @@
 					<a class="navbar-brand" href="./index.html">Poker</a>
 				</div>
 				<div class="collapse navbar-collapse" id="main-navbar-collapse">
-					<ul class="nav navbar-nav">
+					<ul class="nav navbar-nav" ng-cloak>
 						<li ng-repeat="tab in main.tabs" ui-sref-active="active" ng-class="{'dropdown': main.hasChildren(tab)}">
 							<a ng-href="{{ tab.href }}" data-toggle="{{(main.hasChildren(tab) || main.hasActions(tab)) && 'dropdown'}}">
                 <span class="icon {{ tab.icon }}" ng-show="tab.icon"></span>

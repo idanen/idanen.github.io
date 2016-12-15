@@ -8,15 +8,15 @@
   <div class="row">
     <div class="col-xs-12 game-approve-panel">
       <label>Can you attend?</label>
-      <paper-button class="game-approve-panel__approve" raised>
+      <paper-button class="game-approve-panel__yes" data-answer="yes" raised>
         <span class="icon icon-check"></span>
         <span>&nbsp;I'm in</span>
       </paper-button>
-      <paper-button class="game-approve-panel__maybe" raised>
+      <paper-button class="game-approve-panel__maybe" data-answer="maybe" raised>
         <span class="icon icon-question"></span>
         <span>&nbsp;Not sure yet</span>
       </paper-button>
-      <paper-button class="game-approve-panel__cancel" raised>
+      <paper-button class="game-approve-panel__no" data-answer="no" raised>
         <span class="icon icon-remove"></span>
         <span>&nbsp;Can't make it</span>
       </paper-button>
@@ -32,10 +32,20 @@
       </ul>
     </div>
   </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <label>In </label>
+      <span class="label label-success" ng-bind="vm.attendanceCount.yes"></span>
+      <label> Maybe </label>
+      <span class="label label-warning" ng-bind="vm.attendanceCount.maybe"></span>
+      <label> Out </label>
+      <span class="label label-danger" ng-bind="vm.attendanceCount.no"></span>
+    </div>
+  </div>
 
 	<!-- <button class="btn btn-default players-drawer-btn visible-xs" ng-click="vm.openPlayersControl()"><span class="icon icon-arrow-right"></span></button> -->
 
-	<button class="btn btn-default" ng-click="vm.startGame()" ng-disabled="!vm.playersInGame.length">Start game</button>
+	<button class="btn btn-default" ng-click="vm.startGame()" ng-disabled="!vm.playersInGame.length && !vm.attendingPlayers.length">Start game</button>
 
 	<div class="row game-container">
 		<div class="col-sm-6 col-xs-12 fader" ng-repeat="player in vm.playersInGame | orderBy:'displayName'">

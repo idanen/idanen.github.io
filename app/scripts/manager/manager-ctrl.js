@@ -7,11 +7,10 @@
   angular.module('pokerManager')
     .controller('PokerManagerCtrl', PokerManagerController);
 
-  PokerManagerController.$inject = ['$analytics', 'Players', 'playerModal', 'communitiesSvc', 'playersMembership', 'community', 'game', 'playersGames'];
+  PokerManagerController.$inject = ['$q', '$analytics', 'Players', 'playerModal', 'communitiesSvc', 'playersMembership', 'community', 'game', 'playersGames'];
 
-  function PokerManagerController($analytics, Players, playerModal, communitiesSvc, playersMembership, community, game, playersGames) {
-    var vm = this;
-
+  function PokerManagerController($q, $analytics, Players, playerModal, communitiesSvc, playersMembership, community, game, playersGames) {
+    this.$q = $q;
     this.$analytics = $analytics;
     this.Players = Players;
     this.playerModal = playerModal;
@@ -28,7 +27,7 @@
     this.game = game;
     this.playersInGame = playersGames.getPlayersInGame(game.$id);
 
-    vm.init();
+    this.init();
   }
 
   PokerManagerController.prototype = {
@@ -50,6 +49,12 @@
       try {
         this.$analytics.eventTrack('Join Game', {category: 'Actions', label: player.dispalyName});
       } catch (err) {}
+    },
+    addPlayersToGame: function (playersIds) {
+      let filteredIds = playersIds.filter(playerId => !(playerId in this.playersInGame));
+
+      return this.playersGames.addPlayersToGame(this.players.filter(player => filteredIds.indexOf(player.$id) > -1), this.game)
+        .then(playersInGame => this.updatePlayersInGame(playersInGame));
     },
     openPlayersControl: function () {
       this.prefs.playersOpen = !this.prefs.playersOpen;

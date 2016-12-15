@@ -36,18 +36,35 @@
           .child('attending')
       );
     },
-    changePlayerApproval: function (gameId, playerId, guests) {
-      return this.$q.resolve(
-        this.gamesRef
+    changePlayerApproval: function ({gameId, playerId, player, attendance = 'maybe', guests = 0}) {
+      let toSave = _.pick(player, ['displayName', 'photoURL']),
+          fbAction;
+
+      toSave.attendance = attendance;
+      toSave.guests = guests;
+      toSave.approveDate = Date.now();
+
+      if (attendance === 'no') {
+        fbAction = this.gamesRef
           .child(gameId)
           .child('attending')
           .child(playerId)
-          .set(1 + (guests || 0))
+          .remove();
+      } else {
+        fbAction = this.gamesRef
+          .child(gameId)
+          .child('attending')
+          .child(playerId)
+          .set(toSave);
+      }
+
+      return this.$q.resolve(
+        fbAction
       )
         .then(() => this.getApprovalsForGame(gameId));
     },
     removePlayerFromGame: function (playerId, gameId) {
-      var promises = [];
+      let promises = [];
 
       promises.push(
         this.gamesRef
@@ -86,36 +103,45 @@
             });
     },
     addPlayerToGame: function (player, game) {
-      var gameResult = {},
-          promises = [];
+      if (!player) {
+        return this.$q.reject(new Error('No player to add'));
+      }
+      if (!game) {
+        return this.$q.reject(new Error('No game to add to'));
+      }
+      return this.addPlayersToGame([player], game);
+    },
+    addPlayersToGame: function (players, game) {
+      let gameUpdates = {},
+          playersUpdates = {};
 
-      player.isPlaying = true;
-      gameResult.displayName = player.displayName;
-      gameResult.isPlaying = true;
-      gameResult.buyin = 0;
-      gameResult.buyout = 0;
-      gameResult.currentChipCount = 0;
-      gameResult.communityId = game.communityId;
-      gameResult.paidHosting = false;
-      gameResult.date = game.date;
-      gameResult.location = game.location;
+      if (!players) {
+        return this.$q.reject(new Error('No players to add'));
+      }
+      if (!game) {
+        return this.$q.reject(new Error('No game to add to'));
+      }
 
-      promises.push(
-        this.playersRef
-          .child(player.$id)
-          .child('games')
-          .child(game.$id)
-          .set(gameResult)
-      );
-      promises.push(
-        this.gamesRef
-          .child(game.$id)
-          .child('players')
-          .child(player.$id)
-          .set(gameResult)
-      );
+      players.forEach(player => {
+        let gameResult = {};
+        gameResult.displayName = player.displayName;
+        gameResult.isPlaying = true;
+        gameResult.buyin = 0;
+        gameResult.buyout = 0;
+        gameResult.currentChipCount = 0;
+        gameResult.communityId = game.communityId;
+        gameResult.paidHosting = false;
+        gameResult.date = game.date;
+        gameResult.location = game.location;
 
-      return this.$q.all(promises)
+        playersUpdates[`${player.$id}/games/${game.$id}`] = gameResult;
+        gameUpdates[`${game.$id}/players/${player.$id}`] = gameResult;
+      });
+
+      return this.$q.all([
+        this.playersRef.update(playersUpdates),
+        this.gamesRef.update(gameUpdates)
+      ])
         .then(() => this.getPlayersInGame(game.$id));
     },
     updatePlayerResult: function (player, game, gameResult) {

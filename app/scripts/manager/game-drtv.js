@@ -12,7 +12,8 @@
       restrict: 'EA',
       scope: {
         gameId: '<',
-        onGameUpdate: '&'
+        onGameUpdate: '&',
+        onGameStart: '&'
       },
       controller: 'GameCtrl',
       controllerAs: 'vm',

@@ -27,11 +27,11 @@
       <input is="iron-input" name="password" type="password" ng-model="$ctrl.userInputs.pass" pattern="[\w]{6,}" required>
       <paper-input-error>Password should be at least 6 characters long</paper-input-error>
     </paper-input-container>
-    <paper-button raised ng-click="$ctrl.signup()" ng-show="$ctrl.signingUp">
+    <paper-button class="signup-button" raised ng-tap="$ctrl.signup()" ng-show="$ctrl.signingUp">
       <span class="icon icon-user-circle-o"></span>
       <span> Signup</span>
     </paper-button>
-    <paper-button raised ng-click="$ctrl.login('email')" ng-hide="$ctrl.signingUp">
+    <paper-button class="login-button" raised ng-tap="$ctrl.login('email')" ng-hide="$ctrl.signingUp">
       <span class="icon icon-user-circle-o"></span>
       <span> Login</span>
     </paper-button>

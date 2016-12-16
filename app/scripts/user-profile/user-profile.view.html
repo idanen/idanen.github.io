@@ -7,6 +7,6 @@
     <signup-login-form on-login="$ctrl.loggedIn($event)" on-logout="$ctrl.loggedOut($event)"></signup-login-form>
   </div>
   <div class="card-actions">
-    <paper-button ng-if="$ctrl.currentUser" ng-click="$ctrl.logout()">Logout</paper-button>
+    <paper-button ng-if="$ctrl.currentUser" ng-tap="$ctrl.logout()">Logout</paper-button>
   </div>
 </paper-card>

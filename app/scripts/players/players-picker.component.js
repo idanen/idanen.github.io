@@ -23,6 +23,9 @@
       }
 
       this.picker.value = this.selected;
+      if (changes && changes.selected && changes.selected.currentValue && changes.selected.currentValue !== changes.selected.previousValue) {
+        this.$scope.$applyAsync(() => this.onSelect({$event: this.selected}));
+      }
     }
 
     setPlayers() {

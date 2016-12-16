@@ -28,8 +28,35 @@ google-map {
 }
 
 attendance-panel {
+  display: block;
+  position: relative;
+  max-height: 6em;
   .thumbnail {
     margin-bottom: 0;
+  }
+  .attendance-panel-header {
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, .3);
+    padding: 1em;
+  }
+  .attendance-panel-body {
+    transition: transform 300ms ease-out, opacity 300ms ease-out;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(-50%);
+    transform-origin: top;
+    pointer-events: none;
+    position: absolute;
+    background: white;
+    padding: 0.5em;
+    box-shadow: 1px 1px 5px rgba(0,0,0,.3);
+  }
+  &.attendance-panel__open {
+    max-height: initial;
+    .attendance-panel-body {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: initial;
+    }
   }
 }
 

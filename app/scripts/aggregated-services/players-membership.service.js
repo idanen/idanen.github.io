@@ -47,6 +47,20 @@
     },
 
     /**
+     * @name createCommunityWithAdmin
+     * @description
+     * Creates a new community and sets the given user's player as the admin
+     *
+     * @param {Object} newCommunity The community's details
+     * @param {string} userId The user that creates the community
+     * @returns {Promise<null>} A promise that resolves once all data paths are updated
+     */
+    createCommunityWithAdmin: function (newCommunity, userId) {
+      return this.communitiesSvc.createCommunity(newCommunity)
+        .then(community => this.setAdminOfCommunity(community, userId));
+    },
+
+    /**
      * @name confirmJoiningPlayer
      * @description
      * For admins - joins the requesting player to the community

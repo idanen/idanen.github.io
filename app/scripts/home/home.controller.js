@@ -33,17 +33,7 @@
 
     userChanged: function (user) {
       this.currentUser = user;
-      if (this.currentUser && this.currentUser.playerId) {
-        this.playersSvc.playersCommunities(this.currentUser.playerId)
-          .then(communities => {
-            this.communities = _.map(communities, (communityName, communityId) => {
-              return {
-                label: communityName,
-                value: communityId
-              };
-            });
-          });
-      }
+      this.fetchPlayersCommunities();
     },
 
     gotoCommunity: function (communityId) {
@@ -85,12 +75,8 @@
         this.communityInputDisabled = true;
         communityToAdd.name = this.newCommunity;
         communityToAdd.defaultSettings = this.defaultSettings;
-        this.userService.waitForUser()
-          .then(user => {
-            this.communitiesSvc.createCommunity(communityToAdd);
-            return user;
-          })
-          .then(user => this.playersMembership.setAdminOfCommunity(communityToAdd, user.uid))
+        return this.playersMembership.createCommunityWithAdmin(communityToAdd, this.currentUser.uid)
+          .then(this.fetchPlayersCommunities.bind(this))
           .catch(err => {
             console.error('Couldn\'t add community: ', err);
           })
@@ -127,6 +113,20 @@
           })
           .finally(() => {
             this.communityInputDisabled = false;
+          });
+      }
+    },
+
+    fetchPlayersCommunities: function () {
+      if (this.currentUser && this.currentUser.playerId) {
+        this.playersSvc.playersCommunities(this.currentUser.playerId)
+          .then(communities => {
+            this.communities = _.map(communities, (communityName, communityId) => {
+              return {
+                label: communityName,
+                value: communityId
+              };
+            });
           });
       }
     },

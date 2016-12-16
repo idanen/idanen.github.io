@@ -36,6 +36,18 @@
       }
     }
 
+    openBody() {
+      this.$element[0].classList.add('attendance-panel__open');
+    }
+
+    closeBody() {
+      this.$element[0].classList.remove('attendance-panel__open');
+    }
+
+    toggleBody() {
+      this.$element[0].classList.toggle('attendance-panel__open');
+    }
+
     userChanged(currentUser) {
       this.currentUser = currentUser;
       this.updateCurrentPlayer();
@@ -66,21 +78,21 @@
     }
 
     playerSelected(playerId) {
-      if (this.playerForAttendance && _.isFunction(this.playerForAttendance.$destroy)) {
-        this.playerForAttendance.$destroy();
+      if (this.currentPlayer && _.isFunction(this.currentPlayer.$destroy)) {
+        this.currentPlayer.$destroy();
       }
-      this.playerForAttendance = this.playersSvc.getPlayer(playerId);
+      this.currentPlayer = this.playersSvc.getPlayer(playerId);
     }
 
     changeAttendance(evt) {
-      this.playerForAttendance.$loaded()
+      this.currentPlayer.$loaded()
         .then(() => {
           let selectedBtn = angular.element(evt.target).closest('paper-button'),
               attendance = selectedBtn.length && selectedBtn[0].dataset.answer;
           this.playersGames.changePlayerApproval({
             gameId: this.gameId,
-            playerId: this.playerForAttendance.$id,
-            player: this.playerForAttendance,
+            playerId: this.currentPlayer.$id,
+            player: this.currentPlayer,
             attendance: attendance || 'no',
             guests: this.guests
           })

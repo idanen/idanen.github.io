@@ -36,4 +36,7 @@
       <span> Login</span>
     </paper-button>
   </fieldset>
+  <fieldset class="login-errors">
+    <p class="text-danger" ng-if="$ctrl.loginErrorMessage">{{ $ctrl.loginErrorMessage }}</p>
+  </fieldset>
 </form>

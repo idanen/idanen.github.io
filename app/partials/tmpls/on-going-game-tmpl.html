@@ -1,11 +1,10 @@
 <div class="current-game">
-	<h3>Current Game: played at &quot;{{ vm.game.location }}&quot; (# of players: {{ vm.playersInGame.length | number }}).</h3>
-
 	<game-settings game="vm.game" on-update="vm.gameSettingsChanged(settings)"></game-settings>
 
   <game-details game="vm.game" on-update="vm.gameDetailsChanged(details)"></game-details>
 
 	<!-- <button class="btn btn-default players-drawer-btn visible-xs" ng-click="vm.openPlayersControl()"><span class="icon icon-arrow-right"></span></button> -->
+  <h4># of players: {{ vm.playersInGame.length | number }}</h4>
 
 	<button class="btn btn-default" ng-click="vm.startGame()" ng-disabled="!vm.playersInGame.length">Start game</button>
 

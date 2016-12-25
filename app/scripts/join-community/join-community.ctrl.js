@@ -14,10 +14,14 @@
     this.playersSvc = Players;
     this.joined = false;
 
-    this.userService.onUserChange(user => this.userChanged(user));
+    this.offUserChange = this.userService.onUserChange(user => this.userChanged(user));
   }
 
   JoinCommunityController.prototype = {
+    $onDestroy: function () {
+      this.offUserChange();
+    },
+
     userChanged: function (user) {
       this.currentUser = user;
       if (this.currentUser && this.currentUser.playerId) {

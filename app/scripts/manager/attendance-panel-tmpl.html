@@ -1,18 +1,20 @@
-<div class="row attendance-panel-header">
-  <div class="col-xs-3" uib-tooltip="In">
-    <span class="icon icon-check text-success"></span>
-    <span class="label label-success" ng-bind="$ctrl.attendanceCount.yes.length"></span>
-  </div>
-  <div class="col-xs-3" uib-tooltip="Maybe">
-    <span class="icon icon-question text-warning"></span>
-    <span class="label label-warning" ng-bind="$ctrl.attendanceCount.maybe.length"></span>
-  </div>
-  <div class="col-xs-3" uib-tooltip="Out">
-    <span class="icon icon-remove text-danger"></span>
-    <span class="label label-danger" ng-bind="$ctrl.attendanceCount.no.length"></span>
-  </div>
-  <div class="col-xs-3">
-    <paper-button class="pull-right" ng-tap="$ctrl.toggleBody()"><span class="icon icon-expand_more"></span></paper-button>
+<div class="attendance-panel-header" ng-class="{'attendance-panel__open': $ctrl.open}">
+  <div class="row">
+    <div class="col-xs-3" uib-tooltip="In">
+      <span class="icon icon-check text-success"></span>
+      <strong class="text-success attending-count-yes" ng-bind="$ctrl.attendanceCount.yes.length || 0"></strong>
+    </div>
+    <div class="col-xs-3" uib-tooltip="Maybe">
+      <span class="icon icon-question text-warning"></span>
+      <strong class="text-warning attending-count-maybe" ng-bind="$ctrl.attendanceCount.maybe.length || 0"></strong>
+    </div>
+    <div class="col-xs-3" uib-tooltip="Out">
+      <span class="icon icon-remove text-danger"></span>
+      <strong class="text-danger attending-count-no" ng-bind="$ctrl.attendanceCount.no.length || 0"></strong>
+    </div>
+    <div class="col-xs-3">
+      <paper-button class="pull-right" ng-tap="$ctrl.toggleBody()"><span class="icon" ng-class="{'icon-arrow_drop_down': !this.open, 'icon-arrow_drop_up': this.open}"></span></paper-button>
+    </div>
   </div>
 </div>
 <div class="attendance-panel-body">
@@ -43,17 +45,17 @@
     <div class="col-xs-4">
       <span class="icon icon-check text-success"></span>
       <span> In </span>
-      <span class="label label-success" ng-bind="$ctrl.attendanceCount.yes.length"></span>
+      <strong class="text-success attending-count-yes" ng-bind="$ctrl.attendanceCount.yes.length || 0"></strong>
     </div>
     <div class="col-xs-4">
       <span class="icon icon-question text-warning"></span>
       <span> Maybe </span>
-      <span class="label label-warning" ng-bind="$ctrl.attendanceCount.maybe.length"></span>
+      <strong class="text-warning attending-count-maybe" ng-bind="$ctrl.attendanceCount.maybe.length || 0"></strong>
     </div>
     <div class="col-xs-4">
       <span class="icon icon-remove text-danger"></span>
       <span> Out </span>
-      <span class="label label-danger" ng-bind="$ctrl.attendanceCount.no.length"></span>
+      <strong class="text-danger attending-count-no" ng-bind="$ctrl.attendanceCount.no.length || 0"></strong>
     </div>
   </div>
   <div class="row">

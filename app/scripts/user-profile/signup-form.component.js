@@ -34,7 +34,7 @@
       pass: ''
     };
 
-    this.userService.onUserChange(user => this.userChanged(user));
+    this.offUserChange = this.userService.onUserChange(user => this.userChanged(user));
 
     this.listeners = [];
   }
@@ -57,6 +57,8 @@
     },
 
     $onDestroy: function () {
+      this.offUserChange();
+
       this.listeners.forEach(toDetach => {
         toDetach.element.removeEventListener(toDetach.event, toDetach.listener);
       });

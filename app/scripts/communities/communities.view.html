@@ -47,7 +47,7 @@
           <a class="btn btn-link" ui-sref="stats({ fromDate: vm.fromDate, toDate: vm.toDate })">Stats</a>
         </div>
       </div>
-      <div class="row" ng-if="!!vm.games && vm.isAdmin">
+      <div class="row" ng-if="!!vm.games">
         <div class="col-xs-12">
           <ul class="pager">
             <li ng-click="vm.prevPage()">

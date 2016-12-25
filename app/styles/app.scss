@@ -30,13 +30,15 @@ google-map {
 attendance-panel {
   display: block;
   position: relative;
-  max-height: 6em;
   .thumbnail {
     margin-bottom: 0;
   }
   .attendance-panel-header {
     box-shadow: 2px 2px 5px rgba(0, 0, 0, .3);
     padding: 1em;
+    .icon-arrow_drop_down {
+      font-size: x-large;
+    }
   }
   .attendance-panel-body {
     transition: transform 300ms ease-out, opacity 300ms ease-out;
@@ -50,13 +52,17 @@ attendance-panel {
     padding: 0.5em;
     box-shadow: 1px 1px 5px rgba(0,0,0,.3);
   }
-  &.attendance-panel__open {
-    max-height: initial;
-    .attendance-panel-body {
+  .attendance-panel__open {
+    ~.attendance-panel-body {
       opacity: 1;
       transform: translateY(0);
       pointer-events: initial;
     }
+  }
+  .attending-count-yes,
+  .attending-count-maybe,
+  .attending-count-no {
+    font-size: x-large;
   }
 }
 

@@ -7,14 +7,16 @@
   angular.module('pokerManager')
     .controller('GameCtrl', GameController);
 
-  GameController.$inject = ['$analytics', 'Games', 'playersGames', '$state'];
-  function GameController($analytics, gamesSvc, playersGames, $state) {
+  GameController.$inject = ['$analytics', 'Games', 'playersGames', '$state', 'communitiesSvc', 'userService'];
+  function GameController($analytics, gamesSvc, playersGames, $state, communitiesSvc, userService) {
     this.$analytics = $analytics;
     this.playersGames = playersGames;
     this.gamesSvc = gamesSvc;
     this.game = this.gamesSvc.getGame(this.gameId);
     this.playersInGame = playersGames.getPlayersInGame(this.gameId);
     this.$state = $state;
+    this.communitiesSvc = communitiesSvc;
+    this.userService = userService;
 
     this.game.$loaded()
       .then(() => {
@@ -30,10 +32,21 @@
         if (!this.game.allowedGuests) {
           this.game.allowedGuests = 1;
         }
+        this.checkAdmin();
       });
   }
 
   GameController.prototype = {
+    checkAdmin: function () {
+      let user = this.userService.getCurrentUser();
+      if (user) {
+        this.communitiesSvc.isAdmin(user.playerId, this.game.communityId)
+          .then(isAdmin => {
+            this.isAdmin = isAdmin;
+          });
+      }
+    },
+
     $onChanges: function (changes) {
       if (changes.gameId && changes.gameId.previousValue !== this.gameId) {
         this.game = this.gamesSvc.getGame(this.gameId);

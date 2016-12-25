@@ -20,13 +20,17 @@
       pass: ''
     };
 
-    this.userService.onUserChange(user => this.userChanged(user));
+    this.offUserChange = this.userService.onUserChange(user => this.userChanged(user));
   }
 
   UserProfileController.prototype = {
     // $postLink: function () {
     //   this.cardElement = this.$element.find('paper-card');
     // },
+
+    $onDestroy: function () {
+      this.offUserChange();
+    },
 
     userChanged: function (currentUser) {
       this.currentUser = currentUser;

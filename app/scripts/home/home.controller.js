@@ -23,10 +23,14 @@
     this.addingComunity = true;
     this.editingCommunity = false;
 
-    this.userService.onUserChange(user => this.userChanged(user));
+    this.offUserChange = this.userService.onUserChange(user => this.userChanged(user));
   }
 
   HomeController.prototype = {
+    $onDestroy: function () {
+      this.offUserChange();
+    },
+
     prepareJoinCommunity: function () {
       this.joinFormVisible = true;
     },

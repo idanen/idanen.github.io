@@ -69,8 +69,7 @@
           controller: 'PokerManagerCtrl',
           controllerAs: 'vm',
           resolve: {
-            game: gameRouteResolver,
-            user: authRequiredResolver
+            game: gameRouteResolver
           }
         },
         stats = {

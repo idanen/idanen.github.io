@@ -14,7 +14,7 @@
 
       this.attendingPlayers = playersGames.getApprovalsForGame(this.gameId);
 
-      this.userService.onUserChange(currentUser => this.userChanged(currentUser));
+      this.offUserChange = this.userService.onUserChange(currentUser => this.userChanged(currentUser));
     }
 
     $onInit() {
@@ -36,16 +36,23 @@
       }
     }
 
+    $onDestroy() {
+      this.offUserChange();
+      if (this.attendingPlayers && _.isFunction(this.attendingPlayers.$destroy)) {
+        this.attendingPlayers.$destroy();
+      }
+    }
+
     openBody() {
-      this.$element[0].classList.add('attendance-panel__open');
+      this.open = true;
     }
 
     closeBody() {
-      this.$element[0].classList.remove('attendance-panel__open');
+      this.open = false;
     }
 
     toggleBody() {
-      this.$element[0].classList.toggle('attendance-panel__open');
+      this.open = !this.open;
     }
 
     userChanged(currentUser) {

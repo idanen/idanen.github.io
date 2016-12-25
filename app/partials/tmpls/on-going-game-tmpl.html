@@ -1,14 +1,15 @@
 <div class="current-game">
-	<game-settings game="vm.game" on-update="vm.gameSettingsChanged(settings)"></game-settings>
-
-  <game-details game="vm.game" on-update="vm.gameDetailsChanged(details)"></game-details>
+  <div class="game-editing-panel" ng-if="vm.isAdmin">
+    <game-settings game="vm.game" on-update="vm.gameSettingsChanged(settings)"></game-settings>
+    <game-details game="vm.game" on-update="vm.gameDetailsChanged(details)"></game-details>
+  </div>
 
 	<!-- <button class="btn btn-default players-drawer-btn visible-xs" ng-click="vm.openPlayersControl()"><span class="icon icon-arrow-right"></span></button> -->
-  <h4># of players: {{ vm.playersInGame.length | number }}</h4>
+  <h4>{{ vm.game.date | date:'fullDate' }},  # of players: {{ vm.playersInGame.length | number }}</h4>
 
 	<button class="btn btn-default" ng-click="vm.startGame()" ng-disabled="!vm.playersInGame.length">Start game</button>
 
-	<div class="row game-container">
+	<div class="row game-container" ng-if="vm.isAdmin">
 		<div class="col-sm-6 col-xs-12 fader" ng-repeat="player in vm.playersInGame | orderBy:'displayName'">
 			<player-card player="player" on-update="vm.playerResultUpdated(updates)"></player-card>
 		</div>
@@ -19,11 +20,11 @@
 		<li role="presentation"><a href="">Total Buyout <span class="badge">{{ vm.totalChips() / vm.game.chipValue }}</span></a></li>
 		<li role="presentation"><a href="">Total Hosting <span class="badge">{{ vm.totalHosting() }}</span></a></li>
 	</ul>
-	<div class="row bg-info end-game-wrap">
-		<div class="col-md-12">
-			<button ng-click="vm.saveGame()" class="btn btn-block btn-primary" ng-disabled="(vm.playersInGame.length <= 0) || vm.isGameInProgress()" analytics-on analytics-event="Save Game" analytics-category="Actions" analytics-label="{{ vm.game.location }}"><i class="icon icon-download"></i>&nbsp;End Game</button>
-		</div>
-	</div>
+	<!--<div class="row bg-info end-game-wrap">-->
+		<!--<div class="col-md-12">-->
+			<!--<button ng-click="vm.saveGame()" class="btn btn-block btn-primary" ng-disabled="(vm.playersInGame.length <= 0) || vm.isGameInProgress()" analytics-on analytics-event="Save Game" analytics-category="Actions" analytics-label="{{ vm.game.location }}"><i class="icon icon-download"></i>&nbsp;End Game</button>-->
+		<!--</div>-->
+	<!--</div>-->
 
   <div class="row">
     <div class="col-xs-12">

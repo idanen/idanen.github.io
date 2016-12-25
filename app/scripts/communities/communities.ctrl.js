@@ -28,10 +28,14 @@
     this.getCommunityGames(this.community);
     this.getCommunityJoiners(this.community);
 
-    this.userService.onUserChange(currentUser => this.userChanged(currentUser));
+    this.userChangedOff = this.userService.onUserChange(currentUser => this.userChanged(currentUser));
   }
 
   CommunitiesController.prototype = {
+    $onDestroy: function () {
+      this.userChangedOff();
+    },
+
     addMember: function (toCommunity) {
       this.playerModal.open()
         .then(player => this.playersMembership.addPlayer(player, toCommunity));

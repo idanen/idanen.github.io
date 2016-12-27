@@ -5,7 +5,7 @@
       <div class="col-xs-12">
         <ul class="list-group">
           <li class="list-group-item" ng-repeat="game in $ctrl.gamesForPicker | orderBy:'date':true" ng-click="$ctrl.gameSelectionChanged(game.value)">
-            <span class="icon" ng-class="{'icon-check_box_outline_blank': $ctrl.selectedGame.$id !== game.value, 'icon-check_box': $ctrl.selectedGame.$id === game.value}"></span>
+            <span class="icon" ng-class="{'icon-radio_button_unchecked': $ctrl.selectedGame.$id !== game.value, 'icon-radio_button_checked': $ctrl.selectedGame.$id === game.value}"></span>
             <strong>{{ game.label }}</strong>
           </li>
         </ul>

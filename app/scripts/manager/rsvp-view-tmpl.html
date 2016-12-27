@@ -74,19 +74,22 @@
     <div class="form-group row">
       <div class="col-xs-12">
         <label>Full list</label>
-        <ul class="list-group">
+        <ul class="list-group rsvp-list">
           <li class="list-group-item list-group-item-success" ng-repeat="attendee in $ctrl.attendanceCount.yes">
             <span class="icon icon-check"></span>
+            <img class="img-circle" ng-src="{{ attendee.photoURL }}" alt="">
             <strong>{{ attendee.displayName }}</strong>
             <em>{{ attendee.message }}</em>
           </li>
           <li class="list-group-item list-group-item-warning" ng-repeat="attendee in $ctrl.attendanceCount.maybe">
             <span class="icon icon-question"></span>
+            <img class="img-circle" ng-src="{{ attendee.photoURL }}" alt="">
             <strong>{{ attendee.displayName }}</strong>
             <em>{{ attendee.message }}</em>
           </li>
           <li class="list-group-item list-group-item-danger" ng-repeat="attendee in $ctrl.attendanceCount.no">
             <span class="icon icon-remove"></span>
+            <img class="img-circle" ng-src="{{ attendee.photoURL }}" alt="">
             <strong>{{ attendee.displayName }}</strong>
             <em>{{ attendee.message }}</em>
           </li>

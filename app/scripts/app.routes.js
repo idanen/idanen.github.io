@@ -7,7 +7,7 @@
 
   config.$inject = ['$locationProvider', '$stateProvider', '$urlRouterProvider'];
   function config($locationProvider, $stateProvider, $urlRouterProvider) {
-    var home = {
+    const home = {
           name: 'home',
           url: '/',
           templateUrl: 'scripts/home/home.view.html',
@@ -61,6 +61,16 @@
             previousState: previousStateResolver
           }
         },
+        rsvp = {
+          name: 'rsvp',
+          parent: 'community',
+          url: '/rsvp',
+          component: 'rsvpView',
+          resolve: {
+            currentUser: currentUserResolver,
+            communityId: communityIdResolver
+          }
+        },
         gameManager = {
           name: 'game',
           parent: 'community',
@@ -98,6 +108,7 @@
     $stateProvider.state(joinCommunity);
     $stateProvider.state(userprofile);
     $stateProvider.state(addCommunity);
+    $stateProvider.state(rsvp);
     $stateProvider.state(gameManager);
     $stateProvider.state(stats);
     $stateProvider.state(player);
@@ -144,6 +155,12 @@
     return $stateParams.communityId;
   }
 
+  currentUserResolver.$inject = ['userService'];
+  function currentUserResolver(userService) {
+    return userService.waitForUser()
+      .catch(err => console.error(err));
+  }
+
   gameRouteResolver.$inject = ['$stateParams', 'Games'];
   function gameRouteResolver($stateParams, Games) {
     return Games.getGame($stateParams.gameId);
@@ -157,7 +174,8 @@
         if (_.isFunction(player.$destroy)) {
           player.$destroy();
         }
-        $state.go(previousState.name, previousState.params);
+        $state.go(previousState.name, previousState.params)
+          .catch(err => console.log('transition failed: ', err));
       });
   }
 

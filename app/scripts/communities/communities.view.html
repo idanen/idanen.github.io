@@ -9,8 +9,13 @@
       </div>
     </div>
     <div ng-if="!!vm.currentUser">
-      <div class="row" ng-if="vm.isAdmin">
+      <div class="row">
         <div class="col-xs-5">
+          <a ui-sref="rsvp({communityId: vm.community.$id})">
+            <paper-button raised>RSVP</paper-button>
+          </a>
+        </div>
+        <div class="col-xs-5" ng-if="vm.isAdmin">
           <a class="manage-players-btn" ui-sref="communityPlayers({communityId: vm.community.$id})">
             <paper-button raised>
               <paper-badge ng-if="vm.joiners.length" label="{{vm.joiners.length || 0}}"></paper-badge>
@@ -47,7 +52,7 @@
           <a class="btn btn-link" ui-sref="stats({ fromDate: vm.fromDate, toDate: vm.toDate })">Stats</a>
         </div>
       </div>
-      <div class="row" ng-if="!!vm.games">
+      <div class="row" ng-if="!!vm.games && vm.isAdmin">
         <div class="col-xs-12">
           <ul class="pager">
             <li ng-click="vm.prevPage()">

@@ -36,11 +36,12 @@
           .child('attending')
       );
     },
-    changePlayerApproval: function ({gameId, playerId, player, attendance = 'maybe', guests = 0}) {
+    changePlayerApproval: function ({gameId, playerId, player, attendance = 'maybe', guests = 0, message = ''}) {
       let toSave = _.pick(player, ['displayName', 'photoURL']);
 
       toSave.attendance = attendance;
       toSave.guests = guests;
+      toSave.message = message;
       toSave.approveDate = Date.now();
 
       return this.$q.resolve(

@@ -13,14 +13,13 @@
   angular.module('pokerManager')
     .controller('PokerStatsCtrl', PokerStatsController);
 
-  PokerStatsController.$inject = ['$state', '$stateParams', 'Utils', 'Games', 'playerModal'];
+  PokerStatsController.$inject = ['$state', 'Utils', 'Games', 'playerModal'];
 
-  function PokerStatsController($state, $stateParams, utils, Games, playerModal) {
+  function PokerStatsController($state, utils, Games, playerModal) {
     var vm = this,
         today = Date.now();
 
     this.$state = $state;
-    this.$stateParams = $stateParams;
     this.utils = utils;
     this.Games = Games;
     this.playerModal = playerModal;
@@ -35,9 +34,9 @@
     };
 
     vm.displayGames = {
-      fromDate: $stateParams.fromDate || today - MONTH,
+      fromDate: $state.params.fromDate || today - MONTH,
       fromDateOpen: false,
-      toDate: $stateParams.toDate || today,
+      toDate: $state.params.toDate || today,
       toDateOpen: false,
       players: [],
       filtered: []
@@ -54,10 +53,10 @@
 
   PokerStatsController.prototype = {
     getPlayers: function () {
-      var fromDate = this.$stateParams.fromDate || this.displayGames.fromDate,
-          toDate = this.$stateParams.toDate || this.displayGames.toDate;
+      var fromDate = this.$state.params.fromDate || this.displayGames.fromDate,
+          toDate = this.$state.params.toDate || this.displayGames.toDate;
       // console.time('calculating-stats');
-      return this.Games.findBetweenDates(fromDate, toDate, this.$stateParams.communityId)
+      return this.Games.findBetweenDates(fromDate, toDate, this.$state.params.communityId)
         .then(this.gamesToPlayers.bind(this));
     },
 
@@ -98,7 +97,7 @@
 
     loadGames: function () {
       this.$state.go('stats', {
-        communityId: this.$stateParams.communityId,
+        communityId: this.$state.params.communityId,
         fromDate: this.displayGames.fromDate,
         toDate: this.displayGames.toDate
       });

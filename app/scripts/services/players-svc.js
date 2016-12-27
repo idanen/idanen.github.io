@@ -7,10 +7,9 @@
   angular.module('pokerManager')
     .service('Players', PlayersService);
 
-  PlayersService.$inject = ['$q', '$stateParams', 'Ref', '$firebaseArray', '$firebaseObject', 'firebaseCommon'];
-  function PlayersService($q, $stateParams, Ref, $firebaseArray, $firebaseObject, firebaseCommon) {
+  PlayersService.$inject = ['$q', 'Ref', '$firebaseArray', '$firebaseObject', 'firebaseCommon'];
+  function PlayersService($q, Ref, $firebaseArray, $firebaseObject, firebaseCommon) {
     this.$q = $q;
-    this.$stateParams = $stateParams;
     this.playersRef = Ref.child('players');
     this.$firebaseArray = $firebaseArray;
     this.$firebaseObject = $firebaseObject;

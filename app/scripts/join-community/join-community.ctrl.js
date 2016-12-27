@@ -4,11 +4,11 @@
   angular.module('pokerManager')
     .controller('JoinCommunityCtrl', JoinCommunityController);
 
-  JoinCommunityController.$inject = ['$stateParams', 'communitiesSvc', 'userService', 'polymerToaster', 'Players'];
-  function JoinCommunityController($stateParams, communitiesSvc, userService, polymerToaster, Players) {
+  JoinCommunityController.$inject = ['$state', 'communitiesSvc', 'userService', 'polymerToaster', 'Players'];
+  function JoinCommunityController($state, communitiesSvc, userService, polymerToaster, Players) {
     this.communitiesSvc = communitiesSvc;
-    this.$stateParams = $stateParams;
-    this.community = this.communitiesSvc.getCommunity($stateParams.communityId);
+    this.$state = $state;
+    this.community = this.communitiesSvc.getCommunity($state.params.communityId);
     this.userService = userService;
     this.polymerToaster = polymerToaster;
     this.playersSvc = Players;
@@ -28,7 +28,7 @@
         if (this.community && _.isFunction(this.community.$destroy)) {
           this.community.$destroy();
         }
-        this.community = this.communitiesSvc.getCommunity(this.$stateParams.communityId);
+        this.community = this.communitiesSvc.getCommunity(this.$state.params.communityId);
         this.community.$loaded()
           .then(() => {
             this.joined = !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];

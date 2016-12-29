@@ -2,21 +2,39 @@
 	<div class="arrow"></div>
 	<h3 class="popover-title" ng-bind="title" ng-show="title"></h3>
 	<div class="popover-content">
-		<div class="input-group input-group-sm">
+		<div class="input-group input-group-sm buy-amount">
+      <div class="input-group-btn">
+        <button class="btn btn-danger" ng-click="gameCtrl.addOrSubtractChips(player, 1)" ng-disabled="!player.isPlaying">
+          <i class="icon icon-minus"></i>
+          <span class="hidden-xs"> 1</span>
+        </button>
+        <button class="btn btn-danger buy-amount__small" ng-click="gameCtrl.addOrSubtractChips(player, 0.10)" ng-disabled="!player.isPlaying">
+          <i class="icon icon-minus"></i>
+          <span class="hidden-xs">0.1</span>
+        </button>
+      </div>
 			<input class="form-control" ng-model="player.currentChipCount" ng-change="gameCtrl.chipCountUpdate(player)" type="number" min="0" step="{{ settings.chipValue }}" ng-disabled="!player.isPlaying" autofocus/>
 			<div class="input-group-btn">
-				<button ng-click="gameCtrl.buyout(player)" class="btn btn-primary" ng-show="player.isPlaying" title="Buy out"><i class="glyphicon glyphicon-share-alt"></i>&nbsp;<span class="hidden-xs">Buy out</span>
-				</button>
-				<button ng-click="gameCtrl.bust(player)" class="btn btn-danger" ng-show="player.isPlaying" title="Bust"><i class="glyphicon glyphicon-trash"></i>&nbsp;<span class="hidden-xs">Bust</span>
-				</button>
-				<button ng-click="gameCtrl.comeBack(player)" class="btn btn-primary" ng-show="!player.isPlaying" title="Come Back">Come Back</button>
+        <button class="btn btn-success buy-amount__small" ng-click="gameCtrl.addOrSubtractChips(player, 0.10, true)" ng-disabled="!player.isPlaying">
+          <i class="icon icon-plus"></i>
+          <span class="hidden-xs"> 0.1</span>
+        </button>
+        <button class="btn btn-success" ng-click="gameCtrl.addOrSubtractChips(player, 1, true)" ng-disabled="!player.isPlaying">
+          <i class="icon icon-plus"></i>
+          <span class="hidden-xs"> 1</span>
+        </button>
 			</div>
 		</div>
 		<div class="btn-group btn-group-sm" style="margin: 7px 0;">
-			<button class="btn btn-danger" ng-click="gameCtrl.addOrSubtractChips(player, 1)" ng-disabled="!player.isPlaying"><i class="glyphicon glyphicon-minus"></i> 1</button>
-			<button class="btn btn-danger" ng-click="gameCtrl.addOrSubtractChips(player, 0.10)" ng-disabled="!player.isPlaying"><i class="glyphicon glyphicon-minus"></i> 0.1</button>
-			<button class="btn btn-success" ng-click="gameCtrl.addOrSubtractChips(player, 0.10, true)" ng-disabled="!player.isPlaying"><i class="glyphicon glyphicon-plus"></i> 0.1</button>
-			<button class="btn btn-success" ng-click="gameCtrl.addOrSubtractChips(player, 1, true)" ng-disabled="!player.isPlaying"><i class="glyphicon glyphicon-plus"></i> 1</button>
+      <button ng-click="gameCtrl.buyout(player)" class="btn btn-primary" ng-disabled="!player.isPlaying" title="Buy out">
+        <i class="icon icon-external-link"></i>
+        <span class="hidden-xs"> Buy out</span>
+      </button>
+      <button ng-click="gameCtrl.bust(player)" class="btn btn-danger" ng-disabled="!player.isPlaying" title="Bust">
+        <i class="icon icon-trash"></i>
+        <span class="hidden-xs"> Bust</span>
+      </button>
+      <button ng-click="gameCtrl.comeBack(player)" class="btn btn-primary" ng-disabled="player.isPlaying" title="Come Back">Come Back</button>
 		</div>
 	</div>
 </div>

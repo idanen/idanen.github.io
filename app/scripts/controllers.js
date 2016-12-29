@@ -1,172 +1,124 @@
 /* Controllers */
+(function () {
+  'use strict';
+  angular.module('pokerManager.controllers', ['pokerManager.services'])
+    .controller('MainCtrl', MainController);
 
-angular.module( 'pokerManager.controllers', [] ).
-	controller( 'MainCtrl', [ '$scope', '$location', 'Auth', 'jrgGoogleAuth', function ( $scope, $location, Auth, jrgGoogleAuth ) {
-		'use strict';
+  MainController.$inject = ['$scope', '$state', '$filter', 'userService', 'Players', 'communitiesSvc'];
+  function MainController($scope, $state, $filter, userService, playersSvc, communitiesSvc) {
+    var DAY = 1000 * 60 * 60 * 24;
 
-		var adminTab = {
-			title: "Current Game",
-			href: "#/view1/0",
-			icon: "icon-spades"
-		};
+    this.$state = $state;
+    this.$filter = $filter;
+    this.userService = userService;
+    this.playersSvc = playersSvc;
+    this.communitiesSvc = communitiesSvc;
 
-		$scope.tabs = [];
-		
-		$scope.getLocation = function() {
-			return $location.path();
-		};
-		$scope.setLocation = function( location ) {
-			$location.path( location );
-		};
-		
-		$scope.isTabSelected = function( tabHref ) {
-			return ( tabHref.substring( 1 ) === $location.path() );
-		};
-		
-		$scope.isAdmin = function() {
-			return ( !!Auth.getUser() );
-		};
+    this.tabs = [];
+    this.communitiesTab = {
+      title: 'communities',
+      icon: 'icon-users',
+      children: [],
+      actions: [{
+        title: 'Add or join'
+        // ,
+        // action: $state.go('addCommunity')
+      }]
+    };
+    this.statsTab = {
+      title: 'Stats',
+      href: $state.href('stats', {fromDate: Date.now() - DAY * 30, toDate: Date.now()}),
+      icon: 'icon-bar-chart'
+    };
+    this.gamesTab = {
+      title: 'Select Game',
+      icon: 'icon-spades',
+      actions: [{
+        title: 'New game'
+      }]
+    };
 
-		$scope.signOut = signOut;
+    this.userService.onUserChange(this.userChanged.bind(this));
 
-		$scope.$watch( function () {
-			return $scope.isAdmin();
-		}, function ( newVal ) {
-			if ( newVal && $scope.tabs.length < 2 ) {
-				$scope.tabs.push( adminTab );
-			} else {
-				var adminTabIdx = $scope.tabs.indexOf( adminTab );
-				if ( adminTabIdx > -1 ) {
-					$scope.tabs.splice( adminTabIdx, 1 );
-				}
-			}
-		} );
-		
-		$scope.init = function() {
-			$scope.tabs.push( {
-				title: "Stats",
-				href: "#/stats",
-				icon: "fa-bar-chart"
-			} );
-			if ( $scope.isAdmin() ) {
-				$scope.tabs.push( adminTab );
-			}
-		};
+    $scope.$on('$stateChangeSuccess', function (event, toState, toParams) {
+      if (toParams.communityId) {
+        this.statsTab.href = $state.href('stats', {
+          communityId: toParams.communityId,
+          fromDate: Date.now() - DAY * 30,
+          toDate: Date.now()
+        });
+      }
+    }.bind(this));
+  }
 
-		$scope.$on( '$locationChangeStart', function ( ev, from, to ) {
-			if ( /login$/i.test( to ) ) {
-				$scope.currentUser = Auth.getUser();
-			}
-		} );
+  MainController.prototype = {
+    init: function () {
+      this.tabs.push(this.communitiesTab);
+      this.tabs.push(this.statsTab);
+      this.tabs.push(this.gamesTab);
+    },
+    userChanged: function (currentUser) {
+      this.currentUser = currentUser;
+      if (!currentUser) {
+        return;
+      }
 
-		function signOut() {
-			jrgGoogleAuth.logout().then( function () {
-				Auth.revokeToken().then( function () {
-					delete $scope.currentUser;
-				} );
-			} );
-		}
-	} ] ).
-	controller( 'MyCtrl2', [ '$scope', 'Players', 'Games', '$analytics', function ( $scope, Players, Games, $analytics ) {
-		'use strict';
+      this.obtainUserData();
+      return this.currentUser;
+    },
+    obtainUserData: function () {
+      if (!this.currentUser) {
+        return;
+      }
+      this.communitiesForHrefs();
+      this.gamesForHrefs();
+    },
+    loggedOut: function () {
+      this.currentUser = null;
+    },
+    communitiesForHrefs: function () {
+      if (!this.currentUser || !this.currentUser.playerId) {
+        return;
+      }
+      this.playersSvc.playersCommunities(this.currentUser.playerId)
+        .then(communities => {
+          this.communitiesTab.children = _.map(communities, (communityName, communityId) => {
+            return {
+              title: communityName,
+              href: this.$state.href('community', {communityId: communityId})
+            };
+          });
+        });
+    },
+    gamesForHrefs: function () {
+      if (!this.currentUser || !this.currentUser.playerId) {
+        return;
+      }
+      if (this.gamesOfPlayer && _.isFunction(this.gamesOfPlayer.$destroy)) {
+        this.gamesOfPlayer.$destroy();
+      }
+      this.gamesOfPlayer = this.playersSvc.getPlayerGames(this.currentUser.playerId, 50);
+      this.gamesOfPlayer.$loaded()
+        .then(() => {
+          this.gamesTab.children = this.gamesOfPlayer.map(game => {
+            return {
+              title: this.$filter('date')(game.date, 'yyyy-MM-dd') + ' @ ' + game.location,
+              href: this.$state.href('game', {communityId: game.communityId, gameId: game.$id})
+            };
+          });
+        });
+    },
+    signOut: function () {
+      this.userService.logout();
+      this.currentUser = null;
+    },
 
-		var vm = this;
+    hasChildren: function (tab) {
+      return tab.children && tab.children.length;
+    },
 
-		vm.players = Players.query();
-		vm.games = Games.query();
-
-		vm.dateOptions = {
-				'year-format': "'yyyy'",
-				'month-format': "'MM'",
-				'day-format': "'dd'"
-			};
-		vm.prefs = {
-				playersOpen: false
-			};
-		vm.today = new Date();
-		vm.serverMsg = [];
-
-		vm.game = Games.create();
-
-		vm.refresh = function () {
-			vm.players = Players.query();
-			vm.games = Games.query();
-		};
-
-		vm.newPlayer = function () {
-			var player = new Players();
-			player.name = 'Johnny';
-			player.$save();
-		};
-
-		vm.newGame = function () {
-			var game = Games.create();
-			Games.save( game );
-		};
-
-		vm.save = function ( index ) {
-			vm.players[ index ].$update( function ( saved ) {
-				console.log(saved);
-			}, function ( err ) {
-				console.log( 'error: ', err );
-			} );
-		};
-
-		vm.addPlayerToGame = function ( player ) {
-			if ( !player.isPlaying ) {
-				player.isPlaying = true;
-				player.buyin = 0;
-				player.buyout = 0;
-				player.currentChipCount = 0;
-				player.paidHosting = false;
-				vm.game.players.push( player );
-			}
-			
-			try {
-				$analytics.eventTrack('Buyin', { category: 'Actions', label: player.name });
-			} catch (err) {}
-		};
-	
-		vm.toggleGameDate = function( $event, index ) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			
-			vm.games[ index ].dateOpen = !vm.games[ index ].dateOpen;
-		};
-
-		vm.getPlayersOfGame = function ( game ) {
-			game.players = Games.getPlayers( { gameId: game.id }, function ( data ) {
-				// console.log( 'got players: ', data );
-			} );
-		};
-
-		vm.saveGame = function ( index ) {
-			vm.games[ index ].$update();
-		};
-
-		vm.addServerMsg = function( msg ) {
-			vm.serverMsg.push( msg );
-		};
-
-		vm.closeServerMsg = function( index ) {
-			vm.serverMsg.splice( index, 1 );
-		};
-
-		vm.gameSaved = function ( savedGame ) {
-			vm.game = Games.create();
-			vm.games = Games.query();
-
-			vm.addServerMsg( {
-				txt: 'Game saved successfully',
-				type: 'success'
-			} );
-		};
-
-		vm.saveGameFailed = function ( err ) {
-			console.log( err );
-			vm.addServerMsg( {
-				txt: 'Error saving Game',
-				type: 'error'
-			} );
-		};
-	} ] );
+    hasActions: function (tab) {
+      return tab.actions && tab.actions.length;
+    }
+  };
+}());

@@ -1,4 +1,4 @@
-<div class="container" ng-init="vm.init();">
+<div ng-init="vm.init();">
 	<div ng-cloak>
 		<h5>
 			Games report ( Between {{ vm.displayGames.fromDate | date:'yyyy-MM-dd' }} and {{ vm.displayGames.toDate | date:'yyyy-MM-dd' }} )
@@ -8,21 +8,11 @@
 				<form name="statsForm" class="form-inline">
 					<div class="form-group">
 						<label for="fromDate">From</label>
-						<div class="input-group input-group-sm">
-							<input ng-change="vm.loadGames()" class="form-control" id="fromDate" type="text" uib-datepicker-popup="yyyy-MM-dd" ng-model="vm.displayGames.fromDate" datepicker-options="vm.dateOptions" show-weeks="false" is-open="vm.displayGames.fromDateOpen" readonly="readonly" />
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="vm.toggleDateRange('from', $event)"><i class="glyphicon glyphicon-calendar"></i></button>
-							</span>
-						</div>
+						<input type="text" class="form-control" ng-change="vm.loadGames()" id="fromDate" ng-model="vm.displayGames.fromDate" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="fromDate" bs-datepicker>
 					</div>
 					<div class="form-group">
 						<label for="toDate">To</label>
-						<div class="input-group input-group-sm">
-							<input ng-change="vm.loadGames()" class="form-control" id="toDate" type="text" uib-datepicker-popup="yyyy-MM-dd" ng-model="vm.displayGames.toDate" datepicker-options="vm.dateOptions" show-weeks="false" is-open="vm.displayGames.toDateOpen" readonly="readonly" />
-							<span class="input-group-btn">
-								<button type="button" class="btn btn-default" ng-click="vm.toggleDateRange('to', $event)"><i class="glyphicon glyphicon-calendar"></i></button>
-							</span>
-						</div>
+						<input type="text" class="form-control" ng-change="vm.loadGames()" id="toDate" ng-model="vm.displayGames.toDate" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="toDate" bs-datepicker>
 					</div>
 					<div class="btn-group">
 						<button class="btn btn-info" ng-click="vm.loadLastGame()" analytics-on analytics-category="Actions">Last Game</button>
@@ -36,7 +26,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-3">
-				<strong>Total games: </strong><span class="badge">{{ vm.gamesCount() }}</span>
+				<strong>Total games: </strong><span class="badge">{{ vm.totalGames }}</span>
 			</div>
 			<div class="col-md-9">
 				<em>Showing players who played over </em>
@@ -68,9 +58,9 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="player in vm.displayGames.players | filter:vm.playerPredicate" ng-class="{'success': (player.buyout - player.buyin > 0), 'danger': (player.buyout - player.buyin < 0)}">
+					<tr ng-repeat="player in vm.displayGames.players | filter:vm.playerPredicate" ng-class="{'success': (player.buyout > player.buyin), 'danger': (player.buyout < player.buyin)}">
 						<td>
-							<span>{{ player.name }}</span> <span class="badge" title="Games played">{{ player.gamesCount }}</span> <button class="btn btn-link" ng-click="vm.openPlayerDetailsDialog(player)" analytics-on analytics-event="Player Details" analytics-category="Actions" analytics-label="{{ player.name }}"><span class="fa fa-external-link"></span></button>
+							<span>{{ player.displayName }}</span> <span class="badge" title="Games played">{{ player.gamesCount }}</span> <button class="btn btn-link" ng-click="vm.openPlayerDetailsDialog(player)" analytics-on analytics-event="Player Details" analytics-category="Actions" analytics-label="{{ player.displayName }}"><span class="icon icon-external-link"></span></button>
 						</td>
 						<td class="hidden-sm hidden-xs">{{ player.buyin }}</td>
 						<td class="hidden-sm hidden-xs">{{ player.buyout }}</td>

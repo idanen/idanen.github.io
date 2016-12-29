@@ -3,7 +3,7 @@
 var _ = require('underscore.string')
   , fs = require('fs')
   , path = require('path')
-
+  , swPrecache = require('sw-precache')
   , bowerDir = JSON.parse(fs.readFileSync('.bowerrc')).directory + path.sep;
 
 module.exports = function (gulp, $, config) {
@@ -66,7 +66,7 @@ module.exports = function (gulp, $, config) {
         }
       })))
       .pipe($.if(isProd, $.concat('app.css')))
-      //.pipe($.if(isProd, $.cssmin()))
+      .pipe($.if(isProd, $.cssmin()))
       .pipe($.if(isProd, $.rev()))
       .pipe(gulp.dest(config.buildCss));
   });
@@ -80,8 +80,10 @@ module.exports = function (gulp, $, config) {
       config.appScriptFiles,
       config.buildDir + '**/*.html',
       '!' + config.appComponents,
-      '!**/*_test.*',
-      '!**/index.html'
+      '!**/*.test.*',
+      '!**/index.html',
+      '!**/runtime-caching.js',
+      '!**/service-worker.js'
     ])
       .pipe($.sourcemaps.init())
       .pipe($.if(isProd, htmlFilter))
@@ -93,10 +95,13 @@ module.exports = function (gulp, $, config) {
       })))
       .pipe($.if(isProd, htmlFilter.restore))
       .pipe(jsFilter)
+      .pipe($.babel({
+        presets: ['es2015']
+      }))
       .pipe($.if(isProd, $.angularFilesort()))
       .pipe($.if(isProd, $.concat('app.js')))
       .pipe($.if(isProd, $.ngAnnotate()))
-      .pipe($.if(isProd, $.uglify()))
+      .pipe($.if(isProd, $.uglify().on('error', function(e) { console.log('\x07',e.message); return this.end(); })))
       .pipe($.if(isProd, $.rev()))
       .pipe($.addSrc($.mainBowerFiles({filter: /webcomponents/})))
       .pipe($.sourcemaps.write('.'))
@@ -112,6 +117,7 @@ module.exports = function (gulp, $, config) {
       .pipe($.inject(gulp.src([
           config.buildCss + '**/*',
           config.buildJs + '**/*',
+          '!' + config.buildJs + 'scripts/sw/*.js',
           '!**/webcomponents.js'
         ])
         .pipe(jsFilter)
@@ -127,6 +133,7 @@ module.exports = function (gulp, $, config) {
           starttag: '<!-- inject:head:{{ext}} -->',
           endtag: '<!-- endinject -->',
           addRootSlash: false,
+          transform: transformScriptTagWithAsync,
           ignorePath: config.buildDir
         })
       )
@@ -136,7 +143,10 @@ module.exports = function (gulp, $, config) {
   // copy bower components into build directory
   gulp.task('bowerCopy', ['inject'], function () {
     var cssFilter = $.filter('**/*.css', {restore: true})
-      , jsFilter = $.filter('**/*.js', {restore: true})
+      , jsFilter = $.filter([
+        '**/*.js',
+        '!**/sw-toolbox.js'
+      ], {restore: true})
       , ngStrapPath = 'bower_components/angular-strap/';
 
     // Fix ui-bootstrap and angular-strap colliding
@@ -196,7 +206,7 @@ module.exports = function (gulp, $, config) {
     } else {
       return gulp.src(config.buildDir + 'index.html')
         .pipe($.wiredep.stream({
-          exclude: [/webcomponents/],
+          exclude: [/webcomponents/, /sw-toolbox/],
           ignorePath: '../../' + bowerDir.replace(/\\/g, '/'),
           fileTypes: {
             html: {
@@ -226,7 +236,18 @@ module.exports = function (gulp, $, config) {
     // directory. The Bower directory is automatically prepended via the
     // map function.
     polymerBowerAssetsToCopy = [
-      'polymer/polymer*.html'
+      'polymer/polymer*.html',
+      'iron-a11y-announcer/iron-a11y-announcer.html',
+      'iron-overlay-behavior/iron-overlay-behavior.html',
+      'iron-flex-layout/iron-flex-layout.html',
+      'iron-flex-layout/classes/*.html',
+      'iron-resizable-behavior/iron-resizable-behavior.html',
+      'iron-overlay-behavior/iron-overlay-backdrop.html',
+      'iron-fit-behavior/iron-fit-behavior.html',
+      'iron-overlay-behavior/iron-overlay-manager.html',
+      'font-roboto/roboto.html ',
+      'paper-styles/{color,default-theme,paper-styles,shadow.html,typography.html}',
+      'paper-toast/paper-toast.html'
     ].map(function (file) {
       return bowerDir + file;
     });
@@ -248,7 +269,8 @@ module.exports = function (gulp, $, config) {
     // components directory is automatically prepended via the
     // map function.
     var polymerAssetsToInject = [
-      'polymer/polymer.html'
+      'polymer/polymer.html',
+      'paper-toast/paper-toast.html'
     ].map(function (file) {
       return config.buildComponents + file;
     });
@@ -264,6 +286,17 @@ module.exports = function (gulp, $, config) {
       .pipe(gulp.dest(config.buildDir));
   });
 
+  // vulcanize web components
+  gulp.task('vulcanize', ['bowerInject'], function () {
+    return gulp.src(config.appComponents)
+      .pipe($.vulcanize())
+      .pipe($.if(isProd, $.htmlmin({
+        collapseWhitespace: true,
+        removeComments: true
+      })))
+      .pipe(gulp.dest('build/app/components/'));
+  });
+
   // copy Bower fonts and images into build directory
   gulp.task('bowerAssets', ['clean'], function () {
     var assetFilter = $.filter('**/*.{eot,otf,svg,ttf,woff,woff2,gif,jpg,jpeg,png}', {restore: true});
@@ -275,7 +308,7 @@ module.exports = function (gulp, $, config) {
 
   // copy custom fonts into build directory
   gulp.task('fonts', ['clean'], function () {
-    var fontFilter = $.filter('**/*.{eot,otf,svg,ttf,woff,woff2}', {restore: true}),
+    var fontFilter = $.filter(['**/*.{eot,otf,svg,ttf,woff,woff2}', '!**/*{fontawesome,glyphicons,FontAwesome}*'], {restore: true}),
         fontsDest = isProd ? config.buildFontsProd : config.buildFonts;
     return gulp.src([config.appFontFiles])
       .pipe(fontFilter)
@@ -290,7 +323,7 @@ module.exports = function (gulp, $, config) {
       .pipe(gulp.dest(config.buildImages));
   });
 
-  gulp.task('copyTemplates', ['componentsInject'], function () {
+  gulp.task('copyTemplates', ['vulcanize'], function () {
     // always copy templates to testBuild directory
     var stream = $.streamqueue({objectMode: true});
 
@@ -319,6 +352,8 @@ module.exports = function (gulp, $, config) {
           '!' + config.buildImages,
           '!' + config.buildJs,
           '!' + config.extDir,
+          '!' + config.buildDir + 'partials/**/*.html',
+          '!' + config.buildDir + 'service-worker.js',
           '!' + config.buildDir + 'manifest.json',
           '!' + config.buildDir + 'index.html'
         ], {mark: true})
@@ -328,5 +363,52 @@ module.exports = function (gulp, $, config) {
       });
   });
 
-  gulp.task('build', ['deleteTemplates', 'bowerAssets', 'images', 'fonts']);
+  // Copy over the scripts that are used in importScripts as part of the generate-service-worker task.
+  gulp.task('copy-sw-scripts', ['clean'], function () {
+    return gulp.src(['node_modules/sw-toolbox/sw-toolbox.js', 'app/scripts/sw/runtime-caching.js', 'app/scripts/sw/notifications-sw.js'])
+      .pipe(gulp.dest('build/app/js/scripts/sw'));
+  });
+
+  // See http://www.html5rocks.com/en/tutorials/service-worker/introduction/ for
+  // an in-depth explanation of what service workers are and why you should care.
+  // Generate a service worker file that will provide offline functionality for
+  // local resources. This should only be done for the 'dist' directory, to allow
+  // live reload to work as expected when serving from the 'app' directory.
+  gulp.task('generate-service-worker', ['copy-sw-scripts'], function () {
+    var rootDir = 'build/app';
+    var filepath = path.join(rootDir, 'service-worker.js');
+
+    return swPrecache.write(filepath, {
+      // Used to avoid cache conflicts when serving on localhost.
+      cacheId: require('../package.json').name || 'web-starter-kit',
+      // sw-toolbox.js needs to be listed first. It sets up methods used in runtime-caching.js.
+      importScripts: [
+        '/js/scripts/sw/sw-toolbox.js',
+        '/js/scripts/sw/runtime-caching.js',
+        '/js/scripts/sw/notifications-sw.js'
+      ],
+      staticFileGlobs: [
+        // Add/remove glob patterns to match your directory setup.
+        rootDir + '/img/**/*',
+        rootDir + '/js/**/*.js',
+        rootDir + '/scripts/**/*.js',
+        rootDir + '/vendor/**/*.js',
+        rootDir + '/styles/**/*.css',
+        rootDir + '/vendor/**/*.css',
+        rootDir + '/vendor/fonts/**/*.{otf,eot,svg,ttf,woff,woff2}',
+        rootDir + '/fonts/**/*.{otf,eot,svg,ttf,woff,woff2}',
+        rootDir + '/scripts/**/*.html',
+        rootDir + '/partials/**/*.{html,json}',
+        rootDir + '/*.{html,json}'
+      ],
+      // Translates a static file path to the relative URL that it's served from.
+      stripPrefix: path.join(rootDir, path.sep)
+    });
+  });
+
+  gulp.task('build', ['deleteTemplates', 'bowerAssets', 'images', 'fonts', 'generate-service-worker']);
+
+  function transformScriptTagWithAsync(filepath) {
+    return '<script async src="' + filepath + '"></script>';
+  }
 };

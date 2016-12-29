@@ -6,41 +6,33 @@
 
 	<base href="/">
 
-	<link rel="manifest" href="manifest.json">
-	<link rel="apple-touch-icon" sizes="57x57" href="img/apple-icon-57x57.png">
-	<link rel="apple-touch-icon" sizes="60x60" href="img/apple-icon-60x60.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="img/apple-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="76x76" href="img/apple-icon-76x76.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="img/apple-icon-114x114.png">
-	<link rel="apple-touch-icon" sizes="120x120" href="img/apple-icon-120x120.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="img/apple-icon-144x144.png">
-	<link rel="apple-touch-icon" sizes="152x152" href="img/apple-icon-152x152.png">
-	<link rel="apple-touch-icon" sizes="180x180" href="img/apple-icon-180x180.png">
-	<link rel="icon" type="image/png" sizes="192x192"  href="img/android-icon-192x192.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="img/favicon-96x96.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
-	<meta name="msapplication-TileColor" content="#ffffff">
-	<meta name="msapplication-TileImage" content="img/ms-icon-144x144.png">
-	<meta name="theme-color" content="#446e9b">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="img/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="img/favicon-16x16.png" sizes="16x16">
+  <link rel="mask-icon" href="img/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="theme-color" content="#446e9b">
+
+  <script>
+    Polymer = {
+      dom: 'shadow'
+    };
+  </script>
 
   <!-- inject:head:js -->
   <!-- endinject -->
-  <!-- inject:html -->
-  <!-- endinject -->
+  <link rel="import" href="components/elements.html">
   <!-- bower:css -->
   <!-- endbower -->
   <!-- inject:css -->
   <!-- endinject -->
-
-	<script src="https://apis.google.com/js/client:platform.js" async defer></script>
 </head>
 <body>
-	<div class="container" ng-controller="MainCtrl" ng-init="init();">
-		<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container" ng-controller="MainCtrl as main" ng-init="main.init();">
+		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<button class="navbar-toggle" type="button" data-target=".navbar-collapse" data-toggle="collapse" ng-click="openPlayersControl()">
+					<button class="navbar-toggle" type="button" data-target=".navbar-collapse" data-toggle="collapse">
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
@@ -48,24 +40,53 @@
 					<a class="navbar-brand" href="./index.html">Poker</a>
 				</div>
 				<div class="collapse navbar-collapse" id="main-navbar-collapse">
-					<p class="navbar-text navbar-right">
-						<login-state></login-state>
-					</p>
+					<ul class="nav navbar-nav" ng-cloak>
+						<li ng-repeat="tab in main.tabs" ui-sref-active="active" ng-class="{'dropdown': main.hasChildren(tab)}">
+							<a ng-href="{{ tab.href }}" data-toggle="{{(main.hasChildren(tab) || main.hasActions(tab)) && 'dropdown'}}">
+                <span class="icon {{ tab.icon }}" ng-show="tab.icon"></span>
+                <span>&nbsp;{{ tab.title }}&nbsp;</span>
+                <span class="caret" ng-show="main.hasChildren(tab) || main.hasActions(tab)"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li ng-repeat="childTab in tab.children"><a ng-href="{{ childTab.href }}">{{ childTab.title }}</a></li>
+                <li class="divider" role="separator" ng-show="main.hasActions(tab)"></li>
+                <li ng-repeat="action in tab.actions"><a>{{action.title}}</a></li>
+              </ul>
+						</li>
+					</ul>
+					<ul class="navbar-text navbar-right">
+            <li ng-hide="main.currentUser">
+              <a class="btn btn-link btn-sm navbar-btn" ui-sref="userprofile({uid: ''})">
+                Login <span class="icon icon-google-plus"></span> <span class="icon icon-at"></span>
+              </a>
+            </li>
+						<li ng-show="main.currentUser">
+              <login-state on-logout="main.loggedOut()"></login-state>
+            </li>
+					</ul>
 				</div>
 			</div>
-		</div>
+		</nav>
 
 		<div class="row" ng-cloak>
-			<ul class="nav nav-tabs">
-				<li class="slide" ng-repeat="tab in tabs" ng-class="{'active': isTabSelected( tab.href )}">
-					<a href="{{ tab.href }}" role="tab"><span class="fa {{tab.icon}}"></span> {{ tab.title }}</a>
-				</li>
-			</ul>
-
-			<div ng-view></div>
-
-			<toaster-container></toaster-container>
+      <push-state-btn label="Notify me when a new game starts"></push-state-btn>
+			<div ui-view></div>
 		</div>
+
+    <paper-dialog id="game-location-dialog" with-backdrop>
+      <h2>Game Location</h2>
+      <paper-dialog-scrollable>
+        <google-map latitude="32.184781"
+                    longitude="34.871326"
+                    zoom="15"
+                    api-key="AIzaSyD0NkS_BMUWImyi0HRYtWc-xnngz9SyY3Q">
+        </google-map>
+        <google-map-search></google-map-search>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button dialog-dismiss autofocus>Close</paper-button>
+      </div>
+    </paper-dialog>
 	</div>
 
   <!-- bower:js -->
@@ -82,5 +103,6 @@
 		ga('create', 'UA-53379634-1', 'auto');
 		//ga('send', 'pageview');
 	</script>
+
 </body>
 </html>

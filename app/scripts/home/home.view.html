@@ -1,0 +1,54 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+          <div class="welcome-message" ng-class="{'welcome-message--visible': vm.inHomeRoute()}">
+            <h2>Welcome to Pokermunity</h2>
+            <p>
+              Here you can track your home poker game results in relation to the people you play with.
+            </p>
+            <p></p>
+            <p>
+              You can <paper-button raised ng-click="vm.startAddingCommunity()">create</paper-button> or
+              <em id="join-community-help" uib-tooltip="To join a community, ask the admin to send you a joining link">join <span class="icon icon-question-circle"></span></em>
+              a Pokermmunity (=the group of players you usually play with)<span ng-if="!vm.currentUser">, but first you'll need to <a ui-sref="userprofile({uid: ''})">login</a></span>
+            </p>
+          </div>
+        </div>
+    </div>
+    <community-picker communities="vm.communities" on-select="vm.gotoCommunity($event)"></community-picker>
+    <div class="row new-community" ng-class="{'new-community__active': vm.editingCommunity}">
+      <div class="col-xs-12">
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="input-group">
+              <label class="sr-only" ng-bind="vm.addingCommunity ? 'Community name' : 'Joining code (ask admin)'"></label>
+              <input class="form-control" type="text" ng-model="vm.newCommunity" ng-disabled="vm.communityInputDisabled"
+                     placeholder="{{vm.addingCommunity ? 'Community name' : 'Joining code (ask admin)'}}">
+              <div class="input-group-btn">
+                <button class="btn btn-default new-community-btn" ng-click="vm.saveCommunity()">
+                  <span class="icon icon-cloud-done"></span>
+                  <span class="new-community-btn-text"> Save</span>
+                </button>
+                <button class="btn btn-default" ng-click="vm.closeCommunityEdit()">
+                  <span class="icon icon-delete"></span>
+                  <span class="new-community-btn-text"> Cancel</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <game-settings game="vm.defaultSettings" on-update="vm.settingsUpdated(settings)"></game-settings>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-xs-12" ui-view></div>
+            </div>
+        </div>
+    </div>
+</div>

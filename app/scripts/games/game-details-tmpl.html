@@ -1,0 +1,14 @@
+<form class="form-inline" role="form" name="$ctrl.gameDetails">
+  <div class="form-group input-group-sm">
+    <location-editor community-id="$ctrl.game.communityId" selected="$ctrl.details.location" on-select="$ctrl.locationSelected($event)"></location-editor>
+    <paper-button class="show-on-map-btn" raised>show on map</paper-button>
+  </div>
+  <div class="form-group">
+    <label>date</label>
+    <input class="form-control input-sm" type="text" ng-model="$ctrl.details.date" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="date" bs-datepicker>
+  </div>
+  <div class="form-group">
+    <label># of hands:</label>
+    <pk-counter counter="$ctrl.details.numberOfHands" on-update="$ctrl.numberOfHandsUpdated(counter)"></pk-counter>
+  </div>
+</form>

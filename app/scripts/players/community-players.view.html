@@ -1,0 +1,42 @@
+<div class="col-xs-12 community-players">
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Joining users</h3>
+      <ul class="joining-users">
+        <li ng-repeat="joiner in $ctrl.joiners">
+          <!--<span>{{ joiner.email }}</span>-->
+          <player-chip player="joiner"></player-chip>
+          <paper-button raised ng-click="$ctrl.confirmPlayer(joiner)">
+            <span class="icon icon-check"></span>
+            <span> Confirm</span>
+          </paper-button>
+        </li>
+      </ul>
+      <!--<paper-card ng-repeat="joiner in vm.joiners">-->
+        <!--<div class="card-content">-->
+          <!--{{ joiner.email }}-->
+        <!--</div>-->
+        <!--<div class="card-actions">-->
+          <!--<paper-button ng-click="vm.confirmPlayer(joiner)">Confirm</paper-button>-->
+        <!--</div>-->
+      <!--</paper-card>-->
+    </div>
+  </div>
+  <h3>Merging players results</h3>
+  <players-merger players="$ctrl.members" guests="$ctrl.guests"></players-merger>
+  <div class="row">
+    <div class="col-xs-12">
+      <h3>Members</h3>
+      <ul class="community-members">
+        <li ng-repeat="member in $ctrl.members">
+          <input type="checkbox" ng-model="$ctrl.selection[member.$id]">
+          <player-chip player="member" ng-class="{'selected': $ctrl.selection[member.$id]}"></player-chip>
+        </li>
+        <li ng-repeat="guest in $ctrl.guests">
+          <input type="checkbox" ng-model="$ctrl.selection[guest.$id]">
+          <player-chip player="guest" ng-class="{'selected': $ctrl.selection[guest.$id]}"></player-chip>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

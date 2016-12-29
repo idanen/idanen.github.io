@@ -20,6 +20,13 @@
   "smarttabs": true,
   "white": true,
   "globals": {
-    "angular": false
+    "window": false,
+    "document": false,
+    "Notification": false,
+    "ServiceWorkerRegistration": false,
+    "angular": false,
+    "Highcharts": false,
+    "self": false,
+    "_": false
   }
 }

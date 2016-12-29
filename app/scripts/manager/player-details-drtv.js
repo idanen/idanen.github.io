@@ -1,173 +1,81 @@
 (function () {
-/**
- * The managed game's directive
- */
-angular.module( 'pokerManager' ).
-	directive( 'playerDetails', playerDetailsDirective );
+  'use strict';
 
-	playerDetailsDirective.$inject = [ '$filter', '$timeout', 'Players', 'Stats' ];
+  /**
+   * The managed game's directive
+   */
+  angular.module('pokerManager')
+    .component('playerDetails', {
+      controller: PlayerDetailsController,
+      controllerAs: 'pCtrl',
+      bindings: {
+        playerId: '<?',
+        communityFilter: '<?',
+        onChanges: '&'
+      },
+      templateUrl: 'partials/tmpls/player-details-tmpl.html'
+    });
 
-	function playerDetailsDirective( $filter, $timeout, Players, stats ) {
-		'use strict';
+  PlayerDetailsController.$inject = ['$q', '$stateParams', 'Players', 'Games', 'playersMembership', 'communitiesSvc'];
+  function PlayerDetailsController($q, $stateParams, Players, Games, playersMembership, communitiesSvc) {
+    this.$q = $q;
+    this.Games = Games;
+    this.Players = Players;
+    this.communityId = $stateParams.communityId;
+    this.playersMembership = playersMembership;
+    this.communitiesSvc = communitiesSvc;
 
-		return {
-			restrict: 'AE',
-			scope: {
-				player: '='
-			},
-			controller: 'PlayerDetailsCtrl',
-			templateUrl: 'partials/tmpls/player-details-tmpl.html',
-			link: postLinkFn
-		};
+    this.isAdmin = function () {
+      return true;
+    };
 
-		function postLinkFn( scope, element, attrs, ctrl ) {
-			var chartData = createData( scope.player ),
-				chartHolder = angular.element('<div/>'),
-				chartObj = createChartObject( scope.player.name, chartData ),
-				refreshBtn = element.find( '.refresh-data-btn' );
+    // Re-fetch player from server
+    if (this.playerId) {
+      this.player = this.Players.getPlayer(this.playerId);
+      this.playerGames = this.Players.getPlayerGames(this.playerId);
 
-			function refreshData() {
-				scope.loading = false;
+      // Get games and calculate stats
+      // this.ready = this.$q.all([this.player.$loaded(), this.playerGames.$loaded()])
+      //     .then(this.dataForChart.bind(this))
+      //     .finally(this.stopLoadingIndication.bind(this));
+      this.player.$loaded()
+        .then(() => this.onChanges({player: this.player}));
+    } else {
+      this.player = this.Players.createPlayer(this.communityId);
+      this.ready = this.$q.resolve();
 
-				// Calculate extra data
-				scope.player.winningSessions = winningSessions( scope.player );
-				scope.player.avgWinning = avgWinning( scope.player, true );
+      this.onChanges({player: this.player});
+    }
+  }
 
-				chartData = createData( scope.player );
+  PlayerDetailsController.prototype = {
+    $onChanges: function (changes) {
+      if (changes && changes.playerId && changes.playerId.currentValue !== changes.playerId.previousValue) {
+        const playerId = changes.playerId.currentValue;
+        if (playerId) {
+          if (this.player && _.isFunction(this.player.$destroy)) {
+            this.player.$destroy();
+          }
+          if (this.playerGames && _.isFunction(this.playerGames.$destroy)) {
+            this.playerGames.$destroy();
+          }
+          this.player = this.Players.getPlayer(playerId);
+          this.playerGames = this.Players.getPlayerGames(playerId);
+        }
+      }
 
-				chartHolder.highcharts().destroy();
+      if (changes && changes.communityFilter && changes.communityFilter.currentValue) {
+        this.filteredGames = this.playerGames.filter(game => game.communityId === this.communityFilter);
+      } else {
+        this.filteredGames = this.playerGames;
+      }
+    },
 
-				updateChartData( chartObj, chartData );
-
-				// Defer the chart build so that it could take the parent's width (the parent is hidden until $digest will be done to update the ng-show)
-				$timeout( function () {
-					chartHolder.highcharts( chartObj );
-				}, 0, false);
-			}
-
-			// Create a placeholder for the chart
-			refreshBtn.after( chartHolder );
-			chartHolder.attr( 'id', 'player-chart' );
-
-			// Construct chart on next $digest loop so the chart container will fill width
-			$timeout( function () {
-				chartHolder.highcharts( chartObj );
-			}, 0, false);
-
-			if ( !scope.player.isNew ) {
-				scope.player = Players.get( { playerId: scope.player.id }, refreshData );
-			}
-
-			refreshBtn.on( 'click', refreshData );
-
-			scope.$on( '$destroy', function () {
-				if ( chartHolder ) {
-					chartHolder.highcharts().destroy();
-					chartHolder.remove();
-				}
-				refreshBtn.off();
-			} );
-		}
-
-		function createData( player ) {
-			var chartData = {
-					dates: [],
-					profits: [],
-					balances: []
-				},
-				sum = 0;
-
-			if ( player.games ) {
-				// Build data rows
-				var idx = ( player.games.length > 20 ) ? player.games.length - 20 : 0;
-				for ( ; idx < player.games.length; ++idx ) {
-					var game = player.games[ idx ];
-					if ( game.players.length ) {
-						if ( angular.isNumber( game.date ) ) {
-							chartData.dates.push( $filter( 'date' )( game.date, 'y-MM-dd' ) );
-						} else {
-							chartData.dates.push( game.date );
-						}
-						chartData.profits.push( game.players[ 0 ].buyout - game.players[ 0 ].buyin );
-						chartData.balances.push( game.players[ 0 ].balance );
-					}
-				}
-			}
-
-			return chartData;
-		}
-
-		function winningSessions( player ) {
-			var count = 0;
-			if ( player.games && player.games.length ) {
-				player.games.forEach( function ( game ) {
-					if ( game && game.players && game.players.length && ( game.players[ 0 ].buyout - game.players[ 0 ].buyin ) >= 0 ) {
-						count++;
-					}
-				} );
-			}
-			return count;
-		}
-
-		function avgWinning( player, bb ) {
-			var sum = 0;
-			if ( player.games && player.games.length ) {
-				player.games.forEach( function ( game ) {
-					if ( game && game.players && game.players.length ) {
-						sum += ( ( game.players[ 0 ].buyout - game.players[ 0 ].buyin ) / ( bb ? 50 : 1 ) );
-					}
-				} );
-			}
-			return sum / ( player.games ? player.games.length || 1 : 1 );
-		}
-
-		function createChartObject( playerName, chartData ) {
-			return {
-				chart: {
-				},
-				title: {
-					text: playerName + "'s performance"
-				},
-				xAxis: {
-					categories: chartData.dates
-				},
-				tooltip: {
-					formatter: function () {
-						var s;
-						if ( this.point.name ) { // the pie chart
-							s = ''+
-								this.point.name +': '+ this.y +' fruits';
-						} else {
-							s = ''+
-								this.x  +': '+ this.y;
-						}
-						return s;
-					}
-				},
-				series: [
-					{
-						type: 'column',
-						name: playerName,
-						data: chartData.profits
-					},
-					{
-						type: 'spline',
-						name: 'Balance',
-						data: chartData.balances,
-						marker: {
-							lineWidth: 2,
-							lineColor: Highcharts.getOptions().colors[ 3 ],
-							fillColor: 'white'
-						}
-					}
-				]
-			};
-		}
-
-		function updateChartData( chartObj, newData ) {
-			chartObj.xAxis.categories = newData.dates;
-			chartObj.series[ 0 ].data = newData.profits;
-			chartObj.series[ 1 ].data = newData.balances;
-		}
-	}
-})();
+    giveUserAdminPriveleges: function () {
+      if (this.player.memberIn[this.communityId]) {
+        return this.communitiesSvc.getUnboundCommunity(this.communityId)
+          .then(community => this.playersMembership.setPlayerAsAdminOfCommunity(community, this.player));
+      }
+    }
+  };
+}());

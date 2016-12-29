@@ -1,43 +1,39 @@
 (function () {
+  'use strict';
+
   /**
    * Player Modal's controller
    */
-  angular.module('pokerManager').
-    controller('ModalPlayerDetailsCtrl', modalPlayerDetailsController).
-    controller('PlayerDetailsCtrl', playerDetailsController);
+  angular.module('pokerManager')
+    .controller('ModalPlayerDetailsCtrl', ModalPlayerDetailsController);
 
-  modalPlayerDetailsController.$inject = ['$scope', '$uibModalInstance', 'player'];
+  ModalPlayerDetailsController.$inject = ['$uibModalInstance', '$stateParams', 'player', 'Players', 'communitiesSvc'];
 
-  function modalPlayerDetailsController($scope, $uibModalInstance, player) {
-    'use strict';
+  function ModalPlayerDetailsController($uibModalInstance, $stateParams, player, playersSvc, communitiesSvc) {
+    var vm = this;
+    vm.player = player;
 
-    $scope.player = player;
-
-    $scope.ok = function () {
-      $uibModalInstance.close($scope.player);
-    };
-
-    $scope.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
-    };
+    this.$uibModalInstance = $uibModalInstance;
+    this.community = communitiesSvc.getCommunity($stateParams.communityId);
+    this.playersSvc = playersSvc;
   }
 
-  playerDetailsController.$inject = ['$scope', 'Utils'];
+  ModalPlayerDetailsController.prototype = {
+    ok: function () {
+      return this.playersSvc.save(this.player)
+        .then(() => this.closeDialog());
+    },
 
-  function playerDetailsController($scope, utils) {
-    'use strict';
+    closeDialog: function () {
+      this.$uibModalInstance.close(this.player);
+    },
 
-    $scope.loading = true;
+    cancel: function () {
+      this.$uibModalInstance.dismiss('cancel');
+    },
 
-    $scope.isAdmin = function () {
-      //return ( window.location.pathname.indexOf( 'manage.html' ) > -1 );
-      return true;
-    };
-
-    /*
-     $scope.isAdmin = function() {
-     return $scope.admin;
-     };
-     */
-  }
-})();
+    playerChanged: function (changedPlayer) {
+      this.player = changedPlayer;
+    }
+  };
+}());

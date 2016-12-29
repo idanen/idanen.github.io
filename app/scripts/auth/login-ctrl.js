@@ -1,88 +1,49 @@
 (function () {
-/**
- * Login controller
- */
-angular.module( 'pokerManager' ).
-	controller( 'LoginCtrl', LoginController );
+  'use strict';
 
-LoginController.$inject = [ '$analytics', '$scope', 'Auth', 'Players', 'jrgGoogleAuth' ];
+  /**
+   * Login controller
+   */
+  angular.module('pokerManager')
+    .controller('LoginCtrl', LoginController);
 
-function LoginController( $analytics, $scope, Auth, Players, jrgGoogleAuth ) {
-	'use strict';
+  LoginController.$inject = ['userService', '$analytics', 'playersUsers', 'Players'];
+  function LoginController(userService, $analytics, playersUsers, playersSvc) {
+    this.userService = userService;
+    this.$analytics = $analytics;
+    this.playersUsers = playersUsers;
+    this.playersSvc = playersSvc;
 
-	var vm = this;
+    this.userService.onUserChange(this.obtainedUserInfo.bind(this));
+  }
 
-	vm.signIn = signIn;
-	vm.signOut = signOut;
-	vm.user = null;
+  LoginController.prototype = {
+    signOut: function () {
+      try {
+        this.$analytics.eventTrack('Sign out', {category: 'Actions', label: this.user.name});
+      } catch (err) {}
 
-	function signIn() {
-		jrgGoogleAuth.login().then( successfulLogin );
-		//$auth.authenticate( 'google' )
-		//	.then( function authSuccess( data ) {
-		//		console.log( 'Successful login: ', data );
-		//	} )
-		//	.catch( function authFailed( error ) {
-		//		console.error( 'Authentication failure', error );
-		//	} );
-	}
+      this.userService.logout();
+      delete this.user;
+      this.onLogout();
+    },
 
-	function signOut() {
-		// TODO(idan): Add analytics event
-		jrgGoogleAuth.logout().then( function () {
-			Auth.revokeToken().then( function () {
-				delete vm.user;
-			} );
-		} );
-	}
+    matchUserToPlayer: function (user) {
+      if (!user) {
+        console.warn('Trying to match user to player but user is undefined');
+        return;
+      }
 
-	$scope.$on( 'event:google-plus-signin-success', function googleLoginSuccess( event, data ) {
-		console.log( 'Successful login: ', data );
-		jrgGoogleAuth.loggedIn( data ).then( successfulLogin ).catch( failedLogin );
-	} );
+      if (user.playerId) {
+        return this.playersSvc.getPlayer(user.playerId);
+      }
 
-	$scope.$on( 'event:google-plus-signin-failure', function googleLoginFailure( event, data ) {
-		// TODO(idan): Add analytics event
-		console.error( 'Authentication failure', data );
-		Auth.revokeToken().then( function () {
-			delete vm.user;
-		} );
-	} );
+      return this.playersUsers.matchUserToPlayer(user);
+    },
 
-	function successfulLogin( userInfo ) {
-		console.log( 'Successfully fetched user data: ', userInfo );
-		var players = Players.fetchedPlayers(),
-			tokenToSave = {
-				authToken: userInfo.authToken,
-				tokenSourceId: 1
-			},
-			playerId = 0;
-
-		// Find player's id
-		if ( players ) {
-			players.some( function ( player ) {
-				if ( player.email === userInfo.email ) {
-					playerId = player.id;
-					return true;
-				}
-				return false;
-			} );
-		}
-
-		userInfo.id = playerId;
-		tokenToSave.playerId = playerId;
-		tokenToSave.player = userInfo;
-
-		Auth.save( tokenToSave, function ( theUser ) {
-			vm.user = theUser;
-		} );
-	}
-
-	function failedLogin( authError ) {
-		console.log( authError );
-		Auth.revokeToken().then( function () {
-			delete vm.user;
-		} );
-	}
-}
-})();
+    obtainedUserInfo: function (user) {
+      this.user = user;
+      return this.user;
+    }
+  };
+}());

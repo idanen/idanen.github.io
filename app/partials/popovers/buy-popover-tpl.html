@@ -2,12 +2,24 @@
 	<div class="arrow"></div>
 	<h3 class="popover-title" ng-bind="title" ng-show="title"></h3>
 	<div class="popover-content">
-		<div class="btn-group btn-group-sm">
-			<button class="btn btn-warning" ng-click="gameCtrl.cancelBuyin(player, 1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">- 1</button>
-			<button class="btn btn-warning" ng-click="gameCtrl.cancelBuyin(player, 0.1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">- 0.1</button>
+		<div class="btn-group btn-group-sm buy-amount">
+			<button class="btn btn-warning" ng-click="gameCtrl.cancelBuyin(player, 1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
+        <i class="icon icon-minus"></i>
+        <span class="hidden-xs"> 1</span>
+      </button>
+			<button class="btn btn-warning buy-amount__small" ng-click="gameCtrl.cancelBuyin(player, 0.1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
+        <i class="icon icon-minus"></i>
+        <span class="hidden-xs"> 0.1</span>
+      </button>
 			<button class="btn btn-default">{{player.buyin}}</button>
-			<button class="btn btn-success" ng-click="gameCtrl.buyin(player, 0.1)" ng-disabled="!player.isPlaying" title="Buy-in">+ 0.1</button>
-			<button class="btn btn-success" ng-click="gameCtrl.buyin(player, 1)" ng-disabled="!player.isPlaying" title="Buy-in">+ 1</button>
+			<button class="btn btn-success buy-amount__small" ng-click="gameCtrl.buyin(player, 0.1)" ng-disabled="!player.isPlaying" title="Buy-in">
+        <i class="icon icon-plus"></i>
+        <span class="hidden-xs"> 0.1</span>
+      </button>
+			<button class="btn btn-success" ng-click="gameCtrl.buyin(player, 1)" ng-disabled="!player.isPlaying" title="Buy-in">
+        <i class="icon icon-plus"></i>
+        <span class="hidden-xs"> 1</span>
+      </button>
 		</div>
 	</div>
 </div>

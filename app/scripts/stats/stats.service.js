@@ -6,35 +6,31 @@
 
   angular
     .module('pokerManager.services')
-    .provider('Stats', StatsFactory);
-
-  function StatsFactory() {
-    this.$get = [function () {
-      return new Stats();
-    }];
-  }
+    .service('Stats', Stats);
 
   function Stats() {
+    this.name = 'Stats';
   }
 
   Stats.prototype = {
-    average: function ( anArray, fieldNameToSum ) {
-      var sum = anArray.reduce( function ( sum, current ) {
-        return sum + current[ fieldNameToSum ];
-      }, 0 );
+    average: function (anArray, fieldNameToSum) {
+      var sum = anArray.reduce(function (accumulated, current) {
+        return accumulated + current[fieldNameToSum];
+      }, 0);
 
       return sum / anArray.length;
     },
-    standardDeviation: function ( anArray, fieldNameToSum ) {
-      var avg = this.average( anArray, fieldNameToSum );
-      var squareDiffs = anArray.map( function ( item ) {
-        var diff = item[ fieldNameToSum ] - avg;
+    standardDeviation: function (anArray, fieldNameToSum) {
+      var avgSquareDiff, squareDiffs,
+          avg = this.average(anArray, fieldNameToSum);
+      squareDiffs = anArray.map(function (item) {
+        var diff = item[fieldNameToSum] - avg;
         return diff * diff;
-      } );
+      });
 
-      var avgSquareDiff = this.average( squareDiffs );
+      avgSquareDiff = this.average(squareDiffs);
 
-      return Math.sqrt( avgSquareDiff );
+      return Math.sqrt(avgSquareDiff);
     }
   };
 }());

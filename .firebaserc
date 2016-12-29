@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "default": "fiery-heat-6939",
+    "production": "pokermunity"
+  }
+}

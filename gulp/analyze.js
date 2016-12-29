@@ -9,7 +9,8 @@ module.exports = function (gulp, $, config) {
       config.appDataFiles,
       config.appScriptFiles,
       config.e2eFiles,
-      config.unitTestFiles
+      '!' + config.unitTestFiles,
+      '!' + config.appScriptSkipLintFiles
     ])
       .pipe($.plumber({errorHandler: function (err) {
         $.notify.onError({
@@ -53,5 +54,5 @@ module.exports = function (gulp, $, config) {
     });
   });
 
-  gulp.task('analyze', ['lint'/*, 'staticAnalysis'*/]);
+  gulp.task('analyze', ['lint', 'staticAnalysis']);
 };

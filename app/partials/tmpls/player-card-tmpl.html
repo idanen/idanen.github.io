@@ -1,44 +1,90 @@
 <div class="player-card" ng-class="{'bg-success': (player.buyout - player.buyin > 0), 'bg-danger': (player.buyout - player.buyin < 0)}">
-	<button class="btn btn-xs btn-danger cancel-btn" title="Cancel" ng-disabled="!player.isPlaying" ng-click="gameCtrl.cancelAddPlayer(player)"><span class="glyphicon glyphicon-remove"></span></button>
-	<header class="well well-sm" title="{{player.name}}">
+	<button class="btn btn-xs btn-danger cancel-btn" title="Cancel" ng-disabled="!player.isPlaying" ng-click="gameCtrl.cancelAddPlayer(player)"><span class="icon icon-trash"></span></button>
+	<header class="well well-sm" title="{{player.displayName}}">
 		<strong ng-class="{'text-success': (player.buyout - player.buyin > 0), 'text-danger': (player.buyout - player.buyin < 0)}">
-			<span class="fa fa-user"></span>&nbsp;{{player.name}}
+			<span class="icon icon-user"></span>&nbsp;{{player.displayName}}
 		</strong>
 	</header>
 	<div class="player-card-content">
-		<div class="row">
-			<div class="col-xs-5">
-				<label>Buyin: </label>
-			</div>
-			<div class="col-xs-7">
-				<button class="btn btn-sm btn-default" ng-disabled="!player.isPlaying" title="How many buyins" data-placement="bottom" data-template="partials/popovers/buy-popover-tpl.html" data-auto-close="1" bs-popover>{{ player.buyin }} <span class="caret"></span></button>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-5">
-				<label>Chips: </label>
-			</div>
-			<div class="col-xs-7">
-				<button class="btn btn-sm btn-default" title="Chip count" data-placement="bottom" data-template="partials/popovers/count-popover-tpl.html" data-auto-close="1" bs-popover>{{ player.currentChipCount }} <span class="caret"></span></button>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-5">
-				<label>Buyout: </label>
-			</div>
-			<div class="col-xs-7">
-				<strong ng-class="{'text-success': (player.buyout - player.buyin > 0), 'text-danger': (player.buyout - player.buyin < 0)}">{{player.buyout}}</strong>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-xs-5">
-				<label>Hosting: </label>
-			</div>
-			<div class="col-xs-7">
-				<button ng-model="player.paidHosting" class="btn btn-sm btn-default" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
-					<span class="fa" ng-class="player.paidHosting && 'fa-check-square-o' || 'fa-exclamation-triangle'"></span>&nbsp;<span>{{player.paidHosting && 'Paid' || 'Owes'}}</span>
-				</button>
-			</div>
-		</div>
+    <form>
+      <fieldset class="form-group">
+        <label>Buyin</label>
+        <div class="input-group input-group-sm buy-amount">
+          <div class="input-group-btn">
+            <button class="btn btn-warning" ng-click="gameCtrl.cancelBuyin(player, 1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
+              <i class="icon icon-minus"></i>
+              <span class="hidden-xs hidden-sm"> 1</span>
+            </button>
+            <button class="btn btn-warning buy-amount__small" ng-click="gameCtrl.cancelBuyin(player, 0.1)" ng-disabled="!player.isPlaying || player.buyin <= 0" title="Cancel Buy-in">
+              <i class="icon icon-minus"></i>
+              <span class="hidden-xs hidden-sm"> 0.1</span>
+            </button>
+          </div>
+          <button class="btn btn-default form-control">{{player.buyin}}</button>
+          <div class="input-group-btn">
+            <button class="btn btn-success buy-amount__small" ng-click="gameCtrl.buyin(player, 0.1)" ng-disabled="!player.isPlaying" title="Buy-in">
+              <i class="icon icon-plus"></i>
+              <span class="hidden-xs hidden-sm"> 0.1</span>
+            </button>
+            <button class="btn btn-success" ng-click="gameCtrl.buyin(player, 1)" ng-disabled="!player.isPlaying" title="Buy-in">
+              <i class="icon icon-plus"></i>
+              <span class="hidden-xs hidden-sm"> 1</span>
+            </button>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset class="form-group">
+        <label>Chips</label>
+        <div class="input-group input-group-sm buy-amount">
+          <div class="input-group-btn">
+            <button class="btn btn-danger" ng-click="gameCtrl.addOrSubtractChips(player, 1)" ng-disabled="!player.isPlaying">
+              <i class="icon icon-minus"></i>
+              <span class="hidden-xs hidden-sm"> 1</span>
+            </button>
+            <button class="btn btn-danger buy-amount__small" ng-click="gameCtrl.addOrSubtractChips(player, 0.10)" ng-disabled="!player.isPlaying">
+              <i class="icon icon-minus"></i>
+              <span class="hidden-xs hidden-sm">0.1</span>
+            </button>
+          </div>
+          <input class="form-control" ng-model="player.currentChipCount" ng-change="gameCtrl.chipCountUpdate(player)" type="number" min="0" step="{{ settings.chipValue }}" ng-disabled="!player.isPlaying" autofocus/>
+          <div class="input-group-btn">
+            <button class="btn btn-success buy-amount__small" ng-click="gameCtrl.addOrSubtractChips(player, 0.10, true)" ng-disabled="!player.isPlaying">
+              <i class="icon icon-plus"></i>
+              <span class="hidden-xs hidden-sm"> 0.1</span>
+            </button>
+            <button class="btn btn-success" ng-click="gameCtrl.addOrSubtractChips(player, 1, true)" ng-disabled="!player.isPlaying">
+              <i class="icon icon-plus"></i>
+              <span class="hidden-xs hidden-sm"> 1</span>
+            </button>
+          </div>
+        </div>
+      </fieldset>
+      <fieldset class="form-group">
+        <label>Buyout</label>
+        <p class="form-control-static">
+          <strong ng-class="{'text-success': (player.buyout - player.buyin > 0), 'text-danger': (player.buyout - player.buyin < 0)}">{{player.buyout}}</strong>
+        </p>
+      </fieldset>
+      <fieldset class="form-group">
+        <label>Actions</label>
+        <div class="btn-group btn-group-sm">
+          <button ng-click="gameCtrl.buyout(player)" class="btn btn-primary" ng-disabled="!player.isPlaying" title="Buy out">
+            <i class="icon icon-external-link"></i>
+            <span class="hidden-xs"> Buy out</span>
+          </button>
+          <button ng-click="gameCtrl.bust(player)" class="btn btn-danger" ng-disabled="!player.isPlaying" title="Bust">
+            <i class="icon icon-trash"></i>
+            <span class="hidden-xs"> Bust</span>
+          </button>
+          <button ng-click="gameCtrl.comeBack(player)" class="btn btn-primary" ng-disabled="player.isPlaying" title="Come Back">Come Back</button>
+        </div>
+      </fieldset>
+      <fieldset class="form-group">
+        <label>Hosting</label>
+        <button ng-model="player.paidHosting" ng-click="onUpdate({updates: player})" class="btn btn-sm btn-default" uib-btn-checkbox btn-checkbox-true="true" btn-checkbox-false="false">
+          <span class="icon" ng-class="player.paidHosting && 'icon-check-square-o' || 'icon-exclamation-triangle'"></span>&nbsp;<span>{{player.paidHosting && 'Paid' || 'Owes'}}</span>
+        </button>
+      </fieldset>
+    </form>
 	</div>
 </div>

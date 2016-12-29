@@ -1,208 +1,202 @@
 (function () {
-/**
- * Game controller
- */
-angular.module( 'pokerManager' ).
-	controller( 'GameCtrl', GameController );
+  'use strict';
 
-	GameController.$inject = [ '$scope', '$analytics', '$routeParams', 'toaster', 'Games', 'Utils' ];
+  /**
+   * Game controller
+   */
+  angular.module('pokerManager')
+    .controller('GameCtrl', GameController);
 
-	function GameController( $scope, $analytics, $routeParams, toaster, Game, utils ) {
-		'use strict';
+  GameController.$inject = ['$analytics', 'Games', 'playersGames', '$state', 'communitiesSvc', 'userService'];
+  function GameController($analytics, gamesSvc, playersGames, $state, communitiesSvc, userService) {
+    this.$analytics = $analytics;
+    this.playersGames = playersGames;
+    this.gamesSvc = gamesSvc;
+    this.game = this.gamesSvc.getGame(this.gameId);
+    this.playersInGame = playersGames.getPlayersInGame(this.gameId);
+    this.$state = $state;
+    this.communitiesSvc = communitiesSvc;
+    this.userService = userService;
 
-		var vm = this,
-			chipValue,
-			defaultBuyin;
+    this.game.$loaded()
+      .then(() => {
+        if (!this.game.chipValue) {
+          this.game.chipValue = 1;
+        }
+        if (!this.game.defaultBuyin) {
+          this.game.defaultBuyin = 50;
+        }
+        if (!this.game.hostingCosts) {
+          this.game.hostingCosts = 10;
+        }
+        if (!this.game.allowedGuests) {
+          this.game.allowedGuests = 1;
+        }
+        this.checkAdmin();
+      });
+  }
 
-		vm.dateOptions = {
-				'year-format': "'yyyy'",
-				'month-format': "'MM'",
-				'day-format': "'dd'"
-			};
+  GameController.prototype = {
+    checkAdmin: function () {
+      let user = this.userService.getCurrentUser();
+      if (user) {
+        this.communitiesSvc.isAdmin(user.playerId, this.game.communityId)
+          .then(isAdmin => {
+            this.isAdmin = isAdmin;
+          });
+      }
+    },
 
-		vm.initGame = initGame;
-		vm.clearGame = clearGame;
-		vm.buyin = buyin;
-		vm.startGame = startGame;
-		vm.cancelBuyin = cancelBuyin;
-		vm.cancelAddPlayer = cancelAddPlayer;
-		vm.bust = bust;
-		vm.buyout = buyout;
-		vm.comeBack = comeBack;
-		vm.chipCountUpdate = chipCountUpdate;
-		vm.addOrSubtractChips = addOrSubtractChips;
-		vm.totalBuyin = totalBuyin;
-		vm.totalChips = totalChips;
-		vm.totalHosting = totalHosting;
-		vm.toggleGameDate = toggleGameDate;
-		vm.isGameInProgress = isGameInProgress;
-		vm.saveGame = saveGame;
+    $onChanges: function (changes) {
+      if (changes.gameId && changes.gameId.previousValue !== this.gameId) {
+        this.game = this.gamesSvc.getGame(this.gameId);
+      }
+    },
+    initGame: function () {
+      this.playersGames.removeAllPlayersFromGame(this.gameId);
+      this.game.location = '';
+      this.game.date = Date.now();
+      this.game.numberOfHands = 0;
+      this.game.chipValue = 4;
+      this.game.defaultBuyin = 50;
+      this.game.maxBuyin = 400;
+      this.game.hostingCosts = 10;
+    },
+    clearGame: function () {
+      this.initGame();
+    },
+    deleteGame: function () {
+      this.gamesSvc.deleteGame(this.gameId)
+        .then(() => this.$state.go('^', {}, {location: 'replace'}));
+    },
+    buyin: function (player, rationalBuyin) {
+      let calculatedBuyin = rationalBuyin * this.game.defaultBuyin;
+      player.buyin += calculatedBuyin;
+      // player.balance -= player.buyin;
+      player.currentChipCount = parseInt(player.currentChipCount, 10) + calculatedBuyin * this.game.chipValue;
+      player.buyout = player.currentChipCount / this.game.chipValue;
+      this.playerResultUpdated(player);
 
-		vm.initGame();
+      try {
+        this.$analytics.eventTrack('Buyin', {category: 'Actions', label: player.displayName});
+      } catch (err) {}
+    },
+    startGame: function () {
+      _.forEach(this.playersInGame, player => this.buyin(player, 1));
+    },
+    cancelBuyin: function (player, rationalBuyin) {
+      let actualBuyin = rationalBuyin * this.game.defaultBuyin;
+      player.buyin -= actualBuyin;
+      // player.balance += player.buyin;
+      player.currentChipCount = parseInt(player.currentChipCount, 10) - actualBuyin * this.game.chipValue;
+      player.buyout = player.currentChipCount / this.game.chipValue;
+      this.playerResultUpdated(player);
+    },
 
-		function initGame() {
+    updatePlayersInGame: function (updated) {
+      if (this.playersInGame && _.isFunction(this.playersInGame.$destroy)) {
+        this.playersInGame.$destroy();
+      }
+      this.playersInGame = updated;
+    },
 
-			angular.element.extend( $scope.game, new Game() );
-			delete $scope.game.id;
+    gameSettingsChanged: function (newSettings) {
+      let chipValueUpdated = this.game.chipValue !== newSettings.chipValue;
+      _.extend(this.game, newSettings);
+      this.game.$save();
+      if (chipValueUpdated) {
+        this.gamesSvc.chipsValueUpdated(this.game);
+      }
+    },
 
-			// vm.game = new Game();
+    gameDetailsChanged: function (newDetails) {
+      let dateChanged = this.game.date !== newDetails.date;
+      _.extend(this.game, newDetails);
+      this.game.$save();
+      if (dateChanged) {
+        this.gamesSvc.dateUpdated(this.game);
+      }
+    },
 
-			// angular.element.extend( vm.game, ( angular.isDefined( $scope.game ) ) ?
-			// 	$scope.game :
-			// 	Game.create()
-			// );
+    cancelAddPlayer: function (player) {
+      this.playersGames.removePlayerFromGame(player.$id, this.gameId);
+    },
 
-			// delete vm.game.id;
+    buyout: function (player) {
+      if (player.isPlaying) {
+        player.isPlaying = false;
+      }
 
-		}
+      // Add payout to player's balance
+      player.buyout = player.currentChipCount / this.game.chipValue;
+      this.playerResultUpdated(player);
+    },
 
-		function clearGame() {
-			// Reset is-playing state
-			$scope.game.players.forEach( function( player ) {
-				player.isPlaying = false;
-				player.balance += ( player.buyout - player.buyin );
-			} );
-			$scope.game.players.splice( 0, $scope.game.players.length );
-			
-			// Reset game
-			$scope.game = Game.create();
-		}
+    bust: function (player) {
+      player.currentChipCount = 0;
+      this.buyout(player);
+    },
 
-		function buyin( player, rationalBuyin ) {
-			var calculatedBuyin = rationalBuyin * defaultBuyin;
-			if ( !player.isPlaying ) {
-				player.isPlaying = true;
-				player.buyin = 0;
-				player.currentChipCount = 0;
-				player.paidHosting = false;
-				$scope.game.players.push( player );
-			}
-			player.buyin += calculatedBuyin;
-			player.balance -= player.buyin;
-			player.currentChipCount = parseInt( player.currentChipCount, 10 ) + ( calculatedBuyin * chipValue );
-			player.buyout = player.currentChipCount / chipValue;
-			
-			try {
-				$analytics.eventTrack('Buyin', { category: 'Actions', label: player.name });
-			} catch ( err ) {}
-		}
+    comeBack: function (player) {
+      if (!player.isPlaying) {
+        player.isPlaying = true;
+        player.currentChipCount = player.buyout * this.game.chipValue;
+        this.playerResultUpdated(player);
+      }
+    },
 
-		function startGame() {
-			$scope.game.players.forEach( function ( player ) {
-				vm.buyin( player, 1 );
-			} );
-		}
+    addOrSubtractChips: function (player, howMany, toAdd) {
+      if (toAdd) {
+        player.currentChipCount += howMany * this.game.defaultBuyin * this.game.chipValue;
+      } else {
+        player.currentChipCount -= howMany * this.game.defaultBuyin * this.game.chipValue;
+      }
+      this.chipCountUpdate(player);
+    },
 
-		function cancelBuyin( player, rationalBuyin ) {
-			var buyin = rationalBuyin * defaultBuyin;
-			player.buyin -= buyin;
-			player.balance += player.buyin;
-			player.currentChipCount = parseInt( player.currentChipCount, 10 ) - ( buyin * chipValue );
-			player.buyout = player.currentChipCount / chipValue;
-		}
+    chipCountUpdate: function (player) {
+      player.buyout = player.currentChipCount / this.game.chipValue;
+      this.playerResultUpdated(player);
+    },
 
-		function cancelAddPlayer( player ) {
-			// Remove from current game
-			var index = $scope.game.players.indexOf( player );
+    totalBuyin: function () {
+      return _.sumBy(this.playersInGame, 'buyin');
+    },
 
-			if ( index > -1 ) {
-				$scope.game.players.splice( index, 1 );
-				
-				// Reset fields
-				if ( player ) {
-					player.isPlaying = false;
-					player.balance += ( player.buyout - player.buyin );
-					player.buyin = 0;
-					player.buyout = 0;
-					player.currentChipCount = 0;
-					player.paidHosting = false;
-				}
-			}
-		}
+    totalChips: function () {
+      return _.sumBy(this.playersInGame, 'currentChipCount');
+    },
 
-		function bust( player ) {
-			player.currentChipCount = 0;
-			vm.buyout( player );
-		}
+    totalHosting: function () {
+      if (!this.playersInGame) {
+        return 0;
+      }
 
-		function buyout( player ) {
-			if ( player.isPlaying ) {
-				player.isPlaying = false;
-			}
+      return _.reduce(this.playersInGame, (sum, player) => {
+        sum += player.paidHosting ? this.game.hostingCosts : 0;
+        return sum;
+      }, 0);
+    },
 
-			// Add payout to player's balance
-			player.buyout = player.currentChipCount / chipValue;
-			player.balance += player.buyout;
-		}
-	
-		function comeBack( player ) {
-			if ( !player.isPlaying ) {
-				player.isPlaying = true;
-			}
+    toggleGameDate: function ($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
 
-			// Add payout to player's balance
-			player.balance -= player.buyout;
-		}
-		
-		function chipCountUpdate( player ) {
-			player.buyout = player.currentChipCount / chipValue;
-		}
+      this.game.dateOpen = !this.game.dateOpen;
+    },
 
-		function addOrSubtractChips( player, howMany, toAdd ) {
-			if ( toAdd ) {
-				player.currentChipCount += ( howMany * defaultBuyin );
-			} else {
-				player.currentChipCount -= ( howMany * defaultBuyin );
-			}
-			vm.chipCountUpdate( player );
-		}
-	
-		function totalBuyin() {
-			return utils.totalsCalc( $scope.game.players, 'buyin' );
-		}
-	
-		function totalChips() {
-			return utils.totalsCalc( $scope.game.players, 'currentChipCount' );
-		}
-		
-		function totalHosting() {
-			var sum = 0;
-			for( var i = 0; i < $scope.game.players.length; ++i ) {
-				sum += $scope.game.players[ i ].paidHosting ? 10 : 0;
-			}
-			return sum;
-		}
-	
-		function toggleGameDate( $event ) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			
-			$scope.game.dateOpen = !$scope.game.dateOpen;
-		}
+    isGameInProgress: function () {
+      return this.playersInGame && _.some(this.playersInGame, 'isPlaying');
+    },
 
-		function isGameInProgress() {
-			return $scope.game.players.some( function ( player ) {
-				return player.isPlaying;
-			} );
-		}
+    numberOfHandsUpdated: function (counter) {
+      this.game.numberOfHands = counter || 0;
+      this.game.$save();
+    },
 
-		function saveGame() {
-			Game.save( $scope.game ).$promise.then( function gameSaveSuccess( data ) {
-				if ( angular.isFunction( $scope.saveSuccessCallback ) ) {
-					$scope.saveSuccessCallback( data );
-				}
-			}).catch( function gameSaveFail( err ) {
-				if ( angular.isFunction( $scope.saveFailCallback ) ) {
-					$scope.saveFailCallback( err );
-				}
-			} );
-		}
-
-		$scope.$watch( 'game.settings.chipValue', function ( newVal ) {
-			chipValue = newVal;
-		} );
-		$scope.$watch( 'game.settings.defaultBuyin', function ( newVal ) {
-			defaultBuyin = newVal;
-		} );
-	}
-})();
+    playerResultUpdated: function (player) {
+      // this.playersInGame.$save(player);
+      return this.playersGames.updatePlayerResult(player, this.game, player);
+    }
+  };
+}());

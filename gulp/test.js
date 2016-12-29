@@ -12,13 +12,13 @@ module.exports = function (gulp, $, config) {
     return $.del(config.buildTestDir, cb);
   });
 
-  gulp.task('buildTests', ['lint', 'clean:test'], function () {
+  gulp.task('buildTests', ['clean:test'], function () {
     return gulp.src([config.unitTestFiles])
       .pipe(gulp.dest(config.buildUnitTestsDir));
   });
 
   // inject scripts in karma.config.js
-  gulp.task('karmaFiles', ['build', 'buildTests'], function () {
+  gulp.task('karmaFiles', ['buildTests'], function () {
     var stream = $.streamqueue({objectMode: true});
 
     // add bower javascript
@@ -34,7 +34,7 @@ module.exports = function (gulp, $, config) {
     stream.queue(gulp.src([
       config.buildJsFiles,
       '!**/webcomponents.js',
-      '!**/*_test.*'
+      '!**/*.test.*'
     ])
       .pipe($.angularFilesort()));
 
@@ -48,8 +48,17 @@ module.exports = function (gulp, $, config) {
   });
 
   // run unit tests
-  gulp.task('unitTest', ['lint', 'karmaFiles'], function (done) {
-    var server = new $.karma.Server(karmaConf, done);
+  gulp.task('unitTest', ['build', 'karmaFiles'], function (done) {
+    var server = new $.karma.Server(karmaConf, function () {
+      done();
+    });
+    server.start();
+  });
+
+  gulp.task('justTest', ['karmaFiles'], function (done) {
+    var server = new $.karma.Server(karmaConf, function () {
+      done();
+    });
     server.start();
   });
 

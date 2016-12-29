@@ -1,243 +1,130 @@
 (function () {
-/**
- * Game Manager controller
- */
-angular.module( 'pokerManager' ).
-	controller( 'PokerManagerCtrl', PokerManagerController );
+  'use strict';
 
-	PokerManagerController.$inject = [ '$scope', '$uibModal', '$analytics', 'toaster', 'Utils', 'Players', 'Games' ];
+  /**
+   * Game Manager controller
+   */
+  angular.module('pokerManager')
+    .controller('PokerManagerCtrl', PokerManagerController);
 
-	function PokerManagerController( $scope, $uibModal, $analytics, toaster, utils, Players, Games ) {
-		'use strict';
+  PokerManagerController.$inject = ['$q', '$analytics', 'Players', 'playerModal', 'communitiesSvc', 'playersMembership', 'community', 'game', 'playersGames'];
 
-		var vm = this;
+  function PokerManagerController($q, $analytics, Players, playerModal, communitiesSvc, playersMembership, community, game, playersGames) {
+    this.$q = $q;
+    this.$analytics = $analytics;
+    this.playersSvc = Players;
+    this.playerModal = playerModal;
+    this.communitiesSvc = communitiesSvc;
+    this.playersMembership = playersMembership;
+    this.community = community;
+    this.playersGames = playersGames;
 
-		vm.prefs = {
-				playersOpen: false
-			};
-		vm.dateOptions = {
-				'year-format': "'yyyy'",
-				'month-format': "'MM'",
-				'day-format': "'dd'"
-			};
-		vm.today = new Date();
-		vm.serverMsg = [];
-		vm.players = [];
-		vm.game = Games.create();
+    this.prefs = {
+      playersOpen: false
+    };
+    this.players = [];
+    this.game = game;
+    this.playersInGame = playersGames.getPlayersInGame(game.$id);
 
-		vm.init = init;
-		vm.openPlayersControl = openPlayersControl;
-		vm.closePlayersControl = closePlayersControl;
-		vm.saveGameToLocalStorage = saveGameToLocalStorage;
-		vm.loadLocalStorageGame = loadLocalStorageGame;
-		vm.refreshPlayersList = refreshPlayersList;
-		vm.clearCurrentGame = clearCurrentGame;
-		vm.addServerMsg = addServerMsg;
-		vm.closeServerMsg = closeServerMsg;
-		vm.addPlayerToGame = addPlayerToGame;
-		vm.gameSaved = gameSaved;
-		vm.saveGameFailed = saveGameFailed;
-		vm.openPlayerDetailsDialog = openPlayerDetailsDialog;
+    this.init();
+  }
 
-		vm.init();
+  PokerManagerController.prototype = {
+    updatePlayersInGame: function (updated) {
+      if (this.playersInGame && _.isFunction(this.playersInGame.$destroy)) {
+        this.playersInGame.$destroy();
+      }
+      this.playersInGame = updated;
 
-		function playerSaved( savedPlayer ) {
-			// console.log('savedPlayer = ' + savedPlayer);
-			var isNew = true,
-				playerIdx, len,
-				players = vm.players;
+      return this.playersInGame;
+    },
+    addPlayerToGame: function (player) {
+      if (player.$id in this.playersInGame) {
+        return;
+      }
+      this.playersGames.addPlayerToGame(player, this.game)
+        .then(playersInGame => this.updatePlayersInGame(playersInGame));
 
-			for ( playerIdx = 0, len = players.length; playerIdx < len; ++playerIdx ) {
-				if ( players[ playerIdx ].id === savedPlayer.id) {
-					isNew = false;
-					break;
-				}
-			}
+      try {
+        this.$analytics.eventTrack('Join Game', {category: 'Actions', label: player.dispalyName});
+      } catch (err) {}
+    },
+    addPlayersToGame: function (playersIds) {
+      let filteredIds = playersIds.filter(playerId => !(playerId in this.playersInGame));
 
-			if ( isNew ) {
-				players.push( savedPlayer );
-			} else {
-				players[ playerIdx ] = savedPlayer;
-			}
-		}
+      return this.playersGames.addPlayersToGame(this.players.filter(player => filteredIds.indexOf(player.$id) > -1), this.game)
+        .then(playersInGame => this.updatePlayersInGame(playersInGame));
+    },
+    openPlayersControl: function () {
+      this.prefs.playersOpen = !this.prefs.playersOpen;
+    },
+    closePlayersControl: function () {
+      this.prefs.playersOpen = false;
+    },
 
-		function openPlayersControl() {
-			vm.prefs.playersOpen = !vm.prefs.playersOpen;
-		}
+    init: function () {
+      // Refresh view
+      this.community.$loaded()
+        .then(() => {
+          this.players = this.playersSvc.playersOfCommunity(this.community.$id, this.community.name);
+          this.guests = this.playersSvc.guestsOfCommunity(this.community.$id);
 
-		function closePlayersControl() {
-			vm.prefs.playersOpen = false;
-		}
+          this.players.$watch(() => this.combineMembersAndGuests());
+          this.guests.$watch(() => this.combineMembersAndGuests());
+        });
+    },
 
-		function saveGameToLocalStorage() {
-			utils.saveLocal( 'game', vm.game );
-		}
+    updateAttendance: function (groupedAttendance) {
+      if (groupedAttendance && groupedAttendance.yes) {
+        this.attendingPlayersIds = groupedAttendance.yes.map(attending => {
+          return attending.$id;
+        });
+      }
+    },
 
-		function loadLocalStorageGame() {
-			var oldChipValue = vm.game.settings.chipValue,
-				newChipValue;
+    combineMembersAndGuests: function () {
+      this.playersAndGuests = this.players.concat(this.guests);
+    },
 
-			function playerEntity( aPlayer ) {
-				var found;
-				found = vm.players.filter( function( player, i ) {
-					return ( player.name === aPlayer.name );
-				} );
+    refreshPlayersList: function () {
+      this.init();
+    },
 
-				return found && found[0];
-			}
+    clearCurrentGame: function () {
+      // Reset is-playing state
+      // _.forEach(vm.players, function (player) {
+      //   player.isPlaying = false;
+      // });
 
-			vm.game = utils.loadLocal( 'game' );
-			newChipValue = parseInt( vm.game.settings.chipValue, 10 );
-			// Players in game should be with same reference as players returned by the server
-			for ( var i = 0; i < vm.game.players.length; ++i ) {
-				var foundPlayer = playerEntity( vm.game.players[ i ] );
+      // Reset game
+      this.game.location = '';
+      this.game.date = Date.now();
+      this.game.numberOfHands = 0;
+      this.playersInGame = [];
+    },
 
-				if ( foundPlayer ) {
-					// Copy fields from saved game
-					var isPlaying = vm.game.players[ i ].isPlaying,
-						buyin = vm.game.players[ i ].buyin,
-						buyout = vm.game.players[ i ].buyout,
-						currentChipCount = vm.game.players[ i ].currentChipCount * ( ( oldChipValue != newChipValue ) ? oldChipValue / newChipValue : 1 ),
-						paidHosting = vm.game.players[ i ].paidHosting;
+    playersOrder: function (player) {
+      return player.games ? -Object.keys(player.games).length : 0;
+    },
 
-					// Assign reference
-					vm.game.players[ i ] = foundPlayer;
-					// Assign values from copied fields
-					vm.game.players[ i ].isPlaying = true;
-					vm.game.players[ i ].buyin = buyin;
-					vm.game.players[ i ].buyout = buyout;
-					vm.game.players[ i ].currentChipCount = currentChipCount;
-					vm.game.players[ i ].paidHosting = paidHosting;
-				}
-			}
-		}
+    openPlayerDetailsDialog: function () {
+      this.closePlayersControl();
 
-		function init() {
-			//Refresh view
-			vm.players = Players.query( function () {
-				if ( localStorage.getItem( 'game' ) !== null ) {
-					vm.loadLocalStorageGame();
-				}
-			}, function ( err ) {
-				console.log( err );
-			} );
-		}
+      this.playerModal.open()
+        .then(savedPlayer => {
+          // If new -> update default values
+          if (savedPlayer.isNew) {
+            savedPlayer.buyin = 0;
+            savedPlayer.isPlaying = false;
+          }
 
-		function refreshPlayersList() {
-			vm.init();
-		}
-
-		function clearCurrentGame() {
-			// Reset is-playing state
-			vm.players.forEach( function( player ) {
-				player.isPlaying = false;
-			} );
-
-			// Reset game
-			vm.game = Games.create();
-
-			// Save empty game as local
-			vm.saveGameToLocalStorage();
-		}
-
-		function addServerMsg(msg) {
-			vm.serverMsg.push(msg);
-		}
-
-		function closeServerMsg(index) {
-			vm.serverMsg.splice(index, 1);
-		}
-
-		function addPlayerToGame( player ) {
-			if ( !player.isPlaying ) {
-				player.isPlaying = true;
-				player.buyin = 0;
-				player.buyout = 0;
-				player.currentChipCount = 0;
-				player.paidHosting = false;
-				vm.game.players.push( player );
-			}
-
-			try {
-				$analytics.eventTrack( 'Join Game', { category: 'Actions', label: player.name } );
-			} catch (err) {}
-		}
-
-		function gameSaved( savedGame ) {
-			vm.init();
-			vm.clearCurrentGame();
-
-			// vm.addServerMsg({
-			// 	txt: 'Game saved successfully',
-			// 	type: 'success'
-			// });
-			toaster.success( 'Game save successfully', 'Woo-Hoo!' );
-		}
-
-		function saveGameFailed( err ) {
-			vm.addServerMsg({
-				txt: 'Error saving Game',
-				type: 'error'
-			});
-		}
-
-		function openPlayerDetailsDialog( player ) {
-			var isNew = ( typeof( player ) === 'undefined' || player === null );
-
-			vm.closePlayersControl();
-
-			if (isNew) {
-				player = Players.create();
-			}
-			var modalInstance = $uibModal.open( {
-				templateUrl: 'partials/modals/addNewPlayer.html',
-				controller: 'ModalPlayerDetailsCtrl',
-				resolve: {
-					player: function() {
-						return player;
-					}
-				}
-			} );
-
-			modalInstance.result.then( function( savedPlayer ) {
-				// If new -> update default values
-				if ( isNew ) {
-					savedPlayer.buyin = 0;
-					savedPlayer.isPlaying = false;
-				// Update changed fields
-				}
-
-				player = savedPlayer;
-
-				// Model.savePlayer( player );
-				Players.update( player ).$promise.then( playerSaved );
-			} );
-		}
-
-		$scope.$watch( function () {
-			return vm.game;
-		}, function ( newVal, oldVal ) {
-			// When game is loaded the $watch is called even if the new and old values are the same - preventing it here by comparing them
-			if ( !angular.equals( newVal, oldVal ) ) {
-				vm.saveGameToLocalStorage();
-			}
-		}, true );
-
-		$scope.$watch( function () {
-			return vm.game.settings.chipValue;
-		}, chipsValueChanged );
-
-		function chipsValueChanged( current, previous ) {
-			if ( !current ) {
-				current = vm.game.settings.chipValue = 1;
-			}
-			vm.game.players.forEach( function updateChipsAndValue( player, idx ) {
-				if ( player.currentChipCount ) {
-					player.currentChipCount = player.currentChipCount * current / ( previous || 1 );
-				} else {
-					player.currentChipCount = ( player.buyin * current ) * current / ( previous || 1 );
-				}
-			} );
-		}
-	}
-})();
+          return savedPlayer;
+        })
+        .then(player => this.playersMembership.addPlayer(player, this.community))
+        .then(this.init.bind(this));
+    },
+    updateMembership: function (player) {
+      return this.communitiesSvc.addMember(player, this.community);
+    }
+  };
+}());

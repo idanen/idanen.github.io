@@ -1,6 +1,6 @@
 <paper-card class="container-fluid community-wrap" heading="{{ vm.community.name }}" alt="{{ vm.community.name }}">
   <div class="card-content">
-    <div class="row" ng-if="!vm.currentUser || !vm.isMember">
+    <div class="row" ng-if="!vm.currentUser || !vm.isMember" ng-show="vm.inCommunityRoute()">
       <div class="col-xs-12">
         <h3>Not a member</h3>
         <a ui-sref="joinCommunity({communityId: vm.community.$id})">
@@ -9,22 +9,32 @@
       </div>
     </div>
     <div ng-if="!!vm.currentUser">
-      <div class="row">
+      <div class="row" ng-show="!vm.inCommunityRoute()">
         <div class="col-xs-5">
-          <a ui-sref="rsvp({communityId: vm.community.$id})">
-            <paper-button raised>RSVP</paper-button>
-          </a>
-        </div>
-        <div class="col-xs-5" ng-if="vm.isAdmin">
-          <a class="manage-players-btn" ui-sref="communityPlayers({communityId: vm.community.$id})">
+          <a ui-sref="community({communityId: vm.community.$id})">
             <paper-button raised>
-              <paper-badge ng-if="vm.joiners.length" label="{{vm.joiners.length || 0}}"></paper-badge>
-              <span class="manage-players-btn__btn-text">manage players</span>
+              <span class="icon icon-arrow_back"></span>
+              <span>{{ vm.community.name }}</span>
             </paper-button>
           </a>
         </div>
       </div>
-      <div class="row" ng-if="vm.isAdmin">
+      <div class="row" ng-show="vm.inCommunityRoute()">
+        <div class="col-xs-12">
+          <ul class="nav nav-tabs nav-justified">
+            <li role="presentation" ui-sref-active="active">
+              <a ui-sref="rsvp({communityId: vm.community.$id})">RSVP</a>
+            </li>
+            <li role="presentation" ui-sref-active="active" ng-if="vm.isAdmin">
+              <a ui-sref="communityPlayers({communityId: vm.community.$id})">
+                <paper-badge ng-if="vm.joiners.length" label="{{vm.joiners.length || 0}}"></paper-badge>
+                <span>Players</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="row" ng-if="vm.isAdmin" ng-show="vm.inCommunityRoute()">
         <div class="col-xs-4">
           <label class="sr-only">Join code</label>
           <input class="form-control" placeholder="Join code" type="text" ng-model="vm.community.joinCode">
@@ -41,7 +51,7 @@
           </paper-button>
         </div>
       </div>
-      <div class="row">
+      <div class="row" ng-show="vm.inCommunityRoute()">
         <div class="col-sm-4">
           <input type="text" class="form-control" ng-model="vm.fromDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="fromDate" bs-datepicker>
         </div>
@@ -54,7 +64,7 @@
       </div>
       <div class="row" ng-if="!!vm.games && vm.isAdmin">
         <div class="col-xs-12">
-          <ul class="pager">
+          <ul class="pagination">
             <li ng-click="vm.prevPage()">
               <a aria-label="Previous">
                 <span class="icon icon-arrow-left" aria-hidden="true"></span>

@@ -195,12 +195,10 @@
       controllerAs: '$ctrl',
       bindToController: true
     }).result
-      .then(function (community) {
-        // console.log('Successfully added a new community ', community);
+      .then(function () {
         $state.go(previousState.name, previousState.params);
       })
-      .catch(function (reason) {
-        // console.log('New community modal dismissed with reason: ' + reason);
+      .catch(function () {
         $state.go(previousState.name, previousState.params);
       });
   }

@@ -55,6 +55,10 @@
       this.currentPage += this.pageSize;
     },
 
+    inCommunityRoute: function () {
+      return this.$state.is('community');
+    },
+
     userChanged: function (currentUser) {
       this.currentUser = currentUser;
       this.updateIsMember();

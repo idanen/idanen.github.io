@@ -67,8 +67,14 @@ attendance-panel {
 }
 
 .rsvp-list {
-  .img-circle {
+  img {
     max-width: 3em;
+  }
+}
+.available-answers {
+  .available-answers_answer {
+    text-transform: capitalize;
+    cursor: pointer;
   }
 }
 

@@ -16,9 +16,12 @@
   }
 
   GameLocationDialogSvc.prototype = {
-    open: function () {
+    open: function (address) {
       this.dialog.open();
       this.mapSearch.map = this.mapElement.map;
+      if (address) {
+        this.markAddress(address);
+      }
     },
 
     close: function () {

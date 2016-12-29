@@ -3,9 +3,9 @@
 
   class RSVPController {
     static get $inject() {
-      return ['$element', 'Games', 'Players', 'communitiesSvc', 'playersGames', '$filter', '$q'];
+      return ['$element', 'Games', 'Players', 'communitiesSvc', 'playersGames', '$filter', '$q', 'gameLocationDialogSvc'];
     }
-    constructor($element, Games, Players, communitiesSvc, playersGames, $filter, $q) {
+    constructor($element, Games, Players, communitiesSvc, playersGames, $filter, $q, gameLocationDialogSvc) {
       this.$element = $element;
       this.gamesSvc = Games;
       this.playersSvc = Players;
@@ -13,17 +13,22 @@
       this.playersGames = playersGames;
       this.$filter = $filter;
       this.$q = $q;
+      this.gameLocationDialogSvc = gameLocationDialogSvc;
 
       this.dateFormat = 'EEE, dd/MM/yyyy';
 
-      this.attendanceMessage = '';
-      this.guests = 0;
+      this.availableAnswers = ['yes', 'maybe', 'no'];
+      this.playerAttendance = {
+        attendance: '',
+        message: '',
+        guests: 0
+      };
       // Need to wait for player details
       this.canChangeAttendance = false;
     }
 
     $onInit() {
-      this.attendanceChoices = this.$element.find('input[name=attendanceChoice],.form-control');
+      this.attendanceInputs = this.$element.find('.form-control');
 
       this.games = this.gamesSvc.gamesOfCommunity(this.communityId, 5);
       this.games.$watch(this._mapGamesForPicker.bind(this));
@@ -46,7 +51,7 @@
             this.gameSelectionChanged(this.games[this.games.length - 1].$id);
           }
         });
-      this.attendanceChoices.on('change input', () => this.changeAttendance());
+      this.attendanceInputs.on('input', () => this.changeAttendance(this.playerAttendance.attendance));
     }
 
     $onDestroy() {
@@ -57,7 +62,7 @@
         this.currentPlayer.$destroy();
       }
 
-      this.attendanceChoices.off();
+      this.attendanceInputs.off();
     }
 
     gameSelectionChanged(selectedId) {
@@ -67,10 +72,6 @@
         let gameDate = this.$filter('date')(this.selectedGame.date, this.dateFormat);
         this.gameTitle = `${gameDate} @ ${this.selectedGame.location}`;
       }
-      Array.from(this.attendanceChoices).forEach(el => {
-        el.checked = false;
-        el.removeAttribute('checked');
-      });
 
       if (this.attendingPlayers && _.isFunction(this.attendingPlayers.$destroy)) {
         this.attendingPlayers.$destroy();
@@ -82,25 +83,25 @@
         .then(this.setCurrentChoices.bind(this));
     }
 
-    changeAttendance() {
+    changeAttendance(answer) {
       if (!this.canChangeAttendance) {
         return;
       }
-      let chosenAttendance = this.$element.find('input[name=attendanceChoice]:checked').val();
+      this.playerAttendance.attendance = answer;
       this.playersGames.changePlayerApproval({
         gameId: this.selectedGame.$id,
         playerId: this.currentPlayer.$id,
         player: this.currentPlayer,
-        attendance: chosenAttendance || 'no',
-        guests: this.guests,
-        message: this.attendanceMessage
+        attendance: this.playerAttendance.attendance || 'no',
+        guests: this.playerAttendance.guests,
+        message: this.playerAttendance.message
       })
         .then(this.buildAttendanceCounts.bind(this));
     }
 
     buildAttendanceCounts() {
       this.attendanceCount = _.groupBy(this.attendingPlayers, 'attendance');
-      ['yes', 'maybe', 'no'].forEach(answer => {
+      this.availableAnswers.forEach(answer => {
         if (this.attendanceCount[answer]) {
           this.attendanceCount[answer].forEach(attendance => {
             if (attendance.guests) {
@@ -118,27 +119,26 @@
 
     setCurrentChoices() {
       let currentChoice = _.find(this.attendingPlayers, {$id: this.currentPlayer.$id});
-      Array.from(this.attendanceChoices).forEach(el => {
-        el.checked = false;
-        el.removeAttribute('checked');
-      });
-      this.guests = 0;
-      this.attendanceMessage = '';
+      this.playerAttendance.guests = 0;
+      this.playerAttendance.message = '';
+      this.playerAttendance.attendance = '';
       if (currentChoice) {
-        this.$element[0].querySelector(`input[value=${currentChoice.attendance}]`).checked = true;
-        this.guests = currentChoice.guests;
-        this.attendanceMessage = currentChoice.message;
+        this.playerAttendance = _.pick(currentChoice, ['attendance', 'guests', 'message']);
       }
     }
 
+    showOnMap() {
+      this.gameLocationDialogSvc.open(this.selectedGame.address);
+    }
+
     _mapGamesForPicker() {
-      this.gamesForPicker = this.games.map(game => {
-        return {
-          value: game.$id,
-          label: game.title || this.$filter('date')(game.date, this.dateFormat),
-          date: game.date
-        };
-      });
+      this.gamesForPicker = _.orderBy(this.games, ['date'], ['desc'])
+        .map(game => {
+          return {
+            value: game.$id,
+            label: game.title || this.$filter('date')(game.date, this.dateFormat)
+          };
+        });
     }
   }
 

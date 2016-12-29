@@ -82,7 +82,7 @@
       }
       return this.playersUsers.createUser(this.userInputs.name, this.userInputs.email, this.userInputs.pass)
         .then(saved => {
-          console.log('sign up success', saved);
+          // console.log('sign up success', saved);
           this.onLogin({$event: saved.uid || saved.userUid});
         })
         .catch(err => {

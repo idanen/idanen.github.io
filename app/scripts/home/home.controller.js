@@ -98,7 +98,6 @@
     },
 
     saveJoiningCommunity() {
-      console.warn('Joining community not implemented yet');
       if (this.currentUser) {
         this.communityInputDisabled = true;
         this.communitiesSvc.askToJoin({

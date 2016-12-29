@@ -121,7 +121,7 @@
   function run($rootScope, polymerToaster) {
     var unwatch = $rootScope.$on('$stateChangeError',
       function (event, toState, toParams, fromState, fromParams, error) {
-        console.log('error %s trying to change state from $o to %o', error, fromState, toState);
+        // console.log('error %s trying to change state from $o to %o', error, fromState, toState);
         if (error === 'AUTH_REQUIRED') {
           polymerToaster.loginRequiredToast();
         }
@@ -196,11 +196,11 @@
       bindToController: true
     }).result
       .then(function (community) {
-        console.log('Successfully added a new community ', community);
+        // console.log('Successfully added a new community ', community);
         $state.go(previousState.name, previousState.params);
       })
       .catch(function (reason) {
-        console.log('New community modal dismissed with reason: ' + reason);
+        // console.log('New community modal dismissed with reason: ' + reason);
         $state.go(previousState.name, previousState.params);
       });
   }

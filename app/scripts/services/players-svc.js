@@ -174,8 +174,11 @@
       if (player && player.$id) {
         return this.playersRef
           .child(player.$id)
-          .child('userUid')
-          .set(user.uid)
+          .update({
+            userUid: user.uid,
+            photoURL: user.photoURL,
+            displayName: user.displayName || player.displayName
+          })
           .then(() => this.getPlayer(player.$id));
       }
 

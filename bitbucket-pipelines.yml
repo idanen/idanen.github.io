@@ -17,7 +17,7 @@ pipelines:
             - firebase use --token $FIREBASE_PROD_DEPLOY_TOKEN production
             - firebase deploy -m "Pipeline commit $BITBUCKET_COMMIT" --non-interactive --token $FIREBASE_PROD_DEPLOY_TOKEN
   branches:
-    feature/firebase-migration:
+    master:
       - step:
           script: # Modify the commands below to build your repository.
             - npm install -g gulp-cli bower firebase-tools

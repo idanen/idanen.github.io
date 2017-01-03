@@ -19,20 +19,30 @@
           </a>
         </div>
       </div>
-      <div class="row" ng-show="vm.inCommunityRoute()">
-        <div class="col-xs-12">
+      <div class="row">
+        <nav class="col-xs-12">
           <ul class="nav nav-tabs nav-justified">
             <li role="presentation" ui-sref-active="active">
-              <a ui-sref="rsvp({communityId: vm.community.$id})">RSVP</a>
+              <a ui-sref="rsvp({communityId: vm.community.$id})">
+                <span class="icon icon-schedule"></span>
+                <span> RSVP</span>
+              </a>
+            </li>
+            <li role="presentation" ui-sref-active="active">
+              <a ui-sref="stats({ fromDate: vm.fromDate, toDate: vm.toDate })">
+                <span class="icon icon-bar-chart"></span>
+                <span> Stats</span>
+              </a>
             </li>
             <li role="presentation" ui-sref-active="active" ng-if="vm.isAdmin">
               <a ui-sref="communityPlayers({communityId: vm.community.$id})">
+                <span class="icon icon-people"></span>
                 <paper-badge ng-if="vm.joiners.length" label="{{vm.joiners.length || 0}}"></paper-badge>
-                <span>Players</span>
+                <span> Players</span>
               </a>
             </li>
           </ul>
-        </div>
+        </nav>
       </div>
       <div class="row" ng-if="vm.isAdmin" ng-show="vm.inCommunityRoute()">
         <div class="col-xs-4">
@@ -49,17 +59,6 @@
           <paper-button raised ngclipboard data-clipboard-text="https://ourhomegame.com/join-community/{{vm.community.$id}}" uib-tooltip="Copy to clipboard">
             <span class="icon icon-clipboard"></span>
           </paper-button>
-        </div>
-      </div>
-      <div class="row" ng-show="vm.inCommunityRoute()">
-        <div class="col-sm-4">
-          <input type="text" class="form-control" ng-model="vm.fromDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="fromDate" bs-datepicker>
-        </div>
-        <div class="col-sm-4">
-          <input type="text" class="form-control" ng-model="vm.toDate" ng-change="vm.loadStats()" data-date-format="yyyy-MM-dd" data-date-type="number" data-autoclose="1" data-use-native="true" data-icon-left="icon icon-arrow-left" data-icon-right="icon icon-arrow-right" name="toDate" bs-datepicker>
-        </div>
-        <div class="col-sm-4">
-          <a class="btn btn-link" ui-sref="stats({ fromDate: vm.fromDate, toDate: vm.toDate })">Stats</a>
         </div>
       </div>
       <div class="row" ng-if="!!vm.games && vm.isAdmin">

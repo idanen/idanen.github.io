@@ -132,7 +132,7 @@
     }
 
     _mapGamesForPicker() {
-      this.gamesForPicker = _.orderBy(this.games, ['date'], ['desc'])
+      this.gamesForPicker = _.orderBy(this.games, ['date'], ['asc'])
         .map(game => {
           return {
             value: game.$id,

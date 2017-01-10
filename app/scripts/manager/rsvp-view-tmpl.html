@@ -1,5 +1,8 @@
 <div class="col-xs-12">
-  <form name="$ctrl.rsvpForm" class="rsvp-view">
+  <h3 ng-if="!$ctrl.gamesForPicker.length">
+    No games in the foreseeable future <span class="icon icon-frown-o"></span>
+  </h3>
+  <form name="$ctrl.rsvpForm" class="rsvp-view" ng-if="$ctrl.gamesForPicker.length">
     <div class="form-group row">
       <label class="col-xs-12">Select game</label>
       <div class="col-xs-12">

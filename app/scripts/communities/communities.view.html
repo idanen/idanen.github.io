@@ -70,7 +70,7 @@
               </a>
             </li>
             <li ng-repeat="game in vm.games | orderBy:'date' | limitTo:vm.pageSize:vm.currentPage" ui-sref-active="active">
-              <a ui-sref="game({ gameId: game.$id })" title="{{ game.$id }}" role="tab">{{ game.date | date:'yyyy-MM-dd' }} @ {{ game.location }}</a>
+              <a ui-sref="game({ gameId: game.$id })" title="{{ game.$id }}" role="tab">{{ game.date | date:'EEE, dd/MM' }} {{ game.title || '@ ' + game.location }}</a>
             </li>
             <li ng-click="vm.nextPage()">
               <a aria-label="Next">

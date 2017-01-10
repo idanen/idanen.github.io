@@ -25,6 +25,8 @@
       };
       // Need to wait for player details
       this.canChangeAttendance = false;
+
+      this.YESTERDAY = Date.now() - 1000 * 60 * 60 * 24;
     }
 
     $onInit() {
@@ -133,12 +135,17 @@
 
     _mapGamesForPicker() {
       this.gamesForPicker = _.orderBy(this.games, ['date'], ['asc'])
+        .filter(game => game.date > this.YESTERDAY)
         .map(game => {
           return {
             value: game.$id,
-            label: game.title || this.$filter('date')(game.date, this.dateFormat)
+            label: `${game.title || ''} ${this._formatGameDate(game)}`
           };
         });
+    }
+
+    _formatGameDate(game) {
+      return this.$filter('date')(game.date, this.dateFormat);
     }
   }
 

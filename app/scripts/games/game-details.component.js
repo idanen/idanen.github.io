@@ -10,11 +10,16 @@
       this.locationsSvc = locationsSvc;
       this.gameLocationDialogSvc = gameLocationDialogSvc;
 
-      this.RELEVANT_FIELDS = ['location', 'date', 'numberOfHands'];
+      this.titleInput = $element.find('.game-title-input')[0];
+
+      this.RELEVANT_FIELDS = ['location', 'date', 'numberOfHands', 'title'];
     }
 
     $onInit() {
       this.details = this._onlyRelevantFields(this.game);
+
+      this.titleInput.value = this.details.title || '';
+      this.titleInput.addEventListener('input', this.gameTitleChange.bind(this));
     }
 
     $onChanges(changes) {
@@ -38,6 +43,11 @@
     $onDestroy() {
       this.$element.off();
       this.$element.find('.show-on-map-btn').off();
+    }
+
+    gameTitleChange() {
+      this.details.title = this.titleInput.value;
+      this.sendUpdate();
     }
 
     numberOfHandsUpdated(counter) {

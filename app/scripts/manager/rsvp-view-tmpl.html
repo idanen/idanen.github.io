@@ -65,7 +65,7 @@
         <label>Full list</label>
         <ul class="list-group rsvp-list" ng-repeat="answer in $ctrl.availableAnswers">
           <li class="list-group-item" ng-class="{'list-group-item-success': answer === 'yes', 'list-group-item-warning': answer === 'maybe', 'list-group-item-danger': answer === 'no'}" ng-repeat="attendee in $ctrl.attendanceCount[answer]">
-            <span class="icon icon-check"></span>
+            <span class="icon" ng-class="{'icon-check': answer === 'yes', 'icon-question': answer === 'maybe', 'icon-remove': answer === 'no'}"></span>
             <img class="img-circle" ng-src="{{ attendee.photoURL }}">
             <strong>{{ attendee.displayName }}</strong>
             <em>{{ attendee.message }}</em>

@@ -50,7 +50,10 @@
       } catch (err) {}
     },
     addPlayersToGame: function (playersIds) {
-      let filteredIds = playersIds.filter(playerId => !(playerId in this.playersInGame));
+      if (!playersIds) {
+        return;
+      }
+      let filteredIds = playersIds.filter(playerId => !(_.find(this.playersInGame, {$id: playerId})));
 
       return this.playersGames.addPlayersToGame(this.players.filter(player => filteredIds.indexOf(player.$id) > -1), this.game)
         .then(playersInGame => this.updatePlayersInGame(playersInGame));

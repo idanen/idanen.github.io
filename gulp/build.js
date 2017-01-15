@@ -103,7 +103,7 @@ module.exports = function (gulp, $, config) {
       .pipe($.if(isProd, $.ngAnnotate()))
       .pipe($.if(isProd, $.uglify().on('error', function(e) { console.log('\x07',e.message); return this.end(); })))
       .pipe($.if(isProd, $.rev()))
-      .pipe($.addSrc($.mainBowerFiles({filter: /webcomponents/})))
+      .pipe($.addSrc(`${bowerDir}/webcomponentsjs/webcomponents*.js`))
       .pipe($.sourcemaps.write('.'))
       .pipe(gulp.dest(config.buildJs))
       .pipe(jsFilter.restore);
@@ -118,7 +118,7 @@ module.exports = function (gulp, $, config) {
           config.buildCss + '**/*',
           config.buildJs + '**/*',
           '!' + config.buildJs + 'scripts/sw/*.js',
-          '!**/webcomponents.js'
+          '!**/webcomponents*.js'
         ])
         .pipe(jsFilter)
         .pipe($.angularFilesort())
@@ -128,7 +128,7 @@ module.exports = function (gulp, $, config) {
         })
       )
       .pipe($.inject(gulp.src([
-          config.buildJs + 'webcomponents.js'
+          config.buildJs + 'webcomponents-lite.min.js'
         ]), {
           starttag: '<!-- inject:head:{{ext}} -->',
           endtag: '<!-- endinject -->',
@@ -145,6 +145,7 @@ module.exports = function (gulp, $, config) {
     var cssFilter = $.filter('**/*.css', {restore: true})
       , jsFilter = $.filter([
         '**/*.js',
+        '!**/webcomponents*.js',
         '!**/sw-toolbox.js'
       ], {restore: true})
       , ngStrapPath = 'bower_components/angular-strap/';

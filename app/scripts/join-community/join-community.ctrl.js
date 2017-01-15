@@ -43,14 +43,11 @@
     joinCommunity: function () {
       this.joiningFailed = '';
       if (this.currentUser && this.community && !this.joined) {
-        return this.communitiesSvc.askToJoin({
+        const joinRequest = Object.assign({}, this.currentUser, {
           communityId: this.community.$id,
-          uid: this.currentUser.uid,
-          email: this.currentUser.email,
-          joinCode: this.joinCode,
-          photoURL: this.currentUser.photoURL,
-          displayName: this.currentUser.displayName
-        })
+          joinCode: this.joinCode
+        });
+        return this.communitiesSvc.askToJoin(joinRequest)
           .then(() => {
             return this.playersSvc.findBy('userUid', this.currentUser.uid);
           })

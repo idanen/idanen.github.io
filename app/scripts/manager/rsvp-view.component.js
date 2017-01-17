@@ -102,6 +102,11 @@
     }
 
     buildAttendanceCounts() {
+      if (!this.attendingPlayers) {
+        this.attendingPlayers = this.playersGames.getApprovalsForGame(this.selectedGame.$id);
+        return this.attendingPlayers.$loaded()
+          .then(this.buildAttendanceCounts.bind(this));
+      }
       this.attendanceCount = _.groupBy(this.attendingPlayers, 'attendance');
       this.availableAnswers.forEach(answer => {
         if (this.attendanceCount[answer]) {
@@ -135,13 +140,7 @@
 
     _mapGamesForPicker() {
       this.gamesForPicker = _.orderBy(this.games, ['date'], ['asc'])
-        .filter(game => game.date > this.YESTERDAY)
-        .map(game => {
-          return {
-            value: game.$id,
-            label: `${game.title || ''} ${this._formatGameDate(game)}`
-          };
-        });
+        .filter(game => game.date > this.YESTERDAY);
     }
 
     _formatGameDate(game) {

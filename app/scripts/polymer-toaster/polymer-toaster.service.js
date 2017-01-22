@@ -21,6 +21,12 @@
         duration: 5000,
         text: 'You need to log in to proceed'
       });
+    },
+    notificationToast: function (text) {
+      this.showToast({
+        duration: 5000,
+        text: text
+      });
     }
   };
 }());

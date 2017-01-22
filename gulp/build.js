@@ -366,7 +366,11 @@ module.exports = function (gulp, $, config) {
 
   // Copy over the scripts that are used in importScripts as part of the generate-service-worker task.
   gulp.task('copy-sw-scripts', ['clean'], function () {
-    return gulp.src(['node_modules/sw-toolbox/sw-toolbox.js', 'app/scripts/sw/runtime-caching.js', 'app/scripts/sw/notifications-sw.js'])
+    return gulp.src([
+      'node_modules/sw-toolbox/sw-toolbox.js',
+      'bower_components/firebase/firebase.js',
+      'app/scripts/sw/runtime-caching.js',
+      'app/scripts/sw/notifications-sw.js'])
       .pipe(gulp.dest('build/app/js/scripts/sw'));
   });
 

@@ -29,28 +29,29 @@
     }
 
     updateSubscription(subscription) {
-      var subscriptionEndpoint;
-      if (!this.pushState.notificationDenied) {
-        this.toggler.removeAttribute('disabled');
+      if (!this.pushState.isNotificationSupported()) {
+        this.toggler.setAttribute('disabled', '');
+        this.toggler.disabled = true;
+        return;
       }
 
-      if (subscription && this.pushState.notificationPermited) {
-        subscriptionEndpoint = this.pushState.getSubscriptionEndpoint();
-        this.$scope.$emit('pushState.subscription.successful', subscriptionEndpoint);
+      this.toggler.removeAttribute('disabled');
+
+      if (subscription) {
+        this.$scope.$emit('pushState.subscription.successful', subscription);
         this.toggler.checked = true;
       } else {
         this.toggler.checked = false;
       }
 
       this.$scope.$applyAsync(() => {
-        this.permissionChange(this.pushState.notificationPermited);
+        this.permissionChange(!!subscription);
       });
     }
 
     toggleChanged(event) {
       if (event.target.checked) {
         this.pushState.subscribe()
-          .then(() => this.pushState.getSubscriptionEndpoint())
           .then(this.saveSubscriptionEndpoint.bind(this))
           .catch(error => {
             this.toggler.dataset.pushEnabled = undefined;

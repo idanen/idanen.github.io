@@ -59,7 +59,7 @@
 
             installingWorker.onstatechange = function () {
               var swInstalledToast = document.createElement('paper-toast'),
-                  duration = 10000;
+                  duration = 30000;
               switch (installingWorker.state) {
                 case 'installed':
                   // At this point, the old content will have been purged and the
@@ -67,8 +67,10 @@
                   // It's the perfect time to display a "New content is
                   // available; please refresh." message in the page's interface.
 
-                  let reloader = document.createElement('a');
+                  let reloader = document.createElement('paper-button');
                   reloader.innerText = 'Reload';
+                  reloader.style.color = '#4b8bff';
+                  reloader.style.fontWeight = 'bold';
                   reloader.addEventListener('click', () => window.location.reload(true));
                   swInstalledToast.appendChild(reloader);
                   document.querySelector('body').appendChild(swInstalledToast);

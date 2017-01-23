@@ -1,7 +1,5 @@
-/* global firebase */
+/* global firebase:false */
 /* eslint no-undef:0, no-warning-comments:0, spaced-comment:0 */
-self.importScripts('/js/scripts/sw/firebase.js');
-
 (function (sw) {
   'use strict';
 

@@ -18,6 +18,10 @@
         this.firebaseMessaging = this.$window.firebase.messaging();
         this.firebaseMessaging.useServiceWorker(registration);
 
+        return this.firebaseMessaging.getToken();
+      })
+      .then(this._updateSubscription.bind(this))
+      .then(() => {
         this.firebaseMessaging.onMessage(this.notificationReceived.bind(this));
       });
   }
@@ -28,8 +32,8 @@
     },
 
     notificationReceived: function (payload) {
-      console.log('Message received. ', payload);
-      this.polymerToaster.notificationToast(payload.body);
+      console.log('Message received: ', payload);
+      this.polymerToaster.notificationToast(payload.notification.body);
     },
 
     // Once the service worker is registered set the initial state

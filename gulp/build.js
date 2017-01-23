@@ -83,6 +83,7 @@ module.exports = function (gulp, $, config) {
       '!**/*.test.*',
       '!**/index.html',
       '!**/runtime-caching.js',
+      '!**/notifications-sw.js',
       '!**/service-worker.js'
     ])
       .pipe($.sourcemaps.init())
@@ -390,6 +391,7 @@ module.exports = function (gulp, $, config) {
       importScripts: [
         '/js/scripts/sw/sw-toolbox.js',
         '/js/scripts/sw/runtime-caching.js',
+        '/js/scripts/sw/firebase.js',
         '/js/scripts/sw/notifications-sw.js'
       ],
       staticFileGlobs: [

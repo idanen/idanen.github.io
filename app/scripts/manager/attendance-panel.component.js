@@ -12,14 +12,7 @@
       this.playersSvc = Players;
       this.communitiesSvc = communitiesSvc;
 
-      this.attendingPlayers = playersGames.getApprovalsForGame(this.gameId);
-
       this.offUserChange = this.userService.onUserChange(currentUser => this.userChanged(currentUser));
-    }
-
-    $onInit() {
-      this.attendingPlayers.$loaded()
-        .then(this.buildAttendanceCounts.bind(this));
     }
 
     $postLink() {
@@ -33,6 +26,8 @@
         }
 
         this.attendingPlayers = this.playersGames.getApprovalsForGame(this.gameId);
+        this.attendingPlayers.$loaded()
+          .then(this.buildAttendanceCounts.bind(this));
       }
     }
 

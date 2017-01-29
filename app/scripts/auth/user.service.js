@@ -85,6 +85,7 @@
 
     notifyUserListeners: function () {
       this._userChangedListeners.forEach(listener => listener(this.currentUser));
+      return this.currentUser;
     },
 
     createUser: function (name, email, pass) {
@@ -154,48 +155,56 @@
         .then(() => player);
     },
 
+    checkSubscriptionId: function (subscriptionId) {
+      if (!this.currentUser) {
+        throw new Error('This should be called after current user login has finished. Try using `waitForUser()`');
+      }
+      return this.usersRef
+        .child(this.currentUser.uid)
+        .child('devices')
+        .orderByChild('subscriptionId')
+        .equalTo(subscriptionId)
+        .once('value')
+        .then(snap => snap.exists());
+    },
+
     addSubscriptionId: function (subscriptionId) {
-      var subscription = {
+      let subscription = {
         subscriptionId: subscriptionId
       };
-      this.waitForUser()
-        .then(() => {
-          if (!this.currentUser) {
-            return;
+      if (!this.currentUser) {
+        return;
+      }
+      return this.usersRef
+        .child(this.currentUser.uid)
+        .child('devices')
+        .orderByChild('subscriptionId')
+        .equalTo(subscriptionId)
+        .once('value')
+        .then(snapshot => {
+          if (!snapshot.exists()) {
+            return snapshot.ref.push().set(subscription);
           }
-          return this.usersRef
-            .child(this.currentUser.uid)
-            .child('devices')
-            .orderByChild('subscriptionId')
-            .equalTo(subscriptionId)
-            .once('value')
-            .then(snapshot => {
-              if (!snapshot.exists()) {
-                snapshot.ref.push().set(subscription);
-              } else {
-                console.log(`the endpoint "${subscriptionId}" is already subscribed`);
-              }
-            });
+
+          console.log(`the endpoint "${subscriptionId}" is already subscribed`);
+          return subscription;
         });
     },
 
     removeSubscriptionId: function (subscriptionId) {
-      this.waitForUser()
-        .then(() => {
-          if (!this.currentUser) {
-            return;
+      if (!this.currentUser) {
+        return;
+      }
+      return this.usersRef
+        .child(this.currentUser.uid)
+        .child('devices')
+        .orderByChild('subscriptionId')
+        .equalTo(subscriptionId)
+        .once('value')
+        .then(snapArr => {
+          if (snapArr.hasChildren()) {
+            snapArr.forEach(deviceSnap => deviceSnap.ref.remove());
           }
-          return this.usersRef
-            .child(this.currentUser.uid)
-            .child('devices')
-            .orderByChild('subscriptionId')
-            .equalTo(subscriptionId)
-            .once('value')
-            .then(snapArr => {
-              if (snapArr.hasChildren()) {
-                snapArr.forEach(deviceSnap => deviceSnap.ref.remove());
-              }
-            });
         });
     }
   };

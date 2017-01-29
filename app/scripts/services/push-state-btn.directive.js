@@ -38,15 +38,17 @@
       this.toggler.removeAttribute('disabled');
 
       if (subscription) {
-        this.$scope.$emit('pushState.subscription.successful', subscription);
-        this.toggler.checked = true;
-      } else {
-        this.toggler.checked = false;
+        return this.userService.waitForUser()
+          .then(() => this.userService.checkSubscriptionId(subscription))
+          .then(exists => this._subscriptionToggleUpdate(subscription, exists));
       }
+
+      this.toggler.checked = false;
 
       this.$scope.$applyAsync(() => {
         this.permissionChange(!!subscription);
       });
+      return false;
     }
 
     toggleChanged(event) {
@@ -75,6 +77,17 @@
       this.toggler.dataset.pushEnabled = false;
       this.toggler.classList.remove('active');
       this.userService.removeSubscriptionId(subscriptionEndpoint);
+    }
+
+    _subscriptionToggleUpdate(subscription, savedToServer = false) {
+      this.toggler.checked = savedToServer;
+      this.$scope.$emit('pushState.subscription.successful', subscription);
+      if (!savedToServer) {
+        console.warn('user subscribed but server had no subscription record');
+        return false;
+      }
+
+      return subscription;
     }
 
     _attachEventListeners() {

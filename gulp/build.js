@@ -84,6 +84,7 @@ module.exports = function (gulp, $, config) {
       '!**/index.html',
       '!**/runtime-caching.js',
       '!**/notifications-sw.js',
+      '!**/sw-toolbox.js',
       '!**/service-worker.js'
     ])
       .pipe($.sourcemaps.init())

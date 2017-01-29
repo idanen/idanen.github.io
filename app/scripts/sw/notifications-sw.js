@@ -8,6 +8,9 @@
     apiKey: 'AIzaSyDMrP9xSV8woT6-lt-TBiyMkSy0r3EiHAs',
     databaseURL: 'https://fiery-heat-6939.firebaseio.com',
     messagingSenderId: '101062618190'
+    // apiKey: 'AIzaSyBSOxr6ZfxJRPX3dBqq-staeFMLkiO10BA',
+    // databaseURL: 'https://pokermunity.firebaseio.com',
+    // messagingSenderId: '734384281646'
   });
 
   const messaging = firebase.messaging();

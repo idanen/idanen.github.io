@@ -33,7 +33,7 @@
 
     notificationReceived: function (payload) {
       console.log('Message received: ', payload);
-      this.polymerToaster.notificationToast(payload.notification.body);
+      this.polymerToaster.notificationToast(`${payload.notification.title}: ${payload.notification.body}`);
     },
 
     // Once the service worker is registered set the initial state

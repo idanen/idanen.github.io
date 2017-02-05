@@ -19,11 +19,13 @@
     console.log('Received push with firebase messaging: ', payload);
 
     sw.registration.showNotification(payload.title, {
-      body: payload.body,
-      icon: '/img/android-icon-192x192.png',
+      body: `${payload.body}: ${payload.data}`,
+      icon: 'https://ourhomegame.com/img/android-chrome-512x512.png',
       tag: 'push-notification-test'
     });
   });
+
+  // sw.addEventListener('push', ev => console.log(ev.data.json()));
 
   // sw.addEventListener('activate', function (event) {
   //   console.log('notifications activated', event);

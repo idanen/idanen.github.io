@@ -12,7 +12,7 @@
 
       this.titleInput = $element.find('.game-title-input')[0];
 
-      this.RELEVANT_FIELDS = ['location', 'date', 'numberOfHands', 'title'];
+      this.RELEVANT_FIELDS = ['location', 'date', 'numberOfHands', 'title', 'address'];
     }
 
     $onInit() {
@@ -56,8 +56,7 @@
     }
 
     showOnMap() {
-      this.gameLocationDialogSvc.open();
-      this.gameLocationDialogSvc.markAddress(this.details.address);
+      this.gameLocationDialogSvc.open(this.details.address);
     }
 
     locationSelected($event) {

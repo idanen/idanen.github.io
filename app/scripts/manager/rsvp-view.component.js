@@ -32,7 +32,7 @@
     $onInit() {
       this.attendanceInputs = this.$element.find('.form-control');
 
-      this.games = this.gamesSvc.gamesOfCommunity(this.communityId, 5);
+      this.games = this.gamesSvc.gamesOfCommunity(this.communityId, 15);
       this.games.$watch(this._mapGamesForPicker.bind(this));
 
       if (this.currentUser && this.currentUser.playerId) {
@@ -47,12 +47,6 @@
     }
 
     $postLink() {
-      this.games.$loaded()
-        .then(() => {
-          if (this.games.length) {
-            this.gameSelectionChanged(this.games[this.games.length - 1].$id);
-          }
-        });
       this.attendanceInputs.on('input', () => this.changeAttendance(this.playerAttendance.attendance));
     }
 
@@ -141,6 +135,9 @@
     _mapGamesForPicker() {
       this.gamesForPicker = _.orderBy(this.games, ['date'], ['asc'])
         .filter(game => game.date > this.YESTERDAY);
+      if (this.gamesForPicker.length) {
+        this.gameSelectionChanged(this.gamesForPicker[0].$id);
+      }
     }
 
     _formatGameDate(game) {

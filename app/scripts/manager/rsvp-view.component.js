@@ -135,7 +135,7 @@
     _mapGamesForPicker() {
       this.gamesForPicker = _.orderBy(this.games, ['date'], ['asc'])
         .filter(game => game.date > this.YESTERDAY);
-      if (this.gamesForPicker.length) {
+      if (!this.selectedGame && this.gamesForPicker.length) {
         this.gameSelectionChanged(this.gamesForPicker[0].$id);
       }
     }

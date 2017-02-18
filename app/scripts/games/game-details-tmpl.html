@@ -2,6 +2,7 @@
   <div class="form-group input-group-sm">
     <location-editor community-id="$ctrl.game.communityId" selected="$ctrl.details.location" on-select="$ctrl.locationSelected($event)"></location-editor>
     <paper-button class="show-on-map-btn" raised>show on map</paper-button>
+    <em>{{ $ctrl.game.address }}</em>
   </div>
   <div class="form-group">
     <paper-input class="game-title-input" label="Game title"></paper-input>

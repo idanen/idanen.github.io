@@ -84,6 +84,7 @@
       this.$scope.$emit('pushState.subscription.successful', subscription);
       if (!savedToServer) {
         console.warn('user subscribed but server had no subscription record');
+        this.pushState.unsubscribe();
         return false;
       }
 

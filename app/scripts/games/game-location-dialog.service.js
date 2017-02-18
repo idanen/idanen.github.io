@@ -9,6 +9,7 @@
     this.dialog = document.querySelector('#game-location-dialog');
     this.mapElement = this.dialog.querySelector('google-map');
     this.mapSearch = this.dialog.querySelector('google-map-search');
+    this.mapsLink = this.dialog.querySelector('.address-link');
 
     this.mapElement.addEventListener('google-map-ready', this.register);
 
@@ -44,6 +45,7 @@
           this.mapElement.appendChild(marker);
         });
         this.mapSearch.removeEventListener('google-map-search-results', searchListener);
+        this.mapsLink.href = `http://maps.google.com/?q=${address}`;
       };
       this.mapElement.innerHTML = '';
       this.mapElement.clear();

@@ -3,9 +3,7 @@
 var karmaConf = require('../karma.config.js');
 
 // karmaConf.files get populated in karmaFiles
-karmaConf.files = [
-  'node_modules/karma-babel-preprocessor/node_modules/babel-core/browser-polyfill.js'
-];
+karmaConf.files = [];
 
 module.exports = function (gulp, $, config) {
   gulp.task('clean:test', function (cb) {
@@ -18,7 +16,7 @@ module.exports = function (gulp, $, config) {
   });
 
   // inject scripts in karma.config.js
-  gulp.task('karmaFiles', ['buildTests'], function () {
+  gulp.task('karmaFiles', function () {
     var stream = $.streamqueue({objectMode: true});
 
     // add bower javascript
@@ -31,15 +29,24 @@ module.exports = function (gulp, $, config) {
     stream.queue(gulp.src([config.buildTestDirectiveTemplateFiles]));
 
     // add application javascript
-    stream.queue(gulp.src([
-      config.buildJsFiles,
-      '!**/webcomponents.js',
-      '!**/*.test.*'
-    ])
-      .pipe($.angularFilesort()));
+    stream.queue(
+        gulp.src([
+          config.appScriptFiles,
+          '!**/webcomponents*.js',
+          '!**/runtime-caching.js',
+          '!**/notifications-sw.js',
+          '!**/sw-toolbox.js',
+          '!**/service-worker.js',
+          '!**/*.test.*'
+        ])
+          .pipe($.babel({
+              presets: ['es2015']
+          }))
+          .pipe($.angularFilesort())
+    );
 
     // add unit tests
-    stream.queue(gulp.src([config.buildUnitTestFiles]));
+    stream.queue(gulp.src([config.unitTestFiles]));
 
     return stream.done()
       .on('data', function (file) {
@@ -48,7 +55,7 @@ module.exports = function (gulp, $, config) {
   });
 
   // run unit tests
-  gulp.task('unitTest', ['build', 'karmaFiles'], function (done) {
+  gulp.task('unitTest', ['karmaFiles'], function (done) {
     var server = new $.karma.Server(karmaConf, function () {
       done();
     });

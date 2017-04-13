@@ -13,6 +13,9 @@
     }
 
     getAddress(locationName, communityId) {
+      if (!locationName) {
+        return this.$q.resolve('');
+      }
       return this.firebaseCommon.getValue(`locations/${communityId}/${locationName}`);
     }
 

@@ -7,6 +7,13 @@
 
       beforeEach(() => {
         module('pokerManager');
+        module($provide => {
+          $provide.value('$firebaseArray', () => []);
+          $provide.value('$firebaseObject', () => ({}));
+          $provide.value('userService', () => ({
+            getCurrentUser: () => ({uid: 'user_id', displayName: 'Some User'})
+          }));
+        });
         inject(_communitiesSvc_ => {
           communitiesSvc = _communitiesSvc_;
         });

@@ -178,6 +178,11 @@
       //   });
       // });
     },
+
+    mapCommunityForPicker: function (communitiesObj) {
+      return _.map(communitiesObj, (name, communityId) => ({ label: name, value: communityId }));
+    },
+
     getPlayerCommunities: function (player) {
       if (player && player.memberIn) {
         return this.getCommunitiesByIds(Object.keys(player.memberIn));

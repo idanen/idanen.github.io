@@ -1,5 +1,15 @@
 window.mockFirebase = (function (global) {
   const originalFirebase = global.firebase;
+  const noOp = () => {};
+
+  function firebaseAuthMock() {
+    return {
+      onAuthStateChanged: noOp
+    };
+  }
+  firebaseAuthMock.GoogleAuthProvider = () => ({
+    addScope: noOp
+  });
 
   return {
     override,
@@ -19,11 +29,7 @@ window.mockFirebase = (function (global) {
         })
       }),
       initializeApp: config => config,
-      auth: {
-        GoogleAuthProvider: () => ({
-          addScope: () => {}
-        })
-      }
+      auth: firebaseAuthMock
     };
   }
 

@@ -44,31 +44,20 @@
           if (this.currentUser.playerId) {
             this.player = this.playersSvc.getPlayer(this.currentUser.playerId);
             this.player.$loaded()
-              .then(() => {
-                let communities = [];
-                if (this.player.memberIn) {
-                  communities = communities.concat(_.map(this.player.memberIn, (value, key) => {
-                    return {
-                      label: value,
-                      value: key
-                    };
-                  }));
-                }
-                if (this.player.guestOf) {
-                  communities = communities.concat(_.map(this.player.guestOf, (value, key) => {
-                    return {
-                      label: value,
-                      value: key
-                    };
-                  }));
-                }
-                this.communities = communities;
-              });
+              .then(this._playerCommunitiesForPicker.bind(this));
           }
         } else {
           this.cardElement.heading = 'Login / Signup';
         }
       }
+    },
+
+    _playerCommunitiesForPicker: function () {
+      const memberIn = this.communitiesSvc.mapCommunityForPicker(this.player.memberIn);
+      const guestOf = this.communitiesSvc.mapCommunityForPicker(this.player.guestOf);
+      const communities = memberIn.concat(guestOf);
+      this.communities = communities;
+      return communities;
     },
 
     loggedIn: function (uid) {

@@ -25,10 +25,10 @@
     userChanged: function (user) {
       this.currentUser = user;
       if (this.currentUser && this.currentUser.playerId) {
-        if (this.community && _.isFunction(this.community.$destroy)) {
-          this.community.$destroy();
-        }
-        this.community = this.communitiesSvc.getCommunity(this.$state.params.communityId);
+        // if (this.community && _.isFunction(this.community.$destroy)) {
+        //   this.community.$destroy();
+        // }
+        // this.community = this.communitiesSvc.getCommunity(this.$state.params.communityId);
         this.community.$loaded()
           .then(() => {
             this.joined = !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];
@@ -55,17 +55,20 @@
             return this.playersSvc.joinCommunity(player, this.community, true);
           })
           .then(() => {
+            this.joined = !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];
             return this.polymerToaster.showToast({
               text: 'Thanks for joining :)'
             });
-          })
-          .then(() => {
-            this.joined = !!this.community.joiners && !!this.community.joiners[this.currentUser.uid];
           })
           .catch(() => {
             this.joiningFailed = 'Join request failed. Verify you have the right link and the right joining code';
           });
       }
+    },
+
+    postLogin: function (uid) {
+      return this.userService.getUser(uid)
+        .then(this.userChanged.bind(this));
     }
   };
 }());

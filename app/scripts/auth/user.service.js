@@ -152,8 +152,7 @@
         .child(this.currentUser.uid)
         .child('playerId')
         .set(player.$id)
-        .then(() => this.getUser(this.currentUser.uid))
-        .then(() => player);
+        .then(() => this.getUser(this.currentUser.uid));
     },
 
     checkSubscriptionId: function (subscriptionId) {

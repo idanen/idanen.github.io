@@ -18,9 +18,9 @@
       </p>
     </div>
   </div>
-  <div class="row">
+  <div class="row" ng-show="!$ctrl.currentUser">
     <div class="col-xs-12">
-      <signup-login-form></signup-login-form>
+      <signup-login-form on-login="$ctrl.postLogin($event)"></signup-login-form>
     </div>
   </div>
   <div class="row" ng-show="!$ctrl.joined && !$ctrl.approved && $ctrl.currentUser">

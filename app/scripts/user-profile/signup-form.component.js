@@ -73,6 +73,7 @@
       if (this.currentUser && this.currentUser.playerId) {
         this.player = this.playersSvc.getPlayer(this.currentUser.playerId);
       }
+      return this.currentUser;
     },
 
     signup: function () {
@@ -80,12 +81,16 @@
         this.markErrors();
         return;
       }
+      this.offUserChange();
       return this.playersUsers.createUser(this.userInputs.name, this.userInputs.email, this.userInputs.pass)
         .then(saved => {
           // console.log('sign up success', saved);
           this.onLogin({$event: saved.uid || saved.userUid});
+          this.userChanged(saved);
+          this.offUserChange = this.userService.onUserChange(user => this.userChanged(user));
         })
         .catch(err => {
+          this.offUserChange = this.userService.onUserChange(user => this.userChanged(user));
           this.loginErrorMessage = this.FIREBASE_AUTH_ERRORS[err.code] || err.message;
           throw err;
         });
@@ -97,7 +102,11 @@
         .then(user => this.onLogin({$event: user.uid}))
         .catch(err => {
           if (err.message === this.USER_DOESNT_EXIST_ERROR) {
-            return this.playersUsers.newProviderUser();
+            return this.playersUsers.newProviderUser()
+              .then(user => {
+                this.onLogin({$event: user.uid});
+                return this.userChanged(user);
+              });
           }
           this.loginErrorMessage = this.FIREBASE_AUTH_ERRORS[err.code] || err.message;
           throw err;

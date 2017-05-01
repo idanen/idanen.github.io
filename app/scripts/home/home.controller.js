@@ -124,12 +124,7 @@
       if (this.currentUser && this.currentUser.playerId) {
         this.playersSvc.playersCommunities(this.currentUser.playerId)
           .then(communities => {
-            this.communities = _.map(communities, (communityName, communityId) => {
-              return {
-                label: communityName,
-                value: communityId
-              };
-            });
+            this.communities = this.communitiesSvc.mapCommunityForPicker(communities);
           });
       }
     },

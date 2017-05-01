@@ -63,7 +63,7 @@
 
       return promise
         .then(() => this.notifyUserListeners())
-        .catch(err => this.notifyUserListeners());
+        .catch(() => this.notifyUserListeners());
     },
 
     getCurrentUser: function () {

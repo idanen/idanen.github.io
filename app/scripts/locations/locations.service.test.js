@@ -7,25 +7,10 @@
         $rootScope,
         firebaseCommonMock = {
           getValue: jasmine.createSpy('getValue')
-        },
-        initializeAppMock = config => {
-          // console.log('mocked firebase config with config object:', config);
-          return config;
-        },
-        original = firebase.initializeApp;
-
-    beforeAll(() => {
-      original = firebase.initializeApp;
-      firebase.initializeApp = initializeAppMock;
-    });
-
-    afterAll(() => {
-      firebase.initializeApp = original;
-    });
-
-    beforeEach(angular.mock.module('pokerManager'));
+        };
 
     beforeEach(function () {
+      module('pokerManager');
       module($provide => {
         $provide.value('firebaseCommon', firebaseCommonMock);
         $provide.value('Ref', { child: angular.noop });

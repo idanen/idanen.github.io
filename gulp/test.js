@@ -1,6 +1,7 @@
 'use strict';
 
-var karmaConf = require('../karma.config.js');
+const path = require('path');
+const karmaConf = require('../karma.config.js');
 
 // karmaConf.files get populated in karmaFiles
 karmaConf.files = [];
@@ -31,6 +32,7 @@ module.exports = function (gulp, $, config) {
     // add application javascript
     stream.queue(
         gulp.src([
+          'test/module.mock.js',
           config.appScriptFiles,
           '!**/webcomponents*.js',
           '!**/runtime-caching.js',

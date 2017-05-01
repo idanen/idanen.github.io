@@ -19,10 +19,8 @@
         ],
         expectedAvg = 2;
 
-    beforeEach(angular.mock.module('pokerManager'));
-
     beforeEach(function () {
-      module();
+      module('pokerManager');
       inject(function (Stats) {
         statsSvc = Stats;
       });

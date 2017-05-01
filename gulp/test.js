@@ -50,6 +50,9 @@ module.exports = function (gulp, $, config) {
     // add unit tests
     stream.queue(gulp.src([config.unitTestFiles]));
 
+    // add templates
+    stream.queue(gulp.src(['app/scripts/**/*.html']));
+
     return stream.done()
       .on('data', function (file) {
         karmaConf.files.push(file.path);

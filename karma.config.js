@@ -19,7 +19,8 @@ if (jsDir[jsDir.length - 1] !== '/') {
 }
 
 preprocessors[jsDir + '**/*.js'] = ['coverage'];
-preprocessors[templateDir + '**/*-directive.tpl.html'] = ['ng-html2js'];
+// preprocessors[templateDir + '**/*-directive.tpl.html'] = ['ng-html2js'];
+preprocessors['**/*.html'] = ['ng-html2js'];
 
 module.exports = {
   browsers: ['Chrome'],
@@ -28,7 +29,8 @@ module.exports = {
   preprocessors: preprocessors,
   autoWatch: true,
   ngHtml2JsPreprocessor: {
-    stripPrefix: templateDir
+    stripPrefix: 'app/',
+    moduleName: 'tmpls'
   }/*,
   singleRun: true*/
 };

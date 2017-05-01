@@ -10,6 +10,12 @@ window.mockFirebase = (function (global) {
   firebaseAuthMock.GoogleAuthProvider = () => ({
     addScope: noOp
   });
+  const firebaseChildFn = () => ({
+    on: () => global.$q.resolve(),
+    once: () => global.$q.resolve(),
+    update: () => global.$q.resolve(),
+    child: firebaseChildFn
+  });
 
   return {
     override,
@@ -17,15 +23,17 @@ window.mockFirebase = (function (global) {
   };
 
   function override() {
+    angular.module('global $q', []).run(function ($q) {
+      global.$q = $q;
+    });
+
     global.firebase = {
       database: () => ({
         ref: () => ({
-          push: object => Promise.resolve(Object.assign({ '.key': 'arbitraryKey'}, object)),
-          set: object => Promise.resolve(object),
-          child: () => ({
-            on: () => Promise.resolve(),
-            once: () => Promise.resolve()
-          })
+          push: object => global.$q.resolve(Object.assign({ '.key': 'arbitraryKey'}, object)),
+          set: object => global.$q.resolve(object),
+          update: () => global.$q.resolve(),
+          child: firebaseChildFn
         })
       }),
       initializeApp: config => config,

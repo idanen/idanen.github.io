@@ -4,14 +4,13 @@
   angular.module('pokerManager')
     .service('playersGames', PlayersGamesService);
 
-  PlayersGamesService.$inject = ['Ref', '$q', '$firebaseArray', '$firebaseUtils'];
-  function PlayersGamesService(Ref, $q, $firebaseArray, $firebaseUtils) {
+  PlayersGamesService.$inject = ['Ref', '$q', '$firebaseArray'];
+  function PlayersGamesService(Ref, $q, $firebaseArray) {
     this.rootRef = Ref;
     this.playersRef = Ref.child('players');
     this.gamesRef = Ref.child('games');
     this.$q = $q;
     this.$firebaseArray = $firebaseArray;
-    this.$firebaseUtils = $firebaseUtils;
   }
 
   PlayersGamesService.prototype = {
@@ -110,6 +109,9 @@
       }
       if (!game) {
         return this.$q.reject(new Error('No game to add to'));
+      }
+      if (game.limitPlayers && Object.keys(game.players).length >= game.limitPlayers) {
+        return this.$q.reject(new Error('Game is full'));
       }
 
       players.forEach(player => {

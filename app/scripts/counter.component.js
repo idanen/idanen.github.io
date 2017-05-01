@@ -26,17 +26,23 @@
     $onInit: function () {
       if (isNaN(this.counter)) {
         this.counter = 0;
-        this.onUpdate && this.onUpdate({counter: this.counter});
+        this._callUpdateListener();
       }
     },
     increment: function () {
       this.counter += 1;
-      this.onUpdate && this.onUpdate({counter: this.counter});
+      this._callUpdateListener();
     },
     decrement: function () {
       if (this.counter > 0) {
         this.counter -= 1;
-        this.onUpdate && this.onUpdate({counter: this.counter});
+        this._callUpdateListener();
+      }
+    },
+
+    _callUpdateListener: function () {
+      if (this.onUpdate) {
+        this.onUpdate({counter: this.counter});
       }
     }
   };

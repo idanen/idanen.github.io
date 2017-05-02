@@ -83,6 +83,9 @@
       if (!this.canChangeAttendance) {
         return;
       }
+      if (answer === 'yes' && this.attendanceCount.yes.length >= this.selectedGame.limitPlayers) {
+        return;
+      }
       this.playerAttendance.attendance = answer;
       this.playersGames.changePlayerApproval({
         gameId: this.selectedGame.$id,

@@ -79,9 +79,7 @@
 
     updateAttendance: function (groupedAttendance) {
       if (groupedAttendance && groupedAttendance.yes) {
-        this.attendingPlayersIds = groupedAttendance.yes.map(attending => {
-          return attending.$id;
-        });
+        this.attendingPlayersIds = groupedAttendance.yes.map(attending => attending.$id);
       }
     },
 
@@ -125,9 +123,6 @@
         })
         .then(player => this.playersMembership.addPlayer(player, this.community))
         .then(this.init.bind(this));
-    },
-    updateMembership: function (player) {
-      return this.communitiesSvc.addMember(player, this.community);
     }
   };
 }());

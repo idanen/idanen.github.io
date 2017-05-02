@@ -110,9 +110,6 @@
       if (!game) {
         return this.$q.reject(new Error('No game to add to'));
       }
-      if (game.limitPlayers && Object.keys(game.players).length >= game.limitPlayers) {
-        return this.$q.reject(new Error('Game is full'));
-      }
 
       players.forEach(player => {
         let gameResult = {};

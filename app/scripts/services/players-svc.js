@@ -135,6 +135,9 @@
     },
 
     removeGuest: function (player) {
+      if (!player.guestOf) {
+        return player;
+      }
       return this.playersRef
         .child(player.$id)
         .child('guestOf')

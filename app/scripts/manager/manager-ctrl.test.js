@@ -58,5 +58,38 @@
 
       expect(playersGamesMock.addPlayerToGame).toHaveBeenCalledWith(playerToAdd, game);
     });
+
+    it('should map players for the players picker', () => {
+      const aPlayer = {
+        $id: '121212',
+        displayName: 'Havier',
+        games: {
+          game1: {
+            $id: 'game2',
+            title: 'game 1',
+            date: Date.now()
+          },
+          game2: {
+            $id: 'game2',
+            title: 'game 2',
+            date: Date.now() - 1000 * 60 * 60 * 24
+          }
+        },
+        phone: '0528008009',
+        email: 'havier@gmail.com',
+        balance: 231,
+        aProperty: 'aValue'
+      };
+      const expected = {
+        $id: '121212',
+        displayName: 'Havier',
+        phone: '0528008009',
+        email: 'havier@gmail.com',
+        balance: 231,
+        gamesCount: 2
+      };
+
+      expect(ctrl._mapPlayerForPicker(aPlayer)).toEqual(expected);
+    });
   });
 }());

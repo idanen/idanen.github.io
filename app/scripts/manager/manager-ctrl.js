@@ -84,7 +84,13 @@
     },
 
     combineMembersAndGuests: function () {
-      this.playersAndGuests = this.players.concat(this.guests);
+      this.playersAndGuests = this.players.concat(this.guests)
+        .map(player => this._mapPlayerForPicker(player));
+    },
+
+    _mapPlayerForPicker: function (aPlayer) {
+      const gamesCount = aPlayer.games ? Object.keys(aPlayer.games).length : 0;
+      return Object.assign({gamesCount}, _.pick(aPlayer, ['$id', 'displayName', 'email', 'phone', 'balance', 'isPlaying']));
     },
 
     refreshPlayersList: function () {
@@ -92,11 +98,6 @@
     },
 
     clearCurrentGame: function () {
-      // Reset is-playing state
-      // _.forEach(vm.players, function (player) {
-      //   player.isPlaying = false;
-      // });
-
       // Reset game
       this.game.location = '';
       this.game.date = Date.now();

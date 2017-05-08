@@ -101,7 +101,7 @@
     playersOfCommunity: function (communityId, communityName) {
       return this.$firebaseArray(
         this.playersRef
-          .orderByChild('memberIn/' + communityId)
+          .orderByChild(`membership/${communityId}/name`)
           .equalTo(communityName)
       );
     },
@@ -115,23 +115,19 @@
     },
 
     playersCommunities: function (playerId) {
-      return this.firebaseCommon.getValue(`players/${playerId}/memberIn`);
+      return this.firebaseCommon.getValue(`players/${playerId}/membership`);
     },
 
     joinCommunity: function (player, community, isGuest) {
-      if (isGuest) {
-        return this.playersRef
-          .child(player.$id)
-          .update({
-            guestOf: community.$id
-          });
-      }
       return this.playersRef
         .child(player.$id)
-        .child('memberIn')
+        .child('membership')
         .child(community.$id)
-        .set(community.name)
-        .then(() => this.removeGuest(player));
+        .set({
+          name: community.name,
+          type: isGuest ? 'guest' : 'member'
+        })
+        .then(() => isGuest ? Promise.resolve(player) : this.removeGuest(player));
     },
 
     removeGuest: function (player) {

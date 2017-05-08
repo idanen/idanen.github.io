@@ -32,10 +32,6 @@
           <input type="checkbox" ng-model="$ctrl.selection[member.$id]">
           <player-chip player="member" ng-class="{'selected': $ctrl.selection[member.$id]}"></player-chip>
         </li>
-        <li ng-repeat="guest in $ctrl.guests">
-          <input type="checkbox" ng-model="$ctrl.selection[guest.$id]">
-          <player-chip player="guest" ng-class="{'selected': $ctrl.selection[guest.$id]}"></player-chip>
-        </li>
       </ul>
     </div>
   </div>

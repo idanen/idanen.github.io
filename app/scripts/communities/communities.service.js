@@ -180,12 +180,12 @@
     },
 
     mapCommunityForPicker: function (communitiesObj) {
-      return _.map(communitiesObj, (name, communityId) => ({label: name, value: communityId}));
+      return _.map(communitiesObj, (community, communityId) => ({label: community.name, value: communityId}));
     },
 
     getPlayerCommunities: function (player) {
-      if (player && player.memberIn) {
-        return this.getCommunitiesByIds(Object.keys(player.memberIn));
+      if (player && player.membership) {
+        return this.getCommunitiesByIds(Object.keys(player.membership));
       }
       return [];
     }

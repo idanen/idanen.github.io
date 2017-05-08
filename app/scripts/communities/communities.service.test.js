@@ -21,21 +21,27 @@
 
       it('should map communities object to community for picker', () => {
         const communitiesObj = {
-          id1: 'community 1',
-          id2: 'community 2',
-          id3: 'community 3'
+          id1: {
+            name: 'community 1'
+          },
+          id2: {
+            name: 'community 2'
+          },
+          id3: {
+            name: 'community 3'
+          }
         };
         const expected = [
           {
-            label: communitiesObj.id1,
+            label: communitiesObj.id1.name,
             value: 'id1'
           },
           {
-            label: communitiesObj.id2,
+            label: communitiesObj.id2.name,
             value: 'id2'
           },
           {
-            label: communitiesObj.id3,
+            label: communitiesObj.id3.name,
             value: 'id3'
           }
         ];

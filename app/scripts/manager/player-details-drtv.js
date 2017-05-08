@@ -72,7 +72,7 @@
     },
 
     giveUserAdminPriveleges: function () {
-      if (this.player.memberIn[this.communityId]) {
+      if (this.player.membership[this.communityId]) {
         return this.communitiesSvc.getUnboundCommunity(this.communityId)
           .then(community => this.playersMembership.setPlayerAsAdminOfCommunity(community, this.player));
       }

@@ -53,11 +53,8 @@
     },
 
     _playerCommunitiesForPicker: function () {
-      const memberIn = this.communitiesSvc.mapCommunityForPicker(this.player.memberIn);
-      const guestOf = this.communitiesSvc.mapCommunityForPicker(this.player.guestOf);
-      const communities = memberIn.concat(guestOf);
-      this.communities = communities;
-      return communities;
+      this.communities = this.communitiesSvc.mapCommunityForPicker(this.player.membership);
+      return this.communities;
     },
 
     loggedIn: function (uid) {

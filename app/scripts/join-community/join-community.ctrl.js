@@ -35,7 +35,7 @@
             return this.playersSvc.findBy('userUid', this.currentUser.uid);
           })
           .then(player => {
-            this.approved = player.memberIn && player.memberIn[this.community.$id];
+            this.approved = player.membership && player.membership[this.community.$id].type === 'member';
           });
       }
     },

@@ -82,9 +82,9 @@
       }
       this.playersSvc.playersCommunities(this.currentUser.playerId)
         .then(communities => {
-          this.communitiesTab.children = _.map(communities, (communityName, communityId) => {
+          this.communitiesTab.children = _.map(communities, (community, communityId) => {
             return {
-              title: communityName,
+              title: community.name,
               href: this.$state.href('community', {communityId: communityId})
             };
           });

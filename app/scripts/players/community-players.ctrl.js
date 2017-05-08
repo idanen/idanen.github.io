@@ -17,8 +17,7 @@
         .then(() => {
           this.joiners = this.communitiesSvc.getJoiners(this.community.$id);
           this.members = this.playersSvc.playersOfCommunity(this.community.$id, this.community.name);
-          this.guests = this.playersSvc.guestsOfCommunity(this.community.$id);
-          return this.$q.all([this.members.$loaded(), this.guests.$loaded()]);
+          return this.members.$loaded();
         });
     }
 

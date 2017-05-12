@@ -83,7 +83,8 @@
       if (!this.canChangeAttendance) {
         return;
       }
-      if (answer === 'yes' && this.attendanceCount.yes.length >= this.selectedGame.limitPlayers) {
+      const playersLimit = _.isNumber(this.selectedGame.limitPlayers) ? this.selectedGame.limitPlayers : Number.MAX_INT;
+      if (answer === 'yes' && this.attendanceCount.yes.length >= playersLimit) {
         return;
       }
       this.playerAttendance.attendance = answer;
@@ -107,16 +108,19 @@
       this.attendanceCount = _.groupBy(this.attendingPlayers, 'attendance');
       this.availableAnswers.forEach(answer => {
         if (this.attendanceCount[answer]) {
+          let guests = [];
           this.attendanceCount[answer].forEach(attendance => {
-            if (attendance.guests) {
-              for (let i = 0; i < attendance.guests; i++) {
-                this.attendanceCount[answer].push({
-                  displayName: `Guest ${i + 1} of ${attendance.displayName}`,
-                  attendance: answer
-                });
-              }
-            }
+            // This is just a way to create an iterable array of some specific size
+            const guestPlayers = Array.from(Array(attendance.guests))
+              .map((guest, i) => ({
+                attendance: answer,
+                displayName: `Guest ${i + 1} of ${attendance.displayName}`
+              }));
+            guests = guests.concat(guestPlayers);
           });
+          this.attendanceCount[answer] = this.attendanceCount[answer].concat(guests);
+        } else {
+          this.attendanceCount[answer] = [];
         }
       });
     }

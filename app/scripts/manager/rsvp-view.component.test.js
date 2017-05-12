@@ -1,6 +1,69 @@
 (function () {
   'use strict';
 
+  const emptyAttendance = {};
+
+  const attendance = {
+    player0: {
+      displayName: 'friendly',
+      guests: 0,
+      attendance: 'yes'
+    },
+    player1: {
+      displayName: 'player1name',
+      guests: 0,
+      attendance: 'maybe'
+    },
+    player2: {
+      displayName: 'player2name',
+      guests: 0,
+      attendance: 'maybe'
+    },
+    player3: {
+      displayName: 'player3name',
+      guests: 0,
+      attendance: 'no'
+    },
+    player4: {
+      displayName: 'player4name',
+      guests: 0,
+      attendance: 'no'
+    }
+  };
+
+  const attendanceWithGuests = {
+    friendlyPlayer: {
+      attendance: 'yes',
+      displayName: 'friendly',
+      guests: 2
+    },
+    alonePlayer: {
+      attendance: 'yes',
+      displayName: 'loner',
+      guests: 0
+    },
+    noDecision: {
+      displayName: 'confusing',
+      attendance: 'maybe',
+      guests: 2
+    },
+    player2: {
+      displayName: 'player2name',
+      attendance: 'maybe',
+      guests: 1
+    },
+    player3: {
+      displayName: 'player3name',
+      attendance: 'no',
+      guests: 0
+    },
+    player4: {
+      displayName: 'player4name',
+      attendance: 'no',
+      guests: 0
+    }
+  };
+
   describe('rsvp-view-component test', () => {
     const $element = jQuery('<div></div>');
     const gamesSvcMock = jasmine.createSpyObj('gamesSvc', ['gamesOfCommunity']);
@@ -73,6 +136,19 @@
       playersGamesMock.changePlayerApproval.calls.reset();
     });
 
+    [
+      buildAttendanceCase(emptyAttendance, 'empty case'),
+      buildAttendanceCase(attendance, 'standard case'),
+      buildAttendanceCase(attendanceWithGuests, 'guests case')
+    ].forEach(attendance => {
+      it(`should build attendance count properly for ${attendance.caseName}`, () => {
+        ctrl.attendingPlayers = attendance.input;
+        ctrl.buildAttendanceCounts();
+
+        expect(ctrl.attendanceCount).toEqual(attendance.expected);
+      });
+    });
+
     it('should allow changing RSVP to "yes" if there\'s still room for players in the selected game', () => {
       ctrl.canChangeAttendance = true;
       ctrl.currentPlayer = currentPlayer;
@@ -103,4 +179,30 @@
       expect(playersGamesMock.changePlayerApproval).not.toHaveBeenCalled();
     });
   });
+
+  function buildAttendanceCase(input, caseName) {
+    const grouped = _.groupBy(input, 'attendance');
+    const expected = {
+      yes: grouped.yes || [],
+      no: grouped.no || [],
+      maybe: grouped.maybe || []
+    };
+
+    ['yes', 'no', 'maybe'].forEach(answer => {
+      let guests = [];
+      expected[answer].forEach(attendee => {
+        guests = guests.concat(Array.from('a'.repeat(attendee.guests)).map((guest, i) => ({
+          attendance: answer,
+          displayName: `Guest ${i + 1} of ${attendee.displayName}`
+        })));
+      });
+      expected[answer] = expected[answer].concat(guests);
+    });
+
+    return {
+      input,
+      caseName,
+      expected
+    };
+  }
 }());

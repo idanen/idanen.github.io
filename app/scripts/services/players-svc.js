@@ -122,7 +122,7 @@
         .set(membership)
         .then(() => {
           return Object.assign({}, player, {
-            membership: Object.assign({}, player.membership, { [community.$id]: membership })
+            membership: Object.assign({}, player.membership, {[community.$id]: membership})
           });
         });
     },

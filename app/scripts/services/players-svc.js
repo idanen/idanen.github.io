@@ -106,41 +106,24 @@
       );
     },
 
-    guestsOfCommunity: function (communityId) {
-      return this.$firebaseArray(
-        this.playersRef
-          .orderByChild('guestOf')
-          .equalTo(communityId)
-      );
-    },
-
     playersCommunities: function (playerId) {
       return this.firebaseCommon.getValue(`players/${playerId}/membership`);
     },
 
     joinCommunity: function (player, community, isGuest) {
+      const membership = {
+        name: community.name,
+        type: isGuest ? 'guest' : 'member'
+      };
       return this.playersRef
         .child(player.$id)
         .child('membership')
         .child(community.$id)
-        .set({
-          name: community.name,
-          type: isGuest ? 'guest' : 'member'
-        })
-        .then(() => isGuest ? Promise.resolve(player) : this.removeGuest(player));
-    },
-
-    removeGuest: function (player) {
-      if (!player.guestOf) {
-        return player;
-      }
-      return this.playersRef
-        .child(player.$id)
-        .child('guestOf')
-        .remove()
+        .set(membership)
         .then(() => {
-          delete player.guestOf;
-          return player;
+          return Object.assign({}, player, {
+            membership: Object.assign({}, player.membership, { [community.$id]: membership })
+          });
         });
     },
 

@@ -46,7 +46,7 @@
               <span class="hidden-xs hidden-sm">0.1</span>
             </button>
           </div>
-          <input class="form-control" ng-model="player.currentChipCount" ng-change="gameCtrl.chipCountUpdate(player)" type="number" min="0" step="{{ settings.chipValue }}" ng-disabled="!player.isPlaying" autofocus/>
+          <input class="form-control" ng-model="player.currentChipCount" ng-change="gameCtrl.chipCountUpdate(player)" type="number" min="0" step="{{ settings.chipValue }}" ng-disabled="!player.isPlaying"/>
           <div class="input-group-btn">
             <button class="btn btn-success buy-amount__small" ng-click="gameCtrl.addOrSubtractChips(player, 0.10, true)" ng-disabled="!player.isPlaying">
               <i class="icon icon-plus"></i>

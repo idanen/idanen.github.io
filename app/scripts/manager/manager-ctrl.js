@@ -70,10 +70,8 @@
       this.community.$loaded()
         .then(() => {
           this.players = this.playersSvc.playersOfCommunity(this.community.$id, this.community.name);
-          this.guests = this.playersSvc.guestsOfCommunity(this.community.$id);
 
           this.players.$watch(() => this.combineMembersAndGuests());
-          this.guests.$watch(() => this.combineMembersAndGuests());
         });
     },
 
@@ -84,8 +82,7 @@
     },
 
     combineMembersAndGuests: function () {
-      this.playersAndGuests = this.players.concat(this.guests)
-        .map(player => this._mapPlayerForPicker(player));
+      this.playersAndGuests = this.players.map(this._mapPlayerForPicker.bind(this));
     },
 
     _mapPlayerForPicker: function (aPlayer) {

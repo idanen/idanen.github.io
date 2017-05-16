@@ -152,8 +152,7 @@
           .update(dollarStripped)
       );
 
-      return this.$q.all(promises)
-        .then(() => this.getPlayersInGame(game.$id));
+      return this.$q.all(promises);
     },
     moveResultsToAnotherPlayer: function (sourcePlayerId, targetPlayer) {
       return this.playersRef

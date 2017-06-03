@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('underscore.string')
+  , firebaseCli = require('firebase-tools')
   , fs = require('fs')
   , path = require('path')
   , swPrecache = require('sw-precache')
@@ -11,7 +12,10 @@ module.exports = function (gulp, $, config) {
 
   // delete build directory
   gulp.task('clean', function () {
-    return $.del(config.buildDir);
+    return $.del([
+      config.buildDir,
+      config.firebaseConfigBuiltFile
+    ]);
   });
 
   // compile markup files and copy into build directory
@@ -22,6 +26,11 @@ module.exports = function (gulp, $, config) {
       '!' + config.appComponents
     ])
       .pipe(gulp.dest(config.buildDir));
+  });
+
+  gulp.task('fbConfig', ['clean'], cb => {
+    createFbConfig()
+      .then(cb);
   });
 
   // compile styles and copy into build directory
@@ -72,14 +81,15 @@ module.exports = function (gulp, $, config) {
   });
 
   // compile scripts and copy into build directory
-  gulp.task('scripts', ['clean', 'analyze', 'markup'], function () {
+  gulp.task('scripts', ['clean', 'analyze', 'markup', 'fbConfig'], function () {
     var htmlFilter = $.filter('**/*.html', {restore: true})
       , jsFilter = $.filter('**/*.js', {restore: true});
 
     return gulp.src([
       config.appScriptFiles,
-      config.buildDir + '**/*.html',
-      '!' + config.appComponents,
+      `${config.buildDir}**/*.html`,
+      `!${config.firebaseConfigFile}`,
+      `!${config.appComponents}`,
       '!**/*.test.*',
       '!**/index.html',
       '!**/runtime-caching.js',
@@ -418,5 +428,19 @@ module.exports = function (gulp, $, config) {
 
   function transformScriptTagWithAsync(filepath) {
     return '<script async src="' + filepath + '"></script>';
+  }
+
+  function createFbConfig() {
+    return firebaseCli.setup.web({
+      project: (isProd && $.yargs.argv.target !== 'dev') ? 'pokermunity' : 'fiery-heat-6939'
+    })
+      .then(writeConfigToFile)
+      .catch(err => console.log(err));
+  }
+
+  function writeConfigToFile(configContent) {
+    const srcFileContent = fs.readFileSync(config.firebaseConfigFile, 'utf-8');
+    const targetFileContent = srcFileContent.replace(/\/\*\s*REPLACED_BY_BUILD\s*\*\//i, JSON.stringify(configContent));
+    fs.writeFileSync(config.firebaseConfigBuiltFile, targetFileContent);
   }
 };

@@ -11,3 +11,4 @@ report/
 bower_components/
 build/
 coverage/
+app/scripts/angularfire/firebase-config.js

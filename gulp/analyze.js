@@ -9,8 +9,7 @@ module.exports = function (gulp, $, config) {
       config.appDataFiles,
       config.appScriptFiles,
       config.e2eFiles,
-      '!' + config.unitTestFiles,
-      '!' + config.appScriptSkipLintFiles
+      '!' + config.unitTestFiles
     ])
       .pipe($.plumber({errorHandler: function (err) {
         $.notify.onError({

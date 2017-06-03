@@ -34,7 +34,6 @@ config.appFontFiles = path.join(config.appDir, 'styles/fonts/**/*');
 config.appImageFiles = path.join(config.appDir, 'img/**/*');
 config.appMarkupFiles = path.join(config.appDir, '**/*.html');
 config.appScriptFiles = path.join(config.appDir, '**/*.js');
-config.appScriptSkipLintFiles = path.join(config.appDir, 'scripts/snippets/**/*.js');
 config.appDataFiles = path.join(config.appDir, '**/*.json');
 config.appStyleFiles = path.join(config.appDir, '**/*.scss');
 
@@ -50,6 +49,9 @@ config.buildUnitTestFiles = path.join(config.buildUnitTestsDir, '**/*.test.js');
 
 config.e2eFiles = path.join('e2e', '**/*.js');
 config.unitTestFiles = path.join(config.unitTestDir, '**/*.test.js');
+
+config.firebaseConfigFile = path.join(config.appDir, 'scripts/angularfire/firebase-config.src.js');
+config.firebaseConfigBuiltFile = path.join(config.appDir, 'scripts/angularfire/firebase-config.js');
 
 for (key in gulpFiles) {
   gulpFiles[key](gulp, $, config);

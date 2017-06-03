@@ -9,6 +9,7 @@
       this.$element = $element;
       this.$scope = $scope;
       this.picker = this.$element.find('vaadin-combo-box')[0];
+      this.players = [];
     }
 
     $postLink() {

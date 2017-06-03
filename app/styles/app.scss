@@ -42,7 +42,7 @@ attendance-panel {
   }
   .attendance-panel-body {
     transition: transform 300ms ease-out, opacity 300ms ease-out;
-    z-index: 1;
+    z-index: 3;
     opacity: 0;
     transform: translateY(-50%);
     transform-origin: top;

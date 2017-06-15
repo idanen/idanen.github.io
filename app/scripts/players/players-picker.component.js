@@ -20,6 +20,7 @@
 
     $onChanges(changes) {
       if (changes && changes.players && changes.players.currentValue && changes.players.currentValue !== changes.players.previousValue) {
+        this.players = changes.players.currentValue;
         this.setPlayers();
       }
 

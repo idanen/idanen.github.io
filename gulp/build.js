@@ -432,7 +432,8 @@ module.exports = function (gulp, $, config) {
 
   function createFbConfig() {
     return firebaseCli.setup.web({
-      project: (isProd && $.yargs.argv.target !== 'dev') ? 'pokermunity' : 'fiery-heat-6939'
+      project: (isProd && $.yargs.argv.target !== 'dev') ? 'pokermunity' : 'fiery-heat-6939',
+      token: (isProd && $.yargs.argv.target !== 'dev') ? process.env.FIREBASE_PROD_DEPLOY_TOKEN : process.env.FIREBASE_DEPLOY_TOKEN
     })
       .then(writeConfigToFile)
       .catch(err => console.log(err));

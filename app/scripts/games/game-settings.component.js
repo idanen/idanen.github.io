@@ -26,6 +26,9 @@
       if (isNaN(this.settings.allowedGuests) || this.settings.allowedGuests < 0) {
         this.settings.allowedGuests = 0;
       }
+      if (isNaN(this.settings.limitPlayers) || this.settings.limitPlayers < 0) {
+        this.settings.limitPlayers = 100;
+      }
     },
     $postLink: function () {
       this.$element.on('input', '.form-control', () => {
@@ -58,6 +61,13 @@
 
     allowedGuestsUpdated: function (counter) {
       this.settings.allowedGuests = counter || 0;
+      this.onUpdate({
+        settings: this.settings
+      });
+    },
+
+    limitPlayersUpdated: function (counter) {
+      this.settings.limitPlayers = counter || 100;
       this.onUpdate({
         settings: this.settings
       });

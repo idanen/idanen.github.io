@@ -26,7 +26,8 @@
         defaultBuyin: 50,
         communityId: communityId,
         allowedGuests: 0,
-        hostingCosts: 10
+        hostingCosts: 10,
+        limitPlayers: 100
       }, gameDefaults || {});
 
       return this.gamesRef

@@ -84,7 +84,7 @@
         {
           $id: 'gameId1',
           date: Date.now(),
-          limitPlayers: 100,
+          limitPlayers: 20,
           attending: {
             player1: {
               attendance: 'yes',
@@ -177,6 +177,41 @@
       ctrl.changeAttendance('yes');
 
       expect(playersGamesMock.changePlayerApproval).not.toHaveBeenCalled();
+    });
+
+    it('should have `gameFull` set to `false` when game is full', () => {
+      ctrl.canChangeAttendance = true;
+      ctrl.currentPlayer = currentPlayer;
+      ctrl.gameSelectionChanged('gameId1');
+      ctrl.buildAttendanceCounts();
+
+      $rootScope.$digest();
+
+      expect(ctrl.gameFull).toEqual(false);
+    });
+
+    it('should have `gameFull` set to `true` when game is full', () => {
+      games[0].limitPlayers = 5;
+      ctrl.canChangeAttendance = true;
+      ctrl.currentPlayer = currentPlayer;
+      ctrl.gameSelectionChanged('gameId1');
+      ctrl.buildAttendanceCounts();
+
+      $rootScope.$digest();
+
+      expect(ctrl.gameFull).toEqual(true);
+    });
+
+    it('should have `gameFull` set to `false` limit players has an illegal value', () => {
+      games[0].limitPlayers = '5';
+      ctrl.canChangeAttendance = true;
+      ctrl.currentPlayer = currentPlayer;
+      ctrl.gameSelectionChanged('gameId1');
+      ctrl.buildAttendanceCounts();
+
+      $rootScope.$digest();
+
+      expect(ctrl.gameFull).toEqual(false);
     });
   });
 

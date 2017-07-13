@@ -27,7 +27,7 @@
         communityId: communityId,
         allowedGuests: 0,
         hostingCosts: 10,
-        limitPlayers: 100
+        limitPlayers: 20
       }, gameDefaults || {});
 
       return this.gamesRef
@@ -48,7 +48,7 @@
         this.gamesRef
           .orderByChild(field)
           .equalTo(value)
-          .limitToLast(limit || 100)
+          .limitToLast(limit || 20)
       );
     },
 

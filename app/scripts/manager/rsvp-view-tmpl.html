@@ -46,9 +46,10 @@
       <label class="col-xs-12">Your RSVP</label>
       <div class="col-xs-12">
         <ul class="list-group available-answers">
-          <li class="list-group-item available-answers_answer" ng-repeat="answer in $ctrl.availableAnswers" ng-click="$ctrl.changeAttendance(answer)">
+          <li class="list-group-item available-answers_answer" ng-class="{'list-group-item-disabled': $ctrl.gameFull && answer === 'yes'}" ng-repeat="answer in $ctrl.availableAnswers" ng-click="$ctrl.changeAttendance(answer)">
             <span class="icon" ng-class="{'icon-radio_button_unchecked': $ctrl.playerAttendance.attendance !== answer, 'icon-radio_button_checked': $ctrl.playerAttendance.attendance === answer}"></span>
             <span> {{ answer }}</span>
+            <em class="text-danger" ng-show="$ctrl.gameFull && answer === 'yes'"> {{ 'game is full :(' }}</em>
           </li>
         </ul>
       </div>

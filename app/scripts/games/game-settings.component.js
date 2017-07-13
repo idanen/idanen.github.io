@@ -19,7 +19,7 @@
 
   GameSettingsController.prototype = {
     $onInit: function () {
-      this.settings = _.pick(this.game, ['chipValue', 'defaultBuyin', 'hostingCosts', 'allowedGuests']);
+      this.settings = _.pick(this.game, ['chipValue', 'defaultBuyin', 'hostingCosts', 'allowedGuests', 'limitPlayers']);
       if (isNaN(this.settings.hostingCosts)) {
         this.settings.hostingCosts = 10;
       }
@@ -27,7 +27,7 @@
         this.settings.allowedGuests = 0;
       }
       if (isNaN(this.settings.limitPlayers) || this.settings.limitPlayers < 0) {
-        this.settings.limitPlayers = 100;
+        this.settings.limitPlayers = 20;
       }
     },
     $postLink: function () {
@@ -67,7 +67,7 @@
     },
 
     limitPlayersUpdated: function (counter) {
-      this.settings.limitPlayers = counter || 100;
+      this.settings.limitPlayers = counter || 20;
       this.onUpdate({
         settings: this.settings
       });

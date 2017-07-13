@@ -13,7 +13,7 @@
           },
           game = {
             $id: 'gameId1',
-            limitPlayers: 100,
+            limitPlayers: 20,
             players: {
               player1: {
                 $id: 'player1',

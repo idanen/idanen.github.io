@@ -139,7 +139,7 @@
       }
 
       return loginPromise
-        .then(authData => this.getUser(authData.user.uid));
+        .then(authData => this.getUser(authData.uid || authData.user.uid));
     },
 
     logout: function () {

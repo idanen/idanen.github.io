@@ -47,5 +47,8 @@
         "jquery": "*"
       }
     }
+  },
+  "resolutions": {
+    "firebase": "~4.x.x",
   }
 }

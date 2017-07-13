@@ -130,6 +130,7 @@
       this.playerAttendance.guests = 0;
       this.playerAttendance.message = '';
       this.playerAttendance.attendance = '';
+      this.gameFull = _.isNumber(this.selectedGame.limitPlayers) ? this.attendanceCount.yes.length >= this.selectedGame.limitPlayers : false;
       if (currentChoice) {
         this.playerAttendance = _.pick(currentChoice, ['attendance', 'guests', 'message']);
       }

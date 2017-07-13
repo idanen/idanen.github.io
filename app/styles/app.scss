@@ -27,6 +27,19 @@ google-map {
   padding: 0;
 }
 
+.list-group-item-disabled {
+  &::after {
+    content: '';
+    background-color: rgba(255, 255, 255, 0.6);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: not-allowed;
+  }
+}
+
 attendance-panel {
   display: block;
   position: relative;
@@ -75,6 +88,9 @@ attendance-panel {
   .available-answers_answer {
     text-transform: capitalize;
     cursor: pointer;
+    em {
+      text-transform: initial;
+    }
   }
 }
 

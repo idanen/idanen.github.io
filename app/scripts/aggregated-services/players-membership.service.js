@@ -71,15 +71,13 @@
     confirmJoiningPlayer: function (userId, community) {
       return this.playersSvc.findBy('userUid', userId)
         .then(player => {
-          let communityUpdates = {};
+          let updates = {};
 
-          communityUpdates[`${community.$id}/members/${player.$id}`] = player.displayName;
-          communityUpdates[`${community.$id}/joiners/${userId}`] = null;
+          updates[`players/${player.$id}/membership/${community.$id}/type`] = 'member';
+          updates[`communities/${community.$id}/members/${player.$id}`] = player.displayName;
+          updates[`communities/${community.$id}/joiners/${userId}`] = null;
 
-          return this.$q.all([
-            this.playersRef.child(player.$id).child(`membership/${community.$id}/type`).set('member'),
-            this.communitiesRef.update(communityUpdates)
-          ]);
+          return this.$q.resolve(this.rootRef.update(updates));
         });
     },
 

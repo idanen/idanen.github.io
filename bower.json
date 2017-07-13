@@ -49,6 +49,6 @@
     }
   },
   "resolutions": {
-    "firebase": "~4.x.x",
+    "firebase": "~4.x.x"
   }
 }

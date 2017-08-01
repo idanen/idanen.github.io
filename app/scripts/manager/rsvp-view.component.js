@@ -48,6 +48,10 @@
 
     $postLink() {
       this.attendanceInputs.on('input', () => this.changeAttendance(this.playerAttendance.attendance));
+      this.communityReady = this.communitiesSvc.getUnboundCommunity(this.communityId)
+        .then(community => {
+          this.communityMembers = community.members;
+        });
     }
 
     $onDestroy() {
@@ -74,7 +78,7 @@
       }
       this.attendingPlayers = this.playersGames.getApprovalsForGame(this.selectedGame.$id);
       let currentAttendancePromise = this.attendingPlayers.$loaded()
-        .then(this.buildAttendanceCounts.bind(this));
+        .then(this.reBuildAnswers.bind(this));
       this.$q.all([this.currentPlayer.$loaded(), currentAttendancePromise])
         .then(this.setCurrentChoices.bind(this));
     }
@@ -96,7 +100,7 @@
         guests: this.playerAttendance.guests,
         message: this.playerAttendance.message
       })
-        .then(this.buildAttendanceCounts.bind(this));
+        .then(this.reBuildAnswers.bind(this));
     }
 
     buildAttendanceCounts() {
@@ -123,6 +127,25 @@
           this.attendanceCount[answer] = [];
         }
       });
+    }
+
+    buildDidNotAnswer() {
+      const attendingIds = this.attendingPlayers.map(player => player.$id);
+      console.log('attendingIds:', attendingIds);
+      this.didNotAnswer = Object.keys(this.communityMembers)
+        .filter(playerId => !attendingIds.includes(playerId))
+        .map(playerId => ({
+          $id: playerId,
+          name: this.communityMembers[playerId]
+        }));
+    }
+
+    reBuildAnswers() {
+      return this.$q.all([
+        this.buildAttendanceCounts(),
+        this.communityReady,
+        this.$q.resolve(this.buildDidNotAnswer())
+      ]);
     }
 
     setCurrentChoices() {

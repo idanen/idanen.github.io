@@ -77,6 +77,14 @@
             <em>{{ attendee.message }}</em>
           </li>
         </ul>
+        <label>Did not answer</label>
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-info" ng-repeat="player in $ctrl.didNotAnswer">
+            <span class="icon icon-question-circle"></span>
+            <!--<img class="img-circle" ng-src="{{ attendee.photoURL }}">-->
+            <strong>{{ player.name }}</strong>
+          </li>
+        </ul>
       </div>
     </div>
   </form>

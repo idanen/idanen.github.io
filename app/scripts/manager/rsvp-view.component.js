@@ -37,6 +37,11 @@
       this.games = this.gamesSvc.gamesOfCommunity(this.communityId, 15);
       this.games.$watch(this._mapGamesForPicker.bind(this));
 
+      this.communityReady = this.communitiesSvc.getUnboundCommunity(this.communityId)
+        .then(community => {
+          this.communityMembers = community.members;
+        });
+
       if (this.currentUser && this.currentUser.playerId) {
         this.currentPlayer = this.playersSvc.getPlayer(this.currentUser.playerId);
         this.currentPlayer.$loaded()
@@ -50,10 +55,6 @@
 
     $postLink() {
       this.attendanceInputs.on('input', () => this.changeAttendance(this.playerAttendance.attendance));
-      this.communityReady = this.communitiesSvc.getUnboundCommunity(this.communityId)
-        .then(community => {
-          this.communityMembers = community.members;
-        });
     }
 
     $onDestroy() {
@@ -131,6 +132,9 @@
     }
 
     buildDidNotAnswer() {
+      if (!this.attendingPlayers) {
+        return [];
+      }
       const attendingIds = this.attendingPlayers.map(player => player.$id);
       this.didNotAnswer = Object.keys(this.communityMembers)
         .filter(playerId => !attendingIds.includes(playerId))

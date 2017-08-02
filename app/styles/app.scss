@@ -93,6 +93,11 @@ attendance-panel {
     }
   }
 }
+.available-games {
+  .available-games_game {
+    cursor: pointer;
+  }
+}
 
 .login-state-logged-in {
   display: inline-block;

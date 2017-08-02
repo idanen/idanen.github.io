@@ -21,14 +21,14 @@ window.mockFirebase = (function (global) {
     update: () => global.$q.resolve(),
     child: firebaseChildFn
   });
-  const firebaseStorageChildFn = () => ({
+  const firebaseStorageChildFn = pathPart => ({
     put: () => ({
       on: (event, changeFn, errorFn, completeFn) => {
         firebaseStorageListeners.change.push(changeFn);
         firebaseStorageListeners.error.push(errorFn);
         firebaseStorageListeners.complete.push(completeFn);
       },
-      then: completeFn => completeFn({downloadURL: 'uploaded-image.jpg'})
+      then: completeFn => Promise.resolve(completeFn({downloadURL: pathPart}))
     }),
     child: firebaseStorageChildFn
   });

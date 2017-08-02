@@ -4,14 +4,15 @@
   angular.module('pokerManager')
     .controller('UserProfileCtrl', UserProfileController);
 
-  UserProfileController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players', '$state'];
-  function UserProfileController($element, userService, playersUsers, communitiesSvc, Players, $state) {
+  UserProfileController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players', '$state', 'filesUploadSvc'];
+  function UserProfileController($element, userService, playersUsers, communitiesSvc, Players, $state, filesUploadSvc) {
     this.$element = $element;
     this.userService = userService;
     this.playersUsers = playersUsers;
     this.playersSvc = Players;
     this.communitiesSvc = communitiesSvc;
     this.$state = $state;
+    this.filesUploadSvc = filesUploadSvc;
 
     this.cardElement = this.$element.find('paper-card');
     this.userInputs = {
@@ -24,6 +25,9 @@
   }
 
   UserProfileController.prototype = {
+    $onInit: function () {
+      this.$element.find('input[type=file]')[0].addEventListener('change', evt => this.trying(evt.target.files[0]));
+    },
     // $postLink: function () {
     //   this.cardElement = this.$element.find('paper-card');
     // },
@@ -68,6 +72,11 @@
     communitySelectionChanged: function (community) {
       this.selectedCommunity = community;
       // console.log('Change selected community', community);
+    },
+
+    trying(file) {
+      return this.filesUploadSvc.uploadImg({uid: 'fake', imgFile: file})
+        .then(url => console.log(`${url}`));
     },
 
     logout: function () {

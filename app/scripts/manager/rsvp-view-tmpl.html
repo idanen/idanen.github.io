@@ -6,8 +6,8 @@
     <div class="form-group row">
       <label class="col-xs-12">Select game</label>
       <div class="col-xs-12">
-        <ul class="list-group">
-          <li class="list-group-item" ng-repeat="game in $ctrl.gamesForPicker" ng-click="$ctrl.gameSelectionChanged(game.$id)">
+        <ul class="list-group available-games">
+          <li class="list-group-item available-games_game" ng-repeat="game in $ctrl.gamesForPicker" ng-click="$ctrl.gameSelectionChanged(game.$id)">
             <span class="icon" ng-class="{'icon-radio_button_unchecked': $ctrl.selectedGame.$id !== game.$id, 'icon-radio_button_checked': $ctrl.selectedGame.$id === game.$id}"></span>
             <strong>{{ game.title }}</strong>
             <em>{{ game.date | date:$ctrl.dateFormat }}</em>
@@ -75,6 +75,14 @@
             <img class="img-circle" ng-src="{{ attendee.photoURL }}">
             <strong>{{ attendee.displayName }}</strong>
             <em>{{ attendee.message }}</em>
+          </li>
+        </ul>
+        <label>Did not answer</label>
+        <ul class="list-group">
+          <li class="list-group-item list-group-item-info" ng-repeat="player in $ctrl.didNotAnswer">
+            <span class="icon icon-question-circle"></span>
+            <!--<img class="img-circle" ng-src="{{ attendee.photoURL }}">-->
+            <strong>{{ player.name }}</strong>
           </li>
         </ul>
       </div>

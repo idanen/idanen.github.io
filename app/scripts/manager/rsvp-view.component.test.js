@@ -69,6 +69,7 @@
     const gamesSvcMock = jasmine.createSpyObj('gamesSvc', ['gamesOfCommunity']);
     const playersSvcMock = jasmine.createSpyObj('playersSvc', ['getPlayer']);
     const playersGamesMock = jasmine.createSpyObj('playersGames', ['changePlayerApproval', 'getApprovalsForGame']);
+    const communitiesSvcMock = jasmine.createSpyObj('communitiesSvc', ['getUnboundCommunity']);
     const testPlayerId = 'testPlayerId';
     const currentPlayer = {
       $id: testPlayerId,
@@ -107,7 +108,18 @@
       games[0].attending.$loaded = () => $q.resolve();
       gamesSvcMock.gamesOfCommunity.and.returnValue(games);
       playersSvcMock.getPlayer.and.returnValue(currentPlayer);
-      playersGamesMock.getApprovalsForGame.and.returnValue(games[0].attending);
+      communitiesSvcMock.getUnboundCommunity.and.returnValue($q.resolve({ members: { playerid1: 'some-player' } }));
+      playersGamesMock.getApprovalsForGame.and.callFake(() => {
+        const resultsArray = Object.keys(games[0].attending).map(id => {
+          return Object.assign({
+            '$id': id
+          }, games[0].attending[id]);
+        });
+        resultsArray.$watch = () => () => true;
+        resultsArray.$loaded = () => $q.resolve();
+
+        return resultsArray;
+      });
       playersGamesMock.changePlayerApproval.and.returnValue({then: () => {}});
       games.$watch = function (fn) {
         return $q.resolve().then(fn);
@@ -119,9 +131,10 @@
         Players: playersSvcMock,
         playersGames: playersGamesMock,
         gameLocationDialogSvc: jasmine.createSpyObj('gameLocationDialogSvc', ['open', 'close']),
+        communitiesSvc: communitiesSvcMock,
         $element
       }, {
-        currentUsr: {
+        currentUser: {
           uid: 'userId',
           displayName: 'Test User',
           photoURL: 'http://link.to.users/image.png',
@@ -130,6 +143,7 @@
         communityId: 'community1'
       });
       ctrl.$onInit();
+      $rootScope.$digest();
     }));
 
     afterEach(() => {

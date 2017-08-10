@@ -1,0 +1,14 @@
+.upload-button {
+  input[type='file'] {
+    display: none;
+    + .upload-button__message {
+      opacity: 0;
+      transform: translate(0, -5px);
+      transition: transform .3s ease-out, opacity .3s ease-out;
+    }
+  }
+  input[type='file']:invalid + .upload-button__message {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}

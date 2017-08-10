@@ -39,6 +39,18 @@
           .then(player => this.playersSvc.addUser(user, player))
           .then(player => this.userSvc.linkUserToPlayer(player))
       );
+    },
+
+    updatePhotoURL: function (uid, photoURL) {
+      return this.playersSvc.findBy('userUid', uid)
+        .then(player => {
+          const updates = {
+            [`users/${uid}/photoURL`]: photoURL,
+            [`players/${player.$id}/photoURL`]: photoURL
+          };
+
+          return this.Ref.update(updates);
+        });
     }
   };
 }());

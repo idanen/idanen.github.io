@@ -1,6 +1,8 @@
 <paper-card class="container-fluid" image="{{ $ctrl.currentUser.provider === 'google' ? $ctrl.currentUser.photoURL + '?sz=150' : $ctrl.currentUser.photoURL }}" alt="User's profile image">
   <div class="card-content">
     <div ng-if="$ctrl.currentUser">
+      <upload-button on-change="$ctrl.saveProfileImage($event)"></upload-button>
+      <p class="text-info" ng-if="$ctrl.uploadMsg">{{ $ctrl.uploadMsg }}</p>
       <community-picker communities="$ctrl.communities" selected="$ctrl.selectedCommunity" on-select="$ctrl.communitySelectionChanged($event)"></community-picker>
     </div>
     <player-details ng-show="!!$ctrl.currentUser.playerId" player-id="$ctrl.currentUser.playerId" community-filter="$ctrl.selectedCommunity"></player-details>

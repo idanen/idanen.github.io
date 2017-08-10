@@ -1,4 +1,4 @@
-(function () {
+(function (global) {
   'use strict';
 
   class FilesUploadService {
@@ -8,17 +8,17 @@
 
     constructor($q) {
       this.$q = $q;
-      this.storageRef = firebase.storage().ref().child('images');
+      this.storageRef = global.firebase.storage().ref().child('profile_images');
     }
 
     uploadImg({uid, imgFile} = {}) {
       const fileParts = imgFile.name.split('.');
       const fileSuffix = fileParts[fileParts.length - 1];
-      return this.storageRef.child(`${uid}.${fileSuffix}`).put(imgFile)
+      return this.storageRef.child(`${uid}/profile_img.${fileSuffix}`).put(imgFile)
         .then(snapshot => snapshot.downloadURL);
     }
   }
 
   angular.module('pokerManager')
     .service('filesUploadSvc', FilesUploadService);
-}());
+}(window));

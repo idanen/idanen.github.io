@@ -3,8 +3,10 @@
 
   describe('files-upload.service', () => {
     let $q, $rootScope, filesUploadSvc;
+
+    beforeEach(module('tmpls'));
+    beforeEach(module('pokerManager'));
     beforeEach(() => {
-      module('pokerManager');
       module($provide => {
         $provide.value('$window', () => window);
       });
@@ -19,9 +21,11 @@
       const imgFile = { name: 'image-name.png' };
       filesUploadSvc.uploadImg({ uid: 'user-id', imgFile })
         .then(uploaded => {
-          expect(uploaded).toContain(`user-id.png`);
+          expect(uploaded).toContain(`user-id/profile_img.png`);
           done();
         });
+
+      $rootScope.$digest();
     });
   });
 }());

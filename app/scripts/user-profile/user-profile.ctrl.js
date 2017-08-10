@@ -25,9 +25,6 @@
   }
 
   UserProfileController.prototype = {
-    $onInit: function () {
-      this.$element.find('input[type=file]')[0].addEventListener('change', evt => this.trying(evt.target.files[0]));
-    },
     // $postLink: function () {
     //   this.cardElement = this.$element.find('paper-card');
     // },
@@ -74,9 +71,20 @@
       // console.log('Change selected community', community);
     },
 
-    trying(file) {
-      return this.filesUploadSvc.uploadImg({uid: 'fake', imgFile: file})
-        .then(url => console.log(`${url}`));
+    saveProfileImage($event) {
+      const uid = this.currentUser.uid;
+      return this.filesUploadSvc.uploadImg({uid, imgFile: $event.file})
+        .then(url => {
+          console.log(`uploaded: ${url}`);
+          return this.playersUsers.updatePhotoURL(uid, url);
+        })
+        .then(() => {
+          this.uploadMsg = 'Uploaded successful';
+        })
+        .catch(err => {
+          console.error('Failed to upload image:', err);
+          this.uploadMsg = 'Uploaded failed';
+        });
     },
 
     logout: function () {

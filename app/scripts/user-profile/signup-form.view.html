@@ -21,11 +21,11 @@
     </paper-input-container>
     <paper-input-container auto-validate>
       <label>Email</label>
-      <input is="iron-input" name="email" ng-model="$ctrl.userInputs.email" required>
+      <input is="iron-input" name="email" ng-model="$ctrl.userInputs.email" ng-required="$ctrl.userProfileForm.email.$touched">
     </paper-input-container>
     <paper-input-container auto-validate>
       <label>Password</label>
-      <input is="iron-input" name="password" type="password" ng-model="$ctrl.userInputs.pass" pattern="[\w]{6,}" required>
+      <input is="iron-input" name="password" type="password" ng-model="$ctrl.userInputs.pass" pattern="[\w]{6,}" ng-required="$ctrl.userProfileForm.password.$touched">
       <paper-input-error>Password should be at least 6 characters long</paper-input-error>
     </paper-input-container>
     <paper-button class="signup-button" raised ng-tap="$ctrl.signup()" ng-show="$ctrl.signingUp">

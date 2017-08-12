@@ -9,7 +9,7 @@
       },
       template: `
         <form name="upload-button-form" class="upload-button">
-          <paper-button raised>Upload</paper-button>
+          <paper-button raised>Upload profile image</paper-button>
           <input type="file" accept="image/*">
           <div class="upload-button__message text-danger">{{$ctrl.errorMsg}}</div>
         </form>

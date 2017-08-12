@@ -4,8 +4,8 @@
   angular.module('pokerManager')
     .controller('UserProfileCtrl', UserProfileController);
 
-  UserProfileController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players', '$state', 'filesUploadSvc'];
-  function UserProfileController($element, userService, playersUsers, communitiesSvc, Players, $state, filesUploadSvc) {
+  UserProfileController.$inject = ['$element', 'userService', 'playersUsers', 'communitiesSvc', 'Players', '$state', 'filesUploadSvc', '$q'];
+  function UserProfileController($element, userService, playersUsers, communitiesSvc, Players, $state, filesUploadSvc, $q) {
     this.$element = $element;
     this.userService = userService;
     this.playersUsers = playersUsers;
@@ -13,8 +13,9 @@
     this.communitiesSvc = communitiesSvc;
     this.$state = $state;
     this.filesUploadSvc = filesUploadSvc;
+    this.$q = $q;
 
-    this.cardElement = this.$element.find('paper-card');
+    this.cardElement = this.$element.find('paper-card')[0];
     this.userInputs = {
       name: '',
       email: '',
@@ -73,9 +74,11 @@
 
     saveProfileImage($event) {
       const uid = this.currentUser.uid;
-      return this.filesUploadSvc.uploadImg({uid, imgFile: $event.file})
+      return this.$q.resolve(this.filesUploadSvc.uploadImg({uid, imgFile: $event.file}))
         .then(url => {
           console.log(`uploaded: ${url}`);
+          this.cardElement.image = '';
+          this.cardElement.image = url;
           return this.playersUsers.updatePhotoURL(uid, url);
         })
         .then(() => {
@@ -83,7 +86,7 @@
         })
         .catch(err => {
           console.error('Failed to upload image:', err);
-          this.uploadMsg = 'Uploaded failed';
+          this.uploadMsg = 'Uploading failed';
         });
     },
 

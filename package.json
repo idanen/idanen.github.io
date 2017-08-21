@@ -2,7 +2,11 @@
   "name": "pokerManager",
   "version": "1.4.0",
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp unitTest",
+    "start": "gulp dev",
+    "build:prod": "gulp build --stage prod",
+    "build:staging": "gulp build --stage prod --target dev",
+    "build": "gulp build"
   },
   "dependencies": {
     "babel-eslint": "^6.0.0",
@@ -77,9 +81,7 @@
     "karma-failed-reporter": "^0.0.3",
     "karma-jasmine": "^1.1.0",
     "karma-ng-html2js-preprocessor": "^1.0.0",
-    "karma-phantomjs-launcher": "^1.0.0",
     "karma-sinon": "^1.0.3",
-    "phantomjs-prebuilt": "^2.1.7",
     "plato": "^1.4.0",
     "protractor": "^2.0.0",
     "sinon": "^1.17.4"

@@ -3,26 +3,26 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: node:6.5.0
+image: node:8.1.4
 
 pipelines:
   tags:
     release-*:
       - step:
           script:
-            - npm install -g gulp-cli bower firebase-tools
+            - npm install -g bower firebase-tools
             - npm install
             - bower install --allow-root
-            - gulp build --stage prod
+            - npm run build:prod
             - firebase use --token $FIREBASE_PROD_DEPLOY_TOKEN production
             - firebase deploy -m "Pipeline commit $BITBUCKET_COMMIT" --non-interactive --token $FIREBASE_PROD_DEPLOY_TOKEN
   branches:
     master:
       - step:
           script: # Modify the commands below to build your repository.
-            - npm install -g gulp-cli bower firebase-tools
+            - npm install -g bower firebase-tools
             - npm install
             - bower install --allow-root
-            - gulp build --stage prod --target dev
+            - npm run build:staging
             - firebase use --token $FIREBASE_DEPLOY_TOKEN default
             - firebase deploy -m "Pipeline commit $BITBUCKET_COMMIT" --non-interactive --token $FIREBASE_DEPLOY_TOKEN

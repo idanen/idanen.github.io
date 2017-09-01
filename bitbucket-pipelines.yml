@@ -10,6 +10,7 @@ pipelines:
     release-*:
       - step:
           script:
+            - npm install -g npm
             - npm install -g bower firebase-tools
             - npm install
             - bower install --allow-root
@@ -19,7 +20,8 @@ pipelines:
   branches:
     master:
       - step:
-          script: # Modify the commands below to build your repository.
+          script:
+            - npm install -g npm
             - npm install -g bower firebase-tools
             - npm install
             - bower install --allow-root

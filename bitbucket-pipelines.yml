@@ -10,6 +10,7 @@ pipelines:
     release-*:
       - step:
           script:
+            - npm -g config set user root
             - npm install -g bower firebase-tools
             - npm install
             - bower install --allow-root
@@ -20,6 +21,7 @@ pipelines:
     master:
       - step:
           script:
+            - npm -g config set user root
             - npm install -g bower firebase-tools
             - npm install
             - bower install --allow-root

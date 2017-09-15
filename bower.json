@@ -18,7 +18,7 @@
     "polymer": "Polymer/polymer#^1.0.0",
     "highcharts": "highcharts-release#~4.2.1",
     "firebase": "~4.x.x",
-    "angularfire": "~2.x.x",
+    "angularfire": "git@github.com:idanen/angularfire.git",
     "paper-toast": "PolymerElements/paper-toast#~1.x.x",
     "sw-toolbox": "^3.1.x",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.x.x",

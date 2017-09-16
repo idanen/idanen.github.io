@@ -39,12 +39,18 @@
       //     .then(this.dataForChart.bind(this))
       //     .finally(this.stopLoadingIndication.bind(this));
       this.player.$loaded()
-        .then(() => this.onChanges({player: this.player}));
+        .then(() => {
+          if (this.onChanges) {
+            this.onChanges({player: this.player});
+          }
+        });
     } else {
       this.player = this.Players.createPlayer(this.communityId);
       this.ready = this.$q.resolve();
 
-      this.onChanges({player: this.player});
+      if (this.onChanges) {
+        this.onChanges({player: this.player});
+      }
     }
   }
 

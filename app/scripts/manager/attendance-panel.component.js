@@ -69,7 +69,7 @@
     }
 
     updateIsAdmin() {
-      if (this.currentUser) {
+      if (this.currentUser && this.communityId) {
         this.communitiesSvc.isAdmin(this.currentUser.playerId, this.communityId)
           .then(isAdmin => {
             this.isAdmin = isAdmin;

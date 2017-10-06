@@ -18,22 +18,9 @@
     this.communitiesSvc = communitiesSvc;
     this.userService = userService;
 
-    this.game.$loaded()
-      .then(() => {
-        if (!this.game.chipValue) {
-          this.game.chipValue = 1;
-        }
-        if (!this.game.defaultBuyin) {
-          this.game.defaultBuyin = 50;
-        }
-        if (!this.game.hostingCosts) {
-          this.game.hostingCosts = 10;
-        }
-        if (!this.game.allowedGuests) {
-          this.game.allowedGuests = 1;
-        }
-        this.checkAdmin();
-      });
+    if (this.game) {
+      this.setDefaultsToGame();
+    }
   }
 
   GameController.prototype = {
@@ -47,9 +34,30 @@
       }
     },
 
+    setDefaultsToGame: function () {
+      this.game.$loaded()
+        .then(() => {
+          if (!this.game.chipValue) {
+            this.game.chipValue = 1;
+          }
+          if (!this.game.defaultBuyin) {
+            this.game.defaultBuyin = 50;
+          }
+          if (!this.game.hostingCosts) {
+            this.game.hostingCosts = 10;
+          }
+          if (!this.game.allowedGuests) {
+            this.game.allowedGuests = 1;
+          }
+          this.checkAdmin();
+        });
+    },
+
     $onChanges: function (changes) {
       if (changes.gameId && changes.gameId.previousValue !== this.gameId) {
         this.game = this.gamesSvc.getGame(this.gameId);
+        this.playersInGame = this.playersGames.getPlayersInGame(this.gameId);
+        this.setDefaultsToGame();
       }
     },
     initGame: function () {

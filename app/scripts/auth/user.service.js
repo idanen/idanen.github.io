@@ -23,21 +23,19 @@
 
   UserService.prototype = {
     getUser: function (uid) {
-      return this.$q.resolve(
-        this.usersRef
-          .child(uid)
-          .once('value')
-          .then(snap => {
-            if (!snap.exists()) {
-              return this.$q.reject(new Error(this.USER_DOESNT_EXIST_ERROR));
-            }
-            this.currentUser = snap.val();
-            return this.currentUser;
-          })
-      );
+      return this.usersRef
+        .child(uid)
+        .once('value')
+        .then(snap => {
+          if (!snap.exists()) {
+            return Promise.reject(new Error(this.USER_DOESNT_EXIST_ERROR));
+          }
+          this.currentUser = snap.val();
+          return this.currentUser;
+        });
     },
     waitForUser: function () {
-      return this.$q.resolve(this.authObj.$waitForSignIn())
+      return this.authObj.$waitForSignIn()
         .then(user => {
           if (user) {
             return this.getUser(user.uid);

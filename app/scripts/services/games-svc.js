@@ -34,6 +34,9 @@
         .push(gameToSave);
     },
     getGame: function (gameId) {
+      if (!gameId) {
+        return null;
+      }
       return this.$firebaseObject(this.gamesRef.child(gameId));
     },
 

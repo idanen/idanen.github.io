@@ -29,6 +29,9 @@
         this.attendingPlayers.$loaded()
           .then(this.buildAttendanceCounts.bind(this));
       }
+      if (changes && changes.communityId && changes.communityId.currentValue !== changes.communityId.previousValue) {
+        this.updateIsAdmin();
+      }
     }
 
     $onDestroy() {

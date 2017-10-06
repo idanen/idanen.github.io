@@ -15,6 +15,9 @@
 
   PlayersGamesService.prototype = {
     getPlayersInGame: function (gameId) {
+      if (!gameId) {
+        return [];
+      }
       return this.$firebaseArray(
         this.gamesRef
           .child(gameId)

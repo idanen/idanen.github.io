@@ -188,9 +188,9 @@ module.exports = function (gulp, $, config) {
       .pipe(cssFilter.restore)
       .pipe(jsFilter)
       .pipe($.if(isProd, $.concat('vendor.js')))
-      .pipe($.if(isProd, $.uglify({
-        preserveComments: $.uglifySaveLicense
-      })))
+      // .pipe($.if(isProd, $.uglify({
+      //   preserveComments: $.uglifySaveLicense
+      // })))
       .pipe($.if(isProd, $.rev()))
       .pipe(gulp.dest(config.extDir))
       .pipe(jsFilter.restore);

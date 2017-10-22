@@ -71,13 +71,15 @@
     confirmJoiningPlayer: function (userId, community) {
       return this.playersSvc.findBy('userUid', userId)
         .then(player => {
-          let updates = {};
+          let communityUpdates = {};
 
-          updates[`players/${player.$id}/membership/${community.$id}/type`] = 'member';
-          updates[`communities/${community.$id}/members/${player.$id}`] = player.displayName;
-          updates[`communities/${community.$id}/joiners/${userId}`] = null;
+          communityUpdates[`${community.$id}/members/${player.$id}`] = player.displayName;
+          communityUpdates[`${community.$id}/joiners/${userId}`] = null;
 
-          return this.$q.resolve(this.rootRef.update(updates));
+          return this.$q.all([
+            this.playersRef.child(player.$id).child(`membership/${community.$id}/type`).set('member'),
+            this.communitiesRef.update(communityUpdates)
+          ]);
         });
     },
 
@@ -90,11 +92,11 @@
      * @returns {Promise} An angular promise that resolves with results of all transactions
      */
     setPlayerAsAdminOfCommunity: function (community, player) {
-      var promises = [];
-      promises.push(this.playersSvc.joinCommunity(player, community));
-      promises.push(this.communitiesSvc.addAdmin(player, community));
-      promises.push(this.communitiesSvc.addMember(player, community));
-      return this.$q.all(promises);
+      return this.$q.all([
+        this.playersSvc.joinCommunity(player, community),
+        this.communitiesSvc.addAdmin(player, community),
+        this.communitiesSvc.addMember(player, community)
+      ]);
     }
   };
 }());

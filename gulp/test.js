@@ -60,18 +60,8 @@ module.exports = function (gulp, $, config) {
   });
 
   // run unit tests
-  gulp.task('unitTest', ['karmaFiles'], function (done) {
-    var server = new $.karma.Server(karmaConf, function () {
-      done();
-    });
-    server.start();
-  });
-
-  gulp.task('justTest', ['karmaFiles'], function (done) {
-    var server = new $.karma.Server(karmaConf, function () {
-      done();
-    });
-    server.start();
+  gulp.task('unitTest', ['karmaFiles'], function () {
+    new $.karma.Server(karmaConf).start();
   });
 
   gulp.task('build:e2eTest', function () {

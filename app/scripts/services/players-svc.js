@@ -32,6 +32,11 @@
 
       if (communityId) {
         newPlayer.guestOf = communityId;
+        newPlayer.membership = {
+          [communityId]: {
+            type: 'guest'
+          }
+        };
       }
 
       return newPlayer;
@@ -159,7 +164,8 @@
           .update({
             userUid: user.uid,
             photoURL: user.photoURL,
-            displayName: user.displayName || player.displayName
+            displayName: user.displayName || player.displayName,
+            guestOf: null
           })
           .then(() => this.getPlayer(player.$id));
       }

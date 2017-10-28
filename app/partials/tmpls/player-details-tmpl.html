@@ -1,9 +1,13 @@
 <form role="form" class="form-horizontal">
   <div class="form-group">
-    <div class="col-xs-4 col-xs-offset-8">
-      <paper-button class="pull-right" raised ng-click="pCtrl.giveUserAdminPriveleges()">
+    <div class="col-xs-5 col-xs-offset-7">
+      <paper-button class="pull-right" raised ng-tap="pCtrl.giveUserAdminPrivileges()">
         <span class="icon icon-user-plus"></span>
         <span> Set admin</span>
+      </paper-button>
+      <paper-button class="pull-right" raised ng-tap="pCtrl.promoteGuestToMember()">
+        <span class="icon icon-group_add"></span>
+        <span> Set member</span>
       </paper-button>
     </div>
   </div>

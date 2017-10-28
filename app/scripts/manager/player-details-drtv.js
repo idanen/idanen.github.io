@@ -86,10 +86,17 @@
       }
     },
 
-    giveUserAdminPriveleges: function () {
+    giveUserAdminPrivileges: function () {
       if (this.player.membership[this.communityId]) {
         return this.communitiesSvc.getUnboundCommunity(this.communityId)
           .then(community => this.playersMembership.setPlayerAsAdminOfCommunity(community, this.player));
+      }
+    },
+
+    promoteGuestToMember: function () {
+      if (this.player.membership[this.communityId]) {
+        return this.communitiesSvc.getUnboundCommunity(this.communityId)
+          .then(community => this.Players.joinCommunity(this.player, community));
       }
     }
   };

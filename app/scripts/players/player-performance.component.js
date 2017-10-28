@@ -18,8 +18,6 @@
     this.$timeout = $timeout;
     this.$q = $q;
 
-    this.chartHolder = this.$element.find('.chart-holder');
-
     this.loading = false;
     this.playerGamesCount = 0;
     this.chartData = {
@@ -30,6 +28,10 @@
   }
 
   PlayerPerformanceController.prototype = {
+    $onInit() {
+      this.chartHolder = this.$element.find('.chart-holder');
+    },
+
     $onChanges: function (changes) {
       if (changes && changes.games && changes.games.currentValue !== changes.games.previousValue) {
         let gamesPromise = this.$q.resolve();

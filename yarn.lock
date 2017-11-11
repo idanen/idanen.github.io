@@ -79,14 +79,6 @@
   version "0.3.4"
   resolved "https://codeload.github.com/mgcrea/angular-motion/tar.gz/a8870e01cc595ee8ab157e3b61aa6a0cb639deb7"
 
-"@bower_components/angular-resource@angular/bower-angular-resource#~1.6.*":
-  version "1.6.6"
-  resolved "https://codeload.github.com/angular/bower-angular-resource/tar.gz/dfe656121219734e6c39913deba7e2f60c3ad1e6"
-
-"@bower_components/angular-route@angular/bower-angular-route#~1.6.*":
-  version "1.6.6"
-  resolved "https://codeload.github.com/angular/bower-angular-route/tar.gz/c972e3222d290cc3ab738ba1f07b88f0c74c0e2c"
-
 "@bower_components/angular-sanitize@angular/bower-angular-sanitize#~1.6.*":
   version "1.6.6"
   resolved "https://codeload.github.com/angular/bower-angular-sanitize/tar.gz/27b6da5578b99482330c6c38c5039a517e777c47"

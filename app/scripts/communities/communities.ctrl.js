@@ -9,7 +9,7 @@
   function CommunitiesController(communitiesSvc, userService, playerModal, Games, $state, community, playersMembership, playersUsers) {
     this.pageSize = 3;
     this.currentPage = 0;
-    this.fromDate = Date.now() - 1000 * 60 * 60 * 24 * 30;
+    this.fromDate = Date.now() - (1000 * 60 * 60 * 24 * 30);
     this.toDate = Date.now();
     this.userService = userService;
     this.playerModal = playerModal;

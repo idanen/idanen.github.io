@@ -81,7 +81,7 @@
       let calculatedBuyin = rationalBuyin * this.game.defaultBuyin;
       player.buyin += calculatedBuyin;
       // player.balance -= player.buyin;
-      player.currentChipCount = parseInt(player.currentChipCount, 10) + calculatedBuyin * this.game.chipValue;
+      player.currentChipCount = parseInt(player.currentChipCount, 10) + (calculatedBuyin * this.game.chipValue);
       player.buyout = player.currentChipCount / this.game.chipValue;
       this.playerResultUpdated(player);
 
@@ -96,7 +96,7 @@
       let actualBuyin = rationalBuyin * this.game.defaultBuyin;
       player.buyin -= actualBuyin;
       // player.balance += player.buyin;
-      player.currentChipCount = parseInt(player.currentChipCount, 10) - actualBuyin * this.game.chipValue;
+      player.currentChipCount = parseInt(player.currentChipCount, 10) - (actualBuyin * this.game.chipValue);
       player.buyout = player.currentChipCount / this.game.chipValue;
       this.playerResultUpdated(player);
     },

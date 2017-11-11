@@ -1,3 +1,4 @@
+
 (function (fbConfig) {
   'use strict';
 
@@ -9,4 +10,5 @@
     // Initialize Firebase
     $windowProvider.$get().firebase.initializeApp(fbConfig);
   }
+  // eslint-disable-next-line no-inline-comments
 }(/* REPLACED_BY_BUILD */));

@@ -167,6 +167,9 @@ module.exports = function (gulp, $, config) {
       .pipe($.ngAnnotate({add: true, remove: true, rename: [{from: '$tooltip', to: '$asTooltip'}]}))
       .pipe(gulp.dest(ngStrapPath));
 
+    gulp.src(['node_modules/highcharts/**/*'])
+      .pipe(gulp.dest('node_modules/@bower_components/highcharts'));
+
     return gulp.src($.mainBowerFiles(), {base: bowerDir})
       .pipe(cssFilter)
       .pipe($.if(isProd, $.modifyCssUrls({

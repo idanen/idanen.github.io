@@ -114,7 +114,7 @@
 
     loadLastGame: function () {
       var today = Date.now();
-      this.loadGamesBetweenDates(today - DAY * 3, today);
+      this.loadGamesBetweenDates(today - (DAY * 3), today);
     },
 
     loadLastMonthGames: function () {

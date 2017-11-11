@@ -27,7 +27,7 @@
     };
     this.statsTab = {
       title: 'Stats',
-      href: $state.href('stats', {fromDate: Date.now() - DAY * 30, toDate: Date.now()}),
+      href: $state.href('stats', {fromDate: Date.now() - (DAY * 30), toDate: Date.now()}),
       icon: 'icon-bar-chart'
     };
     this.gamesTab = {
@@ -44,7 +44,7 @@
       if (toParams.communityId) {
         this.statsTab.href = $state.href('stats', {
           communityId: toParams.communityId,
-          fromDate: Date.now() - DAY * 30,
+          fromDate: Date.now() - (DAY * 30),
           toDate: Date.now()
         });
       }

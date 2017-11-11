@@ -8,7 +8,8 @@ app/google-login-sample.html
 npm-debug.log
 firebase-debug.log
 report/
-bower_components/
+bower_components
 build/
 coverage/
 app/scripts/angularfire/firebase-config.js
+yarn-error.log

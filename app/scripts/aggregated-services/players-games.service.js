@@ -78,21 +78,21 @@
     },
     removeAllPlayersFromGame: function (gameId) {
       return this.gamesRef
-          .child(gameId)
-          .child('players')
-          .once('value')
-            .then(snap => {
-              return Object.keys(snap.val());
-            })
-            .then(playersIds => {
-              let promises = [];
-              playersIds.forEach(playerId => {
-                promises.push(
-                  this.removePlayerFromGame(playerId, gameId)
-                );
-              });
-              return this.$q.all(promises);
-            });
+        .child(gameId)
+        .child('players')
+        .once('value')
+        .then(snap => {
+          return Object.keys(snap.val());
+        })
+        .then(playersIds => {
+          let promises = [];
+          playersIds.forEach(playerId => {
+            promises.push(
+              this.removePlayerFromGame(playerId, gameId)
+            );
+          });
+          return this.$q.all(promises);
+        });
     },
     addPlayerToGame: function (player, game) {
       if (!player) {

@@ -26,7 +26,7 @@
       // Need to wait for player details
       this.canChangeAttendance = false;
 
-      this.YESTERDAY = Date.now() - 1000 * 60 * 60 * 24;
+      this.YESTERDAY = Date.now() - (1000 * 60 * 60 * 24);
 
       this.stopWatcher = () => false;
     }

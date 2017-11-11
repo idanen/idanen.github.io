@@ -190,9 +190,15 @@ module.exports = function (gulp, $, config) {
       .pipe(gulp.dest(config.extDir))
       .pipe(cssFilter.restore)
       .pipe(jsFilter)
-      .pipe($.if(isProd && '!**/firebase.js', $.uglify({
-        preserveComments: $.uglifySaveLicense
-      })))
+      .pipe($.if(isProd && '!**/firebase.js',
+        $.uglify({
+          output: {
+            comments: 'some'
+          }
+        }).on('error', (...args) => {
+          console.log(args);
+        })
+      ))
       .pipe($.if(isProd, $.concat('vendor.js')))
       .pipe($.if(isProd, $.rev()))
       .pipe(gulp.dest(config.extDir))

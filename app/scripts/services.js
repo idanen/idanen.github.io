@@ -2,5 +2,5 @@
 (function () {
   'use strict';
 
-  angular.module('pokerManager.services', ['ngResource']);
+  angular.module('pokerManager.services', []);
 }());

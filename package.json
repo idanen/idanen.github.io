@@ -17,7 +17,6 @@
     "@bower_components/angular-messages": "angular/bower-angular-messages#~1.6.*",
     "@bower_components/angular-mocks": "angular/bower-angular-mocks#~1.6.*",
     "@bower_components/angular-motion": "mgcrea/angular-motion#^0.3.3",
-    "@bower_components/angular-resource": "angular/bower-angular-resource#~1.6.*",
     "@bower_components/angular-route": "angular/bower-angular-route#~1.6.*",
     "@bower_components/angular-sanitize": "angular/bower-angular-sanitize#~1.6.*",
     "@bower_components/angular-strap": "mgcrea/angular-strap#~2.1.0",

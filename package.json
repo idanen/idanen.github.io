@@ -80,11 +80,15 @@
     "@bower_components/vaadin-combo-box": "vaadin/vaadin-combo-box#^1.1.5",
     "@bower_components/web-animations-js": "web-animations/web-animations-js#^2.2.0",
     "@bower_components/webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.24",
-    "highcharts": "^6.0.2"
+    "angularfire": "^2.3.0",
+    "firebase": "^4.6.2",
+    "highcharts": "^6.0.2",
+    "promise-polyfill": "^6.0.2"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.2",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.6.0",
     "browser-sync": "^2.2.3",
     "connect-history-api-fallback": "^1.5.0",

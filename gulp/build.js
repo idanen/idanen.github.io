@@ -169,6 +169,12 @@ module.exports = function (gulp, $, config) {
 
     gulp.src(['node_modules/highcharts/**/*'])
       .pipe(gulp.dest('node_modules/@bower_components/highcharts'));
+    gulp.src(['node_modules/firebase/**/*'])
+      .pipe(gulp.dest('node_modules/@bower_components/firebase'));
+    gulp.src(['node_modules/promise-polyfill/**/*'])
+      .pipe(gulp.dest('node_modules/@bower_components/promise-polyfill'));
+    gulp.src(['node_modules/angularfire/**/*'])
+      .pipe(gulp.dest('node_modules/@bower_components/angularfire'));
 
     return gulp.src($.mainBowerFiles(), {base: bowerDir})
       .pipe(cssFilter)

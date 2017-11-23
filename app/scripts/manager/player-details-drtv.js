@@ -16,9 +16,10 @@
       templateUrl: 'partials/tmpls/player-details-tmpl.html'
     });
 
-  PlayerDetailsController.$inject = ['$q', '$stateParams', 'Players', 'Games', 'playersMembership', 'communitiesSvc'];
-  function PlayerDetailsController($q, $stateParams, Players, Games, playersMembership, communitiesSvc) {
+  PlayerDetailsController.$inject = ['$q', '$stateParams', '$element', 'Players', 'Games', 'playersMembership', 'communitiesSvc'];
+  function PlayerDetailsController($q, $stateParams, $element, Players, Games, playersMembership, communitiesSvc) {
     this.$q = $q;
+    this.$element = $element;
     this.Games = Games;
     this.Players = Players;
     this.communityId = $stateParams.communityId;
@@ -28,38 +29,32 @@
     this.isAdmin = function () {
       return true;
     };
+
+    this.updatePlayer = this.updatePlayer.bind(this);
   }
 
   PlayerDetailsController.prototype = {
     $onInit() {
-      // Re-fetch player from server
-      if (this.playerId) {
-        this.player = this.Players.getPlayer(this.playerId);
-        this.playerGames = this.Players.getPlayerGames(this.playerId);
-
-        // Get games and calculate stats
-        // this.ready = this.$q.all([this.player.$loaded(), this.playerGames.$loaded()])
-        //     .then(this.dataForChart.bind(this))
-        //     .finally(this.stopLoadingIndication.bind(this));
-        this.player.$loaded()
-          .then(() => {
-            if (this.onChanges) {
-              this.onChanges({player: this.player});
-            }
+      this.playerFields = ['email', 'displayName', 'phone'];
+      this.inputs = this.playerFields
+        .reduce((inputs, field) => {
+          return Object.assign({}, inputs, {
+            [field]: this.$element.find(`.player-${field}`)[0]
           });
-      } else {
-        this.player = this.Players.createPlayer(this.communityId);
-        this.ready = this.$q.resolve();
+        }, {});
+      Object.keys(this.inputs).forEach(field => this.inputs[field].addEventListener('input', this.updatePlayer));
 
-        if (this.onChanges) {
-          this.onChanges({player: this.player});
-        }
+      this.player = this.Players.createPlayer(this.communityId);
+      this.ready = this.$q.resolve();
+
+      if (this.onChanges) {
+        this.onChanges({player: this.player});
       }
     },
     $onChanges: function (changes) {
       if (changes && changes.playerId && changes.playerId.currentValue !== changes.playerId.previousValue) {
         const playerId = changes.playerId.currentValue;
-        if (playerId) {
+        if (playerId && playerId !== changes.playerId.previousValue) {
           if (this.player && _.isFunction(this.player.$destroy)) {
             this.player.$destroy();
           }
@@ -68,14 +63,23 @@
           }
           this.player = this.Players.getPlayer(playerId);
           this.playerGames = this.Players.getPlayerGames(playerId);
-        }
-      } else {
-        this.player = this.Players.createPlayer(this.communityId);
-        this.playerGames = [];
-        this.ready = this.$q.resolve();
+          this.player.$loaded()
+            .then(() => {
+              Object.keys(this.inputs).forEach(field => {
+                this.inputs[field].value = this.player[field];
+              });
+              if (this.onChanges) {
+                this.onChanges({player: this.player});
+              }
+            });
+        } else {
+          this.player = this.Players.createPlayer(this.communityId);
+          this.playerGames = [];
+          this.ready = this.$q.resolve();
 
-        if (this.onChanges) {
-          this.onChanges({player: this.player});
+          if (this.onChanges) {
+            this.onChanges({player: this.player});
+          }
         }
       }
 
@@ -84,6 +88,20 @@
       } else {
         this.filteredGames = this.playerGames;
       }
+    },
+
+    $onDestroy() {
+      this.$element.off();
+    },
+
+    updatePlayer() {
+      if (!this.isAdmin()) {
+        return;
+      }
+      Object.keys(this.inputs).forEach(field => {
+        this.player[field] = this.inputs[field].value;
+      });
+      return this.player.$save();
     },
 
     giveUserAdminPrivileges: function () {

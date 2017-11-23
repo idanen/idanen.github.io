@@ -40,17 +40,19 @@
         this.player.$destroy();
         this.player = null;
       }
-      if (this.cardElement) {
-        if (this.currentUser) {
-          this.cardElement.heading = this.currentUser.name;
-          if (this.currentUser.playerId) {
-            this.player = this.playersSvc.getPlayer(this.currentUser.playerId);
-            this.player.$loaded()
-              .then(this._playerCommunitiesForPicker.bind(this));
-          }
-        } else {
-          this.cardElement.heading = 'Login / Signup';
-        }
+      if (!this.cardElement) {
+        return;
+      }
+      if (!this.currentUser) {
+        this.cardElement.heading = 'Login / Signup';
+        return;
+      }
+
+      this.cardElement.heading = this.currentUser.name;
+      if (this.currentUser.playerId) {
+        this.player = this.playersSvc.getPlayer(this.currentUser.playerId);
+        this.player.$loaded()
+          .then(this._playerCommunitiesForPicker.bind(this));
       }
     },
 

@@ -40,6 +40,7 @@
         }
         gamesPromise
           .then(() => {
+            this.filteredGames = this.games;
             this.chartData = {
               dates: [],
               profits: [],
@@ -57,6 +58,11 @@
         this.chartHolder.highcharts().destroy();
       }
     },
+
+    _filterGames(communityId) {
+      this.filteredGames = this.games.filter(game => game.communityId === communityId);
+    },
+
     renderChart: function () {
       const chart = this.chartHolder.highcharts();
       if (chart) {
@@ -70,9 +76,9 @@
     },
 
     dataForChart: function () {
-      if (this.games) {
-        this.playerGamesCount = this.games.length;
-        this.chartData = _.reduce(this.games, (chartData, gameResult) => {
+      if (this.filteredGames) {
+        this.playerGamesCount = this.filteredGames.length;
+        this.chartData = this.filteredGames.reduce((chartData, gameResult) => {
           let profit,
               sum = chartData.balances[chartData.balances.length - 1] || 0;
           if (!isNaN(gameResult.date)) {
@@ -94,9 +100,10 @@
         });
       }
     },
+
     winningSessions: function () {
-      if (this.games) {
-        return _.reduce(this.games, function (count, game) {
+      if (this.filteredGames) {
+        return _.reduce(this.filteredGames, function (count, game) {
           if (game.buyout >= game.buyin) {
             return count + 1;
           }
@@ -105,6 +112,7 @@
       }
       return 0;
     },
+
     avgWinning: function (player, bb) {
       var sum = 0,
           gamesCount = 0;
@@ -116,6 +124,7 @@
       }
       return sum / (gamesCount || 1);
     },
+
     stopLoadingIndication: function () {
       this.loading = false;
     },

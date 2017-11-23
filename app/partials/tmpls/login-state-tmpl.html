@@ -1,4 +1,14 @@
 <span class="login-state-logged-in" ng-show="authCtrl.user">
-    <a class="btn btn-link btn-sm navbar-btn" ui-sref="userprofile({uid: authCtrl.user.uid})">Logged in as <img class="img-circle" ng-src="{{ authCtrl.user.provider === 'google' ? authCtrl.user.photoURL + '?sz=25' : authCtrl.user.photoURL }}" alt=""/> {{ authCtrl.user.displayName }}</a>
-    <button class="btn btn-sm btn-link navbar-btn" ng-click="authCtrl.signOut()"><span class="icon icon-google-plus"></span> logout</button>
+    <a class="btn btn-link btn-sm navbar-btn" ui-sref="userprofile({uid: authCtrl.user.uid})">
+        <span>
+          Logged in as
+            <img class="img-circle"
+                 ng-src="{{ authCtrl.user.provider === 'google' ? authCtrl.user.photoURL + '?sz=25' : authCtrl.user.photoURL }}"
+                 alt="profile image"
+            /> {{ authCtrl.user.displayName }}
+        </span>
+    </a>
+    <button class="btn btn-sm btn-link navbar-btn" ng-click="authCtrl.signOut()">
+      <span class="icon icon-google-plus"></span><span> logout</span>
+    </button>
 </span>

@@ -9,8 +9,9 @@
           getValue: jasmine.createSpy('getValue')
         };
 
+    beforeEach(module('tmpls'));
+    beforeEach(module('pokerManager'));
     beforeEach(function () {
-      module('pokerManager');
       module($provide => {
         $provide.value('firebaseCommon', firebaseCommonMock);
         $provide.value('Ref', { child: angular.noop });

@@ -21,9 +21,8 @@ pipelines:
       - step:
           script:
             - npm -g config set user root
-            - npm install -g bower firebase-tools
-            - npm install
-            - bower install --allow-root
+            - npm install -g yarn firebase-tools
+            - yarn install
             - npm run build:staging
             - firebase use --token $FIREBASE_DEPLOY_TOKEN default
             - firebase deploy -m "Pipeline commit $BITBUCKET_COMMIT" --non-interactive --token $FIREBASE_DEPLOY_TOKEN

@@ -19,6 +19,7 @@
     "angular/no-service-method": 0,
     "angular/controller-as-vm": 0,
     "angular/typecheck-array": 0,
+    "angular/service-name": 0,
     "newline-before-return": 0,
     "newline-per-chained-call": 0,
     "consistent-this": 0,

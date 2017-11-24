@@ -4,6 +4,7 @@
   "scripts": {
     "test": "gulp unitTest",
     "start": "gulp dev",
+    "start:staging": "gulp browserSync",
     "build:prod": "gulp build --stage prod",
     "build:staging": "gulp build --stage prod --target dev",
     "build": "gulp build",

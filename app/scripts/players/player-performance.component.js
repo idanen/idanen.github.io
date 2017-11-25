@@ -28,8 +28,8 @@
   }
 
   PlayerPerformanceController.prototype = {
-    $onInit() {
-      this.chartHolder = this.$element.find('.chart-holder');
+    $postLink() {
+      this.chartHolder = this.$element.find('.chart-holder')[0];
     },
 
     $onChanges: function (changes) {
@@ -54,8 +54,8 @@
     },
 
     $destroy: function () {
-      if (this.chartHolder) {
-        this.chartHolder.highcharts().destroy();
+      if (this.renderedChart) {
+        this.renderedChart.destroy();
       }
     },
 
@@ -64,14 +64,13 @@
     },
 
     renderChart: function () {
-      const chart = this.chartHolder.highcharts();
-      if (chart) {
-        chart.destroy();
+      if (this.renderedChart) {
+        this.renderedChart.destroy();
       }
 
       let chartObj = this.createChartObject();
       if (chartObj) {
-        this.chartHolder.highcharts(chartObj);
+        this.renderedChart = Highcharts.chart(this.chartHolder, chartObj);
       }
     },
 

@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('underscore.string')
+  , webpack = require('webpack')
   , firebaseCli = require('firebase-tools')
   , fs = require('fs')
   , path = require('path')
@@ -88,6 +89,7 @@ module.exports = function (gulp, $, config) {
     return gulp.src([
       config.appScriptFiles,
       `${config.buildDir}**/*.html`,
+      `!${config.appDir}/index.js`,
       `!${config.firebaseConfigFile}`,
       `!${config.appComponents}`,
       '!**/*.test.*',
@@ -127,9 +129,10 @@ module.exports = function (gulp, $, config) {
 
     return gulp.src(config.buildDir + 'index.html')
       .pipe($.inject(gulp.src([
-          config.buildCss + '**/*',
-          config.buildJs + '**/*',
-          '!' + config.buildJs + 'scripts/sw/*.js',
+          `${config.buildCss}**/*`,
+          `${config.buildJs}**/*`,
+          // `!${config.buildJs}index.js`,
+          `!${config.buildJs}scripts/sw/*.js`,
           '!**/webcomponents*.js'
         ])
         .pipe(jsFilter)
@@ -167,14 +170,14 @@ module.exports = function (gulp, $, config) {
       .pipe($.ngAnnotate({add: true, remove: true, rename: [{from: '$tooltip', to: '$asTooltip'}]}))
       .pipe(gulp.dest(ngStrapPath));
 
-    gulp.src(['node_modules/highcharts/**/*'])
-      .pipe(gulp.dest('node_modules/@bower_components/highcharts'));
-    gulp.src(['node_modules/firebase/**/*'])
-      .pipe(gulp.dest('node_modules/@bower_components/firebase'));
+    // gulp.src(['node_modules/highcharts/**/*'])
+    //   .pipe(gulp.dest('node_modules/@bower_components/highcharts'));
+    // gulp.src(['node_modules/firebase/**/*'])
+    //   .pipe(gulp.dest('node_modules/@bower_components/firebase'));
     gulp.src(['node_modules/promise-polyfill/**/*'])
       .pipe(gulp.dest('node_modules/@bower_components/promise-polyfill'));
-    gulp.src(['node_modules/angularfire/**/*'])
-      .pipe(gulp.dest('node_modules/@bower_components/angularfire'));
+    // gulp.src(['node_modules/angularfire/**/*'])
+    //   .pipe(gulp.dest('node_modules/@bower_components/angularfire'));
 
     return gulp.src($.mainBowerFiles(), {base: bowerDir})
       .pipe(cssFilter)
@@ -211,8 +214,29 @@ module.exports = function (gulp, $, config) {
       .pipe(jsFilter.restore);
   });
 
+  gulp.task('packVendor', function () {
+    return gulp.src('app/index.js')
+      .pipe($.webpack(require('../webpack.config'), webpack))
+      .pipe(gulp.dest(`${config.extDir}packed`));
+  });
+
+  gulp.task('injectPacked', ['packVendor'], function () {
+    return gulp.src(`${config.buildDir}index.html`)
+      .pipe($.inject(gulp.src([
+        `${config.extDir}packed/*.{js,css}`
+      ], {
+        read: false
+      }), {
+        starttag: '<!-- packed:vendor -->',
+        endtag: '<!-- endvendor -->',
+        addRootSlash: false,
+        ignorePath: config.buildDir
+      }))
+      .pipe(gulp.dest(config.buildDir));
+  });
+
   // inject bower components into index.html
-  gulp.task('bowerInject', ['bowerCopy'], function () {
+  gulp.task('bowerInject', ['bowerCopy', 'injectPacked'], function () {
     if (isProd) {
       return gulp.src(config.buildDir + 'index.html')
         .pipe($.inject(gulp.src([

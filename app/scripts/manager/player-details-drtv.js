@@ -35,15 +35,6 @@
 
   PlayerDetailsController.prototype = {
     $onInit() {
-      this.playerFields = ['email', 'displayName', 'phone'];
-      this.inputs = this.playerFields
-        .reduce((inputs, field) => {
-          return Object.assign({}, inputs, {
-            [field]: this.$element.find(`.player-${field}`)[0]
-          });
-        }, {});
-      Object.keys(this.inputs).forEach(field => this.inputs[field].addEventListener('input', this.updatePlayer));
-
       this.player = this.Players.createPlayer(this.communityId);
       this.ready = this.$q.resolve();
 
@@ -65,8 +56,16 @@
           this.playerGames = this.Players.getPlayerGames(playerId);
           this.player.$loaded()
             .then(() => {
+              this.playerFields = ['email', 'displayName', 'phone'];
+              this.inputs = this.playerFields
+                .reduce((inputs, field) => {
+                  return Object.assign({}, inputs, {
+                    [field]: this.$element.find(`.player-${field}`)[0]
+                  });
+                }, {});
               Object.keys(this.inputs).forEach(field => {
                 this.inputs[field].value = this.player[field];
+                this.inputs[field].addEventListener('input', this.updatePlayer);
               });
               if (this.onChanges) {
                 this.onChanges({player: this.player});

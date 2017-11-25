@@ -1,0 +1,21 @@
+window._ = require('lodash');
+window.firebase = require('firebase');
+window.jQuery = require('jquery');
+window.$ = window.jQuery;
+require('bootstrap');
+window.Clipboard = require('clipboard');
+window.Highcharts = require('highcharts');
+window.angular = require('angular');
+require('angular-animate');
+require('angular-messages');
+require('angular-sanitize');
+require('angular-touch');
+require('@uirouter/angularjs');
+require('angular-bootstrap-npm');
+require('angular-strap');
+require('angulartics');
+require('angulartics-google-analytics');
+require('angularfire');
+require('ngclipboard');
+
+console.log('vendors loaded');

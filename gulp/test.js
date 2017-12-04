@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path');
+const webpack = require('webpack');
 const karmaConf = require('../karma.config.js');
 
 // karmaConf.files get populated in karmaFiles
@@ -21,10 +21,14 @@ module.exports = function (gulp, $, config) {
     var stream = $.streamqueue({objectMode: true});
 
     // add bower javascript
-    stream.queue(gulp.src($.wiredep({
-      devDependencies: true,
-      exclude: [/polymer/, /webcomponents/]
-    }).js));
+    // stream.queue(gulp.src($.wiredep({
+    //   devDependencies: true,
+    //   exclude: [/polymer/, /webcomponents/]
+    // }).js));
+    stream.queue(gulp.src('app/index.js')
+      .pipe($.webpack(require('../webpack.config'), webpack))
+      .pipe(gulp.dest(`${config.extDir}packed`))
+    );
 
     // add application templates
     stream.queue(gulp.src([config.buildTestDirectiveTemplateFiles]));
@@ -34,6 +38,7 @@ module.exports = function (gulp, $, config) {
         gulp.src([
           'test/module.mock.js',
           config.appScriptFiles,
+          `!${config.appDir}/**/index.js`,
           '!**/webcomponents*.js',
           '!**/runtime-caching.js',
           '!**/notifications-sw.js',

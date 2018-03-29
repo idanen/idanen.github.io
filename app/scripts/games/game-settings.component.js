@@ -20,6 +20,9 @@
   GameSettingsController.prototype = {
     $onInit: function () {
       this.settings = _.pick(this.game, ['chipValue', 'defaultBuyin', 'hostingCosts', 'allowedGuests', 'limitPlayers']);
+      if (isNaN(this.settings.defaultBuyin)) {
+        this.settings.defaultBuyin = 50;
+      }
       if (isNaN(this.settings.hostingCosts)) {
         this.settings.hostingCosts = 10;
       }

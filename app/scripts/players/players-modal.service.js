@@ -16,7 +16,7 @@
   PlayerModal.prototype = {
     open: function (player) {
       var isNew = !player,
-          modalInstance, unwatch;
+          modalInstance;
 
       if (isNew) {
         player = this.Players.createPlayer(this.$state.params.communityId);
@@ -32,8 +32,6 @@
           }
         }
       });
-      unwatch = this.$rootScope.$on('$stateChangeSuccess', modalInstance.close);
-      modalInstance.closed.then(unwatch);
 
       return modalInstance.result;
     }

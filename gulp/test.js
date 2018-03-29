@@ -11,13 +11,23 @@ module.exports = function (gulp, $, config) {
     return $.del(config.buildTestDir, cb);
   });
 
-  gulp.task('buildTests', ['clean:test'], function () {
-    return gulp.src([config.unitTestFiles])
+  gulp.task('vendorsForTests', ['clean:test'], function () {
+    console.log('building lib.bundle.js');
+    return gulp.src('app/index.test.js')
+      .pipe($.webpack(require('../webpack.config'), webpack))
+      .pipe(gulp.dest(`${config.buildUnitTestsDir}/packed`))
+  });
+
+  gulp.task('buildTests', ['vendorsForTests'], function () {
+    return gulp.src([
+      config.unitTestFiles,
+      `!${config.appDir}/**/index*.js`
+    ])
       .pipe(gulp.dest(config.buildUnitTestsDir));
   });
 
   // inject scripts in karma.config.js
-  gulp.task('karmaFiles', function () {
+  gulp.task('karmaFiles', ['buildTests'], function () {
     var stream = $.streamqueue({objectMode: true});
 
     // add bower javascript
@@ -25,10 +35,6 @@ module.exports = function (gulp, $, config) {
     //   devDependencies: true,
     //   exclude: [/polymer/, /webcomponents/]
     // }).js));
-    stream.queue(gulp.src('app/index.js')
-      .pipe($.webpack(require('../webpack.config'), webpack))
-      .pipe(gulp.dest(`${config.extDir}packed`))
-    );
 
     // add application templates
     stream.queue(gulp.src([config.buildTestDirectiveTemplateFiles]));
@@ -36,9 +42,10 @@ module.exports = function (gulp, $, config) {
     // add application javascript
     stream.queue(
         gulp.src([
+          `${config.buildUnitTestsDir}/packed/**`,
           'test/module.mock.js',
           config.appScriptFiles,
-          `!${config.appDir}/**/index.js`,
+          `!${config.appDir}/**/index*.js`,
           '!**/webcomponents*.js',
           '!**/runtime-caching.js',
           '!**/notifications-sw.js',
@@ -47,13 +54,21 @@ module.exports = function (gulp, $, config) {
           '!**/*.test.*'
         ])
           .pipe($.babel({
-              presets: ['es2015']
+              presets: [
+                ['env', {
+                  targets: {
+                    browsers: 'last 2 versions'
+                  }
+                }]
+              ]
           }))
-          .pipe($.angularFilesort())
     );
 
     // add unit tests
-    stream.queue(gulp.src([config.unitTestFiles]));
+    stream.queue(gulp.src([
+      config.unitTestFiles,
+      `!${config.appDir}/**/index*.js`
+    ]));
 
     // add templates
     stream.queue(gulp.src(['app/scripts/**/*.html']));

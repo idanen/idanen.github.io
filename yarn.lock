@@ -660,6 +660,10 @@ angular-messages@^1.6.7:
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/angular-messages/-/angular-messages-1.6.7.tgz#b82943d442929d787547814b394f3481bd36f7e0"
 
+angular-mocks@^1.6.7:
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/angular-mocks/-/angular-mocks-1.6.7.tgz#85bf45a2537eac59fc6f4cf319846102e8000e65"
+
 angular-sanitize@^1.6.7:
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/angular-sanitize/-/angular-sanitize-1.6.7.tgz#5a3d61ad7b8b699923329635d99248bcfce26408"

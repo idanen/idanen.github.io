@@ -13,8 +13,10 @@ module.exports = function (gulp, $, config) {
 
   gulp.task('vendorsForTests', ['clean:test'], function () {
     console.log('building lib.bundle.js');
+    const webpackConf = require('../webpack.config');
+    webpackConf.entry.lib = './app/index.test.js';
     return gulp.src('app/index.test.js')
-      .pipe($.webpack(require('../webpack.config'), webpack))
+      .pipe($.webpack(webpackConf, webpack))
       .pipe(gulp.dest(`${config.buildUnitTestsDir}/packed`))
   });
 
@@ -29,12 +31,6 @@ module.exports = function (gulp, $, config) {
   // inject scripts in karma.config.js
   gulp.task('karmaFiles', ['buildTests'], function () {
     var stream = $.streamqueue({objectMode: true});
-
-    // add bower javascript
-    // stream.queue(gulp.src($.wiredep({
-    //   devDependencies: true,
-    //   exclude: [/polymer/, /webcomponents/]
-    // }).js));
 
     // add application templates
     stream.queue(gulp.src([config.buildTestDirectiveTemplateFiles]));

@@ -19,7 +19,6 @@ if (jsDir[jsDir.length - 1] !== '/') {
 }
 
 preprocessors[jsDir + '**/*.js'] = ['coverage'];
-// preprocessors[templateDir + '**/*-directive.tpl.html'] = ['ng-html2js'];
 preprocessors['**/*.html'] = ['ng-html2js'];
 
 module.exports = {

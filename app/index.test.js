@@ -18,5 +18,3 @@ require('angulartics');
 require('angulartics-google-analytics');
 require('angularfire');
 require('ngclipboard');
-
-console.log('vendors loaded');

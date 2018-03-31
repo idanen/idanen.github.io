@@ -57,10 +57,14 @@
     },
 
     $onChanges: function (changes) {
-      if (changes && changes.communityId && changes.communityId.currentValue && changes.communityId.currentValue !== changes.communityId.previousValue) {
+      if (!changes) {
+        return;
+      }
+
+      if (changes.communityId && changes.communityId.currentValue && changes.communityId.currentValue !== changes.communityId.previousValue) {
         this.getAndSetLocations();
       }
-      if (changes && changes.disabled) {
+      if (changes.disabled) {
         if (changes.disabled.currentValue) {
           this.picker.disabled = changes.disabled.currentValue;
         } else {

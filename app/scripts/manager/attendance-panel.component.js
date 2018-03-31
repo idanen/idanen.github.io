@@ -20,16 +20,15 @@
     }
 
     $onChanges(changes) {
-      if (changes && changes.gameId && changes.gameId.currentValue !== changes.gameId.previousValue) {
-        if (this.attendingPlayers && _.isFunction(this.attendingPlayers.$destroy)) {
-          this.attendingPlayers.$destroy();
-        }
-
-        this.attendingPlayers = this.playersGames.getApprovalsForGame(this.gameId);
-        this.attendingPlayers.$loaded()
-          .then(this.buildAttendanceCounts.bind(this));
+      if (!changes) {
+        return;
       }
-      if (changes && changes.communityId && changes.communityId.currentValue !== changes.communityId.previousValue) {
+
+      if (changes.gameId && changes.gameId.currentValue !== changes.gameId.previousValue) {
+        this.updateAttendingPlayers();
+      }
+
+      if (changes.communityId && changes.communityId.currentValue !== changes.communityId.previousValue) {
         this.updateIsAdmin();
       }
     }
@@ -80,6 +79,16 @@
       } else {
         this.isAdmin = false;
       }
+    }
+
+    updateAttendingPlayers() {
+      if (this.attendingPlayers && _.isFunction(this.attendingPlayers.$destroy)) {
+        this.attendingPlayers.$destroy();
+      }
+
+      this.attendingPlayers = this.playersGames.getApprovalsForGame(this.gameId);
+      this.attendingPlayers.$loaded()
+        .then(this.buildAttendanceCounts.bind(this));
     }
 
     playerSelected(playerId) {

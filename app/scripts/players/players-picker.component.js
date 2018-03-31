@@ -19,18 +19,27 @@
     }
 
     $onChanges(changes) {
-      if (changes && changes.players && changes.players.currentValue && changes.players.currentValue !== changes.players.previousValue) {
+      if (!changes) {
+        return;
+      }
+
+      this.picker.value = this.selected;
+
+      if (changes.players && changes.players.currentValue !== changes.players.previousValue) {
         this.players = changes.players.currentValue;
         this.setPlayers();
       }
 
-      this.picker.value = this.selected;
-      if (changes && changes.selected && changes.selected.currentValue && changes.selected.currentValue !== changes.selected.previousValue) {
+      if (changes.selected && changes.selected.currentValue !== changes.selected.previousValue) {
         this.$scope.$applyAsync(() => this.onSelect({$event: this.selected}));
       }
     }
 
     setPlayers() {
+      if (!this.players) {
+        return;
+      }
+
       this.picker.items = this.players.map(player => {
         return {
           value: player.$id,

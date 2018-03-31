@@ -35,6 +35,9 @@
 
   PlayerDetailsController.prototype = {
     $onInit() {
+      if (this.player) {
+        return;
+      }
       this.player = this.Players.createPlayer(this.communityId);
       this.ready = this.$q.resolve();
 
@@ -54,7 +57,7 @@
           }
           this.player = this.Players.getPlayer(playerId);
           this.playerGames = this.Players.getPlayerGames(playerId);
-          this.player.$loaded()
+          this.ready = this.player.$loaded()
             .then(() => {
               this.playerFields = ['email', 'displayName', 'phone'];
               this.inputs = this.playerFields
